@@ -132,7 +132,7 @@ function HeroParticleText() {
       offCtx.textAlign = "center";
       offCtx.textBaseline = "middle";
 
-      const fontSize = Math.min(width * 0.11, 132);
+      const fontSize = Math.min(width * 0.10, 120);
       offCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
       offCtx.fillText("AutoCore Systems", width / 2, height / 2);
 
