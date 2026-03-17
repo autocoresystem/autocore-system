@@ -28,3 +28,19 @@
   animation: spin 2s linear infinite;
   filter: drop-shadow(0 0 10px red);
 }
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #0f0f0f, #000000);
+  color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+.glass {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+}

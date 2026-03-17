@@ -1,3 +1,5 @@
+import { Routes, Route } from "react-router-dom";
+import Dashboard from "./Dashboard";
 import { motion } from 'framer-motion';
 import {
   MonitorSmartphone,
@@ -28,8 +30,7 @@ import {
   Users,
   Gem,
 } from 'lucide-react';
-
-export default function AutoCoreLandingPage() {
+function AutoCoreLandingPage() {
   const services = [
     {
       title: 'POS en la nube',
@@ -158,7 +159,7 @@ export default function AutoCoreLandingPage() {
             <a href="#servicios" className="transition hover:text-white">Servicios</a>
             <a href="#modulos" className="transition hover:text-white">Módulos</a>
             <a href="#planes" className="transition hover:text-white">Planes</a>
-            <a href="#demo" className="transition hover:text-white">Demo</a>
+            <a href="/dashboard" className="transition hover:text-white">Demo</a>
             <a href="#contacto" className="transition hover:text-white">Contacto</a>
           </nav>
 
@@ -654,5 +655,13 @@ export default function AutoCoreLandingPage() {
         </div>
       </section>
     </div>
+  );
+}
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<AutoCoreLandingPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+    </Routes>
   );
 }
