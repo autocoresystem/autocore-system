@@ -177,6 +177,15 @@ function AutoCoreLandingPage() {
     transition: { duration: 0.6 },
   };
 
+  const floatingParticles = Array.from({ length: 28 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 8 + 3,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: Math.random() * 8 + 8,
+    delay: Math.random() * 4,
+  }));
+
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
@@ -298,9 +307,10 @@ function AutoCoreLandingPage() {
       <section className="relative overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.03),transparent_28%)]" />
         <div className="absolute left-1/2 top-12 h-80 w-80 -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
+
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-          <div className="grid items-center gap-14 lg:grid-cols-[1.15fr_0.85fr]">
-            <motion.div {...fadeUp}>
+          <div className="relative z-10 grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
+            <motion.div {...fadeUp} className="relative z-20">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
                 <Sparkles className="h-3.5 w-3.5" />
                 AutoCore System · Software premium para negocios modernos
@@ -314,10 +324,10 @@ function AutoCoreLandingPage() {
                 AutoCore System combina diseño premium, control operativo y tecnología moderna para dealers, rent car, talleres, repuestos y negocios que quieren proyectar una imagen seria, organizada y lista para crecer.
               </p>
 
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <div className="relative z-30 mt-8 flex flex-col gap-4 sm:flex-row">
                 <a
                   href="#contacto"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 text-center font-semibold shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.02]"
+                  className="relative z-30 inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 text-center font-semibold shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.02]"
                 >
                   Solicitar cotización
                   <ArrowRight className="h-4 w-4" />
@@ -325,7 +335,7 @@ function AutoCoreLandingPage() {
 
                 <Link
                   to="/dashboard"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-center font-semibold text-zinc-100 transition hover:bg-white/10"
+                  className="relative z-30 inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-center font-semibold text-zinc-100 transition hover:bg-white/10"
                 >
                   Ver demo del sistema
                   <ChevronRight className="h-4 w-4" />
@@ -353,50 +363,111 @@ function AutoCoreLandingPage() {
               </div>
             </motion.div>
 
-            <motion.div {...fadeUp} transition={{ duration: 0.7 }}>
-              <div className="relative rounded-[2rem] border border-white/10 bg-white/[0.06] p-5 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
-                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/10 via-transparent to-transparent" />
-                <div className="relative rounded-[1.7rem] border border-white/10 bg-zinc-950 p-5">
-                  <div className="mb-5 flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-zinc-400">AutoCore Executive Dashboard</p>
-                      <h3 className="text-2xl font-black tracking-tight">
-                        Control total del negocio en tiempo real
-                      </h3>
-                    </div>
-                    <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-semibold text-red-300">
-                      En vivo
-                    </div>
-                  </div>
+            <motion.div
+              {...fadeUp}
+              transition={{ duration: 0.7 }}
+              className="relative z-10"
+            >
+              <div className="relative min-h-[560px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_40%),radial-gradient(circle_at_top,rgba(255,0,0,0.14),transparent_28%)]" />
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {demoMetrics.map((metric) => (
-                      <div
-                        key={metric.label}
-                        className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-4"
-                      >
-                        <p className="text-sm text-zinc-500">{metric.label}</p>
-                        <p className="mt-2 text-3xl font-black tracking-tight">{metric.value}</p>
-                      </div>
-                    ))}
-                  </div>
+                <div className="absolute inset-0">
+                  {floatingParticles.map((p) => (
+                    <motion.span
+                      key={p.id}
+                      className="absolute rounded-full bg-white/70 blur-[1px]"
+                      style={{
+                        width: `${p.size}px`,
+                        height: `${p.size}px`,
+                        left: `${p.left}%`,
+                        top: `${p.top}%`,
+                      }}
+                      animate={{
+                        y: [0, -30, 10, -18, 0],
+                        x: [0, 10, -8, 12, 0],
+                        opacity: [0.12, 0.55, 0.24, 0.58, 0.12],
+                        scale: [0.8, 1.15, 0.95, 1.12, 0.8],
+                      }}
+                      transition={{
+                        duration: p.duration,
+                        repeat: Infinity,
+                        delay: p.delay,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  ))}
+                </div>
 
-                  <div className="mt-4 rounded-2xl border border-white/10 bg-black p-5">
+                <div className="absolute inset-0 flex items-center justify-center px-6">
+                  <div className="relative text-center">
+                    <motion.h2
+                      animate={{
+                        textShadow: [
+                          "0 0 18px rgba(255,255,255,0.12), 0 0 40px rgba(255,0,0,0.10)",
+                          "0 0 30px rgba(255,255,255,0.22), 0 0 80px rgba(255,0,0,0.18)",
+                          "0 0 18px rgba(255,255,255,0.12), 0 0 40px rgba(255,0,0,0.10)",
+                        ],
+                        letterSpacing: ["-0.045em", "-0.02em", "-0.045em"],
+                        opacity: [0.92, 1, 0.92],
+                      }}
+                      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                      className="text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl"
+                    >
+                      AutoCore
+                      <span className="text-red-500"> System</span>
+                    </motion.h2>
+
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 0.9, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.8 }}
+                      className="mx-auto mt-5 max-w-xl text-sm uppercase tracking-[0.35em] text-zinc-400 sm:text-base"
+                    >
+                      Cloud POS · Facturación · Control total
+                    </motion.p>
+                  </div>
+                </div>
+
+                <div className="absolute inset-x-0 bottom-0 p-5">
+                  <div className="rounded-[1.5rem] border border-white/10 bg-black/70 p-5 backdrop-blur-xl">
                     <div className="mb-4 flex items-center justify-between">
-                      <p className="text-sm text-zinc-400">Módulos activos</p>
+                      <p className="text-sm text-zinc-400">AutoCore Executive Preview</p>
                       <span className="text-xs uppercase tracking-[0.2em] text-red-300">
-                        Premium stack
+                        PREMIUM STACK
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {modules.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {demoMetrics.map((metric) => (
+                        <div
+                          key={metric.label}
+                          className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-4"
                         >
-                          {tag}
-                        </span>
+                          <p className="text-sm text-zinc-500">{metric.label}</p>
+                          <p className="mt-2 text-3xl font-black tracking-tight">
+                            {metric.value}
+                          </p>
+                        </div>
                       ))}
+                    </div>
+
+                    <div className="mt-4 rounded-2xl border border-white/10 bg-black p-5">
+                      <div className="mb-4 flex items-center justify-between">
+                        <p className="text-sm text-zinc-400">Módulos activos</p>
+                        <span className="text-xs uppercase tracking-[0.2em] text-red-300">
+                          Premium stack
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {modules.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -652,7 +723,9 @@ function AutoCoreLandingPage() {
                         className="rounded-2xl border border-white/10 bg-black p-4"
                       >
                         <p className="text-xs text-zinc-500">{metric.label}</p>
-                        <p className="mt-2 text-xl font-black tracking-tight">{metric.value}</p>
+                        <p className="mt-2 text-xl font-black tracking-tight">
+                          {metric.value}
+                        </p>
                       </div>
                     ))}
                   </div>
