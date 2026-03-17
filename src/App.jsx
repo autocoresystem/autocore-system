@@ -33,6 +33,36 @@ import {
   X,
 } from "lucide-react";
 
+function FontLoader() {
+  useEffect(() => {
+    const preconnect1 = document.createElement("link");
+    preconnect1.rel = "preconnect";
+    preconnect1.href = "https://fonts.googleapis.com";
+
+    const preconnect2 = document.createElement("link");
+    preconnect2.rel = "preconnect";
+    preconnect2.href = "https://fonts.gstatic.com";
+    preconnect2.crossOrigin = "anonymous";
+
+    const fontLink = document.createElement("link");
+    fontLink.rel = "stylesheet";
+    fontLink.href =
+      "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap";
+
+    document.head.appendChild(preconnect1);
+    document.head.appendChild(preconnect2);
+    document.head.appendChild(fontLink);
+
+    return () => {
+      document.head.removeChild(preconnect1);
+      document.head.removeChild(preconnect2);
+      document.head.removeChild(fontLink);
+    };
+  }, []);
+
+  return null;
+}
+
 function ParticleBackground() {
   const canvasRef = useRef(null);
 
@@ -98,6 +128,7 @@ function ParticleBackground() {
     />
   );
 }
+
 function HeroParticleText() {
   const canvasRef = useRef(null);
 
@@ -138,9 +169,9 @@ function HeroParticleText() {
 
       const fontSize = isMobile
         ? Math.min(width * 0.12, 54)
-        : Math.min(width * 0.10, 120);
+        : Math.min(width * 0.1, 120);
 
-      offCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
+      offCtx.font = `800 ${fontSize}px "Plus Jakarta Sans", Arial, sans-serif`;
       offCtx.fillText("AutoCore Systems", width / 2, height / 2);
 
       const imageData = offCtx.getImageData(0, 0, width, height).data;
@@ -247,39 +278,38 @@ function HeroParticleText() {
   );
 }
 
-
 function AutoCoreLandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const services = [
     {
-      title: "POS en la nube",
-      desc: "Cobros, caja, ventas, clientes e inventario en una plataforma rápida, segura y accesible desde cualquier lugar.",
-      icon: MonitorSmartphone,
-    },
-    {
       title: "Facturación profesional",
-      desc: "Sistemas de facturación modernos para dealers, rent car, talleres, repuestos, tiendas y otros negocios.",
+      desc: "Emite facturas claras, organizadas y listas para compartir con tus clientes, proyectando una imagen mucho más seria y moderna.",
       icon: Receipt,
     },
     {
-      title: "Reportes ejecutivos",
-      desc: "Visualiza ingresos, ventas, pendientes, actividad del negocio y desempeño operativo en tiempo real.",
+      title: "Sistema POS en la nube",
+      desc: "Administra ventas, caja, movimientos y operaciones desde una plataforma segura, rápida y accesible desde cualquier lugar.",
+      icon: MonitorSmartphone,
+    },
+    {
+      title: "Control de inventario",
+      desc: "Mantén tus productos, repuestos, unidades o servicios bajo control con información actualizada y mejor visibilidad operativa.",
+      icon: Boxes,
+    },
+    {
+      title: "Gestión de clientes",
+      desc: "Organiza la información de tus clientes, historial, contacto y seguimiento en un solo lugar para trabajar con más orden.",
+      icon: Users,
+    },
+    {
+      title: "Reportes y métricas",
+      desc: "Visualiza ingresos, desempeño, ventas, cobros pendientes y actividad del negocio con reportes útiles para tomar decisiones.",
       icon: BarChart3,
     },
     {
-      title: "Módulos personalizados",
-      desc: "Diseñamos funciones según tu operación: contratos, clientes, cuentas por cobrar, cotizaciones y más.",
-      icon: Settings,
-    },
-    {
-      title: "Automatización documental",
-      desc: "Genera facturas, recibos, contratos, cotizaciones y documentos con imagen profesional.",
-      icon: FileText,
-    },
-    {
       title: "Implementación y soporte",
-      desc: "Acompañamiento técnico, configuración, mejoras continuas y soporte cercano para tu equipo.",
+      desc: "Te acompañamos en la configuración, adaptación del sistema y mejoras necesarias para que tu negocio opere con confianza.",
       icon: ShieldCheck,
     },
   ];
@@ -294,46 +324,70 @@ function AutoCoreLandingPage() {
   ];
 
   const modules = [
-    "POS y caja",
-    "Facturación",
-    "Clientes",
-    "Inventario",
-    "Cuentas por cobrar",
-    "Reportes",
-    "Contratos",
-    "Cotizaciones",
+    {
+      title: "POS y caja",
+      desc: "Controla ventas, cobros y movimientos diarios con mayor rapidez.",
+    },
+    {
+      title: "Facturación",
+      desc: "Genera facturas profesionales con una experiencia más moderna.",
+    },
+    {
+      title: "Clientes",
+      desc: "Mantén cada cliente organizado y accesible en un solo sistema.",
+    },
+    {
+      title: "Inventario",
+      desc: "Gestiona existencias, productos y unidades con más precisión.",
+    },
+    {
+      title: "Cuentas por cobrar",
+      desc: "Lleva seguimiento de pagos pendientes y mejora tu control financiero.",
+    },
+    {
+      title: "Reportes",
+      desc: "Consulta métricas clave del negocio para tomar mejores decisiones.",
+    },
+    {
+      title: "Contratos",
+      desc: "Centraliza documentos importantes con un formato más profesional.",
+    },
+    {
+      title: "Cotizaciones",
+      desc: "Prepara propuestas claras y bien presentadas para tus clientes.",
+    },
   ];
 
   const plans = [
     {
-      name: "Starter",
-      subtitle: "Ideal para comenzar con una operación digital y organizada",
+      name: "Esencial",
+      subtitle: "Ideal para negocios que quieren comenzar a digitalizar su operación",
       price: "Desde $99/mes",
       features: [
-        "POS básico",
         "Facturación",
         "Clientes",
+        "POS básico",
         "Reportes esenciales",
         "Soporte inicial",
       ],
       highlight: false,
     },
     {
-      name: "Pro",
-      subtitle: "Pensado para negocios con más movimiento y necesidad de control",
+      name: "Profesional",
+      subtitle: "Para negocios que necesitan más control y una operación más completa",
       price: "Desde $199/mes",
       features: [
-        "Todo lo de Starter",
+        "Todo lo del plan Esencial",
         "Inventario",
         "Cuentas por cobrar",
-        "Dashboard avanzado",
+        "Dashboard más completo",
         "Módulos adicionales",
       ],
       highlight: true,
     },
     {
-      name: "Enterprise",
-      subtitle: "Solución premium y personalizada para operaciones más completas",
+      name: "Premium",
+      subtitle: "Solución personalizada para empresas con necesidades más robustas",
       price: "Cotización personalizada",
       features: [
         "Sistema a la medida",
@@ -349,22 +403,22 @@ function AutoCoreLandingPage() {
   const premiumPoints = [
     {
       title: "Diseño premium",
-      desc: "Una experiencia visual moderna que transmite nivel y profesionalismo.",
+      desc: "Una presencia visual moderna que eleva la percepción de tu negocio.",
       icon: Gem,
     },
     {
-      title: "Rendimiento ágil",
-      desc: "Interfaz rápida para trabajar sin fricción en el día a día.",
+      title: "Operación ágil",
+      desc: "Interfaz rápida y funcional para trabajar sin fricción cada día.",
       icon: Cpu,
     },
     {
       title: "Acceso remoto",
-      desc: "Opera desde oficina, dealer, taller o celular sin perder control.",
+      desc: "Consulta y administra tu operación desde oficina, negocio o celular.",
       icon: Globe,
     },
     {
       title: "Trabajo en equipo",
-      desc: "Ideal para equipos que necesitan orden, visibilidad y seguimiento.",
+      desc: "Ideal para equipos que necesitan orden, control y seguimiento.",
       icon: Users,
     },
   ];
@@ -393,7 +447,11 @@ function AutoCoreLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white [font-family:Inter,ui-sans-serif,system-ui,sans-serif]">
+    <div
+      className="min-h-screen bg-black text-white"
+      style={{ fontFamily: '"Manrope", ui-sans-serif, system-ui, sans-serif' }}
+    >
+      <FontLoader />
       <ParticleBackground />
 
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(255,0,0,0.14),transparent_18%),radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_20%),radial-gradient(circle_at_bottom_left,rgba(120,120,120,0.08),transparent_22%)]" />
@@ -408,11 +466,14 @@ function AutoCoreLandingPage() {
                 className="h-11 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)]"
               />
               <div>
-                <p className="text-2xl font-black tracking-tight text-white">
+                <p
+                  className="text-2xl font-extrabold tracking-tight text-white"
+                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                >
                   Auto<span className="text-red-500">Core</span>
                 </p>
                 <p className="-mt-1 text-[11px] uppercase tracking-[0.38em] text-zinc-400">
-                  System
+                  Systems
                 </p>
               </div>
             </div>
@@ -425,12 +486,12 @@ function AutoCoreLandingPage() {
                 <a href="#modulos" className="transition hover:text-white">
                   Módulos
                 </a>
+                <a href="#nosotros" className="transition hover:text-white">
+                  Nosotros
+                </a>
                 <a href="#planes" className="transition hover:text-white">
                   Planes
                 </a>
-                <Link to="/dashboard" className="transition hover:text-white">
-                  Demo
-                </Link>
                 <a href="#contacto" className="transition hover:text-white">
                   Contacto
                 </a>
@@ -462,12 +523,12 @@ function AutoCoreLandingPage() {
                 <a href="#modulos" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Módulos
                 </a>
+                <a href="#nosotros" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
+                  Nosotros
+                </a>
                 <a href="#planes" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Planes
                 </a>
-                <Link to="/dashboard" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
-                  Demo
-                </Link>
                 <a href="#contacto" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Contacto
                 </a>
@@ -492,7 +553,7 @@ function AutoCoreLandingPage() {
           <motion.div {...fadeUp} className="relative z-10">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
               <Sparkles className="h-3.5 w-3.5" />
-              AutoCore System · Software premium para negocios modernos
+              AutoCore Systems · Plataforma premium para negocios modernos
             </div>
           </motion.div>
 
@@ -500,18 +561,22 @@ function AutoCoreLandingPage() {
             <div className="relative py-2 sm:py-4 lg:py-6">
               <HeroParticleText />
             </div>
-          <p className="mt-1 px-2 text-center text-[10px] uppercase tracking-[0.28em] text-zinc-400 sm:text-sm sm:tracking-[0.38em]">              Cloud POS · Facturación · Control total
+            <p className="mt-1 px-2 text-center text-[10px] uppercase tracking-[0.28em] text-zinc-400 sm:text-sm sm:tracking-[0.38em]">
+              Cloud POS · Facturación · Gestión · Control operativo
             </p>
           </motion.div>
 
           <div className="relative z-10 mt-10 grid items-start gap-14 lg:grid-cols-[1.02fr_0.98fr]">
             <motion.div {...fadeUp}>
-              <h1 className="max-w-4xl text-4xl font-black leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl">
-                La forma más elegante y profesional de vender, facturar y controlar tu negocio en la nube
+              <h1
+                className="max-w-4xl text-4xl font-extrabold leading-[0.96] tracking-tight sm:text-6xl lg:text-7xl"
+                style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+              >
+                Control total para tu negocio, con una imagen más moderna y profesional
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
-                AutoCore System combina diseño premium, control operativo y tecnología moderna para dealers, rent car, talleres, repuestos y negocios que quieren proyectar una imagen seria, organizada y lista para crecer.
+                AutoCore Systems reúne facturación, clientes, inventario, reportes y control operativo en una sola plataforma diseñada para negocios que quieren trabajar con más orden, rapidez y presencia profesional.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -556,9 +621,9 @@ function AutoCoreLandingPage() {
             <motion.div {...fadeUp}>
               <div className="rounded-[2rem] border border-white/10 bg-black/60 p-5 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="text-sm text-zinc-400">AutoCore Executive Preview</p>
+                  <p className="text-sm text-zinc-400">Vista ejecutiva</p>
                   <span className="text-xs uppercase tracking-[0.2em] text-red-300">
-                    PREMIUM STACK
+                    PREMIUM UI
                   </span>
                 </div>
 
@@ -569,7 +634,10 @@ function AutoCoreLandingPage() {
                       className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-4"
                     >
                       <p className="text-sm text-zinc-500">{metric.label}</p>
-                      <p className="mt-2 text-3xl font-black tracking-tight">
+                      <p
+                        className="mt-2 text-3xl font-extrabold tracking-tight"
+                        style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                      >
                         {metric.value}
                       </p>
                     </div>
@@ -578,19 +646,19 @@ function AutoCoreLandingPage() {
 
                 <div className="mt-4 rounded-2xl border border-white/10 bg-black p-5">
                   <div className="mb-4 flex items-center justify-between">
-                    <p className="text-sm text-zinc-400">Módulos activos</p>
+                    <p className="text-sm text-zinc-400">Módulos incluidos</p>
                     <span className="text-xs uppercase tracking-[0.2em] text-red-300">
-                      Premium stack
+                      AutoCore Stack
                     </span>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
                     {modules.map((tag) => (
                       <span
-                        key={tag}
+                        key={tag.title}
                         className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"
                       >
-                        {tag}
+                        {tag.title}
                       </span>
                     ))}
                   </div>
@@ -613,7 +681,12 @@ function AutoCoreLandingPage() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-800 to-black">
                   <Icon className="h-5 w-5 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold tracking-tight">{item.title}</h3>
+                <h3
+                  className="text-lg font-extrabold tracking-tight"
+                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                >
+                  {item.title}
+                </h3>
                 <p className="mt-2 text-zinc-400">{item.desc}</p>
               </div>
             );
@@ -626,11 +699,14 @@ function AutoCoreLandingPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.26em] text-red-300">
             Servicios
           </p>
-          <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-            Una presencia premium respaldada por una plataforma poderosa
+          <h2
+            className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+            style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+          >
+            Soluciones pensadas para operar mejor y proyectar una imagen más sólida
           </h2>
           <p className="mt-4 text-lg leading-8 text-zinc-300">
-            AutoCore no solo se ve bien. También ayuda a operar mejor, vender con más control y ofrecer una experiencia más profesional a tus clientes.
+            AutoCore Systems ayuda a modernizar la operación de tu negocio con herramientas diseñadas para facturar, organizar, controlar y crecer con más eficiencia.
           </p>
         </motion.div>
 
@@ -649,7 +725,12 @@ function AutoCoreLandingPage() {
                 <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-800 to-black shadow-inner">
                   <Icon className="h-6 w-6 text-red-500" />
                 </div>
-                <h3 className="text-xl font-bold tracking-tight">{service.title}</h3>
+                <h3
+                  className="text-xl font-extrabold tracking-tight"
+                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                >
+                  {service.title}
+                </h3>
                 <p className="mt-3 leading-7 text-zinc-300">{service.desc}</p>
               </motion.div>
             );
@@ -663,8 +744,11 @@ function AutoCoreLandingPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
               Sectores ideales
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-              Diseñado para negocios que necesitan control y presencia
+            <h2
+              className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+              style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+            >
+              Diseñado para negocios que necesitan más control y mejor presentación
             </h2>
             <div className="mt-8 grid grid-cols-2 gap-4">
               {industries.map((item) => {
@@ -684,19 +768,22 @@ function AutoCoreLandingPage() {
 
           <motion.div {...fadeUp}>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-zinc-300">
-              Ventajas
+              Beneficios
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-              Por qué AutoCore se siente como una marca premium
+            <h2
+              className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+              style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+            >
+              Una plataforma creada para ordenar, agilizar y fortalecer tu operación
             </h2>
             <div className="mt-8 space-y-4">
               {[
-                "Interfaz limpia, moderna y de alto nivel visual",
+                "Interfaz moderna, limpia y de alto nivel visual",
                 "Más control sobre ventas, cobros y facturación",
-                "Menos errores manuales y más organización",
+                "Menos errores manuales y mejor organización",
                 "Acceso desde oficina, negocio o celular",
-                "Plataforma escalable para crecer con tus clientes",
-                "Implementación adaptada a cada operación",
+                "Solución escalable para acompañar el crecimiento del negocio",
+                "Implementación adaptada a cada tipo de operación",
               ].map((benefit) => (
                 <div
                   key={benefit}
@@ -717,25 +804,64 @@ function AutoCoreLandingPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
               Módulos del sistema
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-              Una arquitectura flexible para vender mejor tu solución
+            <h2
+              className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+              style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+            >
+              Todo lo que necesitas para administrar tu negocio en una sola plataforma
             </h2>
             <p className="mt-4 text-lg leading-8 text-zinc-300">
-              Puedes presentar AutoCore como una plataforma modular: cada cliente puede iniciar con lo esencial y luego escalar según sus necesidades.
+              AutoCore Systems puede adaptarse a la operación de cada empresa, integrando módulos clave para facturación, seguimiento, control y gestión diaria.
             </p>
           </motion.div>
 
-          <motion.div {...fadeUp} className="grid grid-cols-2 gap-4">
+          <motion.div {...fadeUp} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {modules.map((module) => (
               <div
-                key={module}
+                key={module.title}
                 className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/20"
               >
                 <LayoutDashboard className="mb-3 h-5 w-5 text-red-500" />
-                <p className="font-semibold tracking-tight text-zinc-100">{module}</p>
+                <p
+                  className="font-extrabold tracking-tight text-zinc-100"
+                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                >
+                  {module.title}
+                </p>
+                <p className="mt-2 text-sm leading-7 text-zinc-400">{module.desc}</p>
               </div>
             ))}
           </motion.div>
+        </div>
+      </section>
+
+      <section id="nosotros" className="border-y border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+            <motion.div {...fadeUp}>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
+                Quiénes somos
+              </p>
+              <h2
+                className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+                style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+              >
+                Tecnología, diseño y funcionalidad para negocios que quieren crecer
+              </h2>
+            </motion.div>
+
+            <motion.div {...fadeUp} className="space-y-5 text-lg leading-8 text-zinc-300">
+              <p>
+                En AutoCore Systems ayudamos a negocios a modernizar su operación con herramientas digitales diseñadas para ofrecer más control, mejor organización y una imagen más profesional frente a sus clientes.
+              </p>
+              <p>
+                Creamos soluciones prácticas para empresas que necesitan centralizar facturación, clientes, inventario, cobros, reportes y procesos operativos en un solo lugar.
+              </p>
+              <p>
+                Nuestro enfoque combina diseño moderno, experiencia de usuario y funcionalidad real para construir plataformas que no solo se vean bien, sino que también ayuden a trabajar mejor cada día.
+              </p>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -745,11 +871,14 @@ function AutoCoreLandingPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
               Planes
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-              Una estructura comercial lista para vender
+            <h2
+              className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+              style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+            >
+              Planes pensados para diferentes etapas de crecimiento
             </h2>
             <p className="mt-4 text-lg leading-8 text-zinc-300">
-              Presenta opciones claras para cerrar más clientes, desde negocios pequeños hasta operaciones que necesitan una solución completamente personalizada.
+              Desde negocios que están comenzando a digitalizarse hasta operaciones que necesitan una solución más robusta y personalizada.
             </p>
           </motion.div>
 
@@ -772,9 +901,19 @@ function AutoCoreLandingPage() {
                     Más popular
                   </div>
                 )}
-                <h3 className="text-2xl font-black tracking-tight">{plan.name}</h3>
+                <h3
+                  className="text-2xl font-extrabold tracking-tight"
+                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                >
+                  {plan.name}
+                </h3>
                 <p className="mt-2 text-zinc-400">{plan.subtitle}</p>
-                <p className="mt-6 text-3xl font-black text-white">{plan.price}</p>
+                <p
+                  className="mt-6 text-3xl font-extrabold text-white"
+                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                >
+                  {plan.price}
+                </p>
                 <div className="mt-6 space-y-3">
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-start gap-3">
@@ -803,13 +942,16 @@ function AutoCoreLandingPage() {
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <motion.div {...fadeUp}>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
-              Demo del sistema
+              Vista previa
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-              Una vitrina visual que ayuda a cerrar ventas
+            <h2
+              className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+              style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+            >
+              Una experiencia visual moderna desde el primer vistazo
             </h2>
             <p className="mt-4 text-lg leading-8 text-zinc-300">
-              La demo convierte la página en una herramienta comercial real. Le muestra al cliente una experiencia moderna, limpia y bien organizada desde el primer vistazo.
+              AutoCore Systems está diseñado para ofrecer una experiencia limpia, clara y profesional, ayudando a que la gestión del negocio se sienta más organizada y eficiente.
             </p>
             <div className="mt-8 space-y-4">
               {[
@@ -847,7 +989,10 @@ function AutoCoreLandingPage() {
                         className="rounded-2xl border border-white/10 bg-black p-4"
                       >
                         <p className="text-xs text-zinc-500">{metric.label}</p>
-                        <p className="mt-2 text-xl font-black tracking-tight">
+                        <p
+                          className="mt-2 text-xl font-extrabold tracking-tight"
+                          style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                        >
                           {metric.value}
                         </p>
                       </div>
@@ -898,17 +1043,20 @@ function AutoCoreLandingPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
                 Por qué elegir AutoCore
               </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-                No vendes solo un sistema: vendes orden, imagen y crecimiento
+              <h2
+                className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+                style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+              >
+                Más que un sistema: una herramienta para ordenar y fortalecer tu negocio
               </h2>
               <p className="mt-4 text-lg leading-8 text-zinc-300">
-                AutoCore está planteado como una solución que ayuda a tus clientes a verse mejor, trabajar mejor y tomar decisiones con más claridad. Ese posicionamiento eleva el valor percibido de tu oferta.
+                AutoCore Systems está pensado para ayudar a las empresas a trabajar con más claridad, proyectar una imagen más profesional y tener mejor control de su operación diaria.
               </p>
             </div>
             <div className="grid gap-4">
               {[
-                "Evaluación de la operación del cliente",
-                "Diseño del sistema según la necesidad real",
+                "Evaluación de la operación del negocio",
+                "Definición de módulos y necesidades",
                 "Implementación y configuración profesional",
                 "Capacitación, acompañamiento y mejoras",
               ].map((step, i) => (
@@ -932,11 +1080,14 @@ function AutoCoreLandingPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
                 Contacto
               </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-                Haz que AutoCore se vea como una marca lista para cerrar clientes reales
+              <h2
+                className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+                style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+              >
+                Solicita información y descubre cómo AutoCore puede adaptarse a tu negocio
               </h2>
               <p className="mt-4 max-w-xl text-lg leading-8 text-zinc-300">
-                Si quieres vender sistemas POS en la nube y plataformas de facturación con una imagen fuerte, moderna y profesional, esta página ya está planteada para ayudarte a proyectar ese nivel.
+                Estamos listos para ayudarte a implementar una solución moderna, profesional y funcional que se ajuste a la operación real de tu empresa.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -966,34 +1117,6 @@ function AutoCoreLandingPage() {
                   <p className="mt-1 font-semibold">+1 (800) 000-0000</p>
                 </div>
               </div>
-
-              <div className="mt-8 rounded-[1.75rem] border border-red-500/15 bg-gradient-to-br from-red-600/10 to-transparent p-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-red-300">
-                  Tabla sugerida
-                </p>
-                <div className="mt-4 grid gap-2 text-sm text-zinc-300 sm:grid-cols-2">
-                  {[
-                    "id",
-                    "nombre",
-                    "negocio",
-                    "telefono",
-                    "email",
-                    "tipo_negocio",
-                    "mensaje",
-                    "created_at",
-                  ].map((field) => (
-                    <div
-                      key={field}
-                      className="rounded-xl border border-white/10 bg-black/30 px-3 py-2"
-                    >
-                      leads.{field}
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-4 text-sm leading-7 text-zinc-400">
-                  Este formulario puede conectarse luego a Supabase o a un backend en Render para guardar los prospectos automáticamente.
-                </p>
-              </div>
             </div>
 
             <div className="rounded-[2.2rem] border border-white/10 bg-white/5 p-8 shadow-[0_35px_120px_rgba(0,0,0,0.35)] backdrop-blur-2xl lg:p-10">
@@ -1002,12 +1125,15 @@ function AutoCoreLandingPage() {
                   <p className="text-sm font-semibold uppercase tracking-[0.22em] text-red-300">
                     Formulario de contacto
                   </p>
-                  <h3 className="mt-2 text-2xl font-black tracking-tight">
+                  <h3
+                    className="mt-2 text-2xl font-extrabold tracking-tight"
+                    style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                  >
                     Solicita información o una cotización
                   </h3>
                 </div>
                 <span className="rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
-                  Lead form
+                  Contacto
                 </span>
               </div>
 
@@ -1078,7 +1204,7 @@ function AutoCoreLandingPage() {
                   </label>
                   <textarea
                     rows={6}
-                    placeholder="Cuéntanos qué tipo de sistema necesitas para tu negocio"
+                    placeholder="Cuéntanos qué tipo de solución necesitas para tu negocio"
                     className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
                   />
                 </div>
@@ -1092,8 +1218,7 @@ function AutoCoreLandingPage() {
                 </button>
 
                 <p className="text-sm leading-7 text-zinc-400">
-                  Esta versión ya deja el formulario listo visualmente. El siguiente paso sería conectarlo a Supabase o a tu backend en Render para guardar los leads en la tabla{" "}
-                  <span className="font-semibold text-zinc-300">leads</span>.
+                  Completa el formulario y nuestro equipo te contactará para orientarte sobre la mejor opción para tu negocio.
                 </p>
               </form>
             </div>
