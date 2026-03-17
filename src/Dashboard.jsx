@@ -1,3 +1,4 @@
+import logo from './assets/autocore-logo.png';
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -50,6 +51,8 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [search, setSearch] = useState('');
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [showVehicleModal, setShowVehicleModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -148,7 +151,7 @@ export default function Dashboard() {
 
   const statusColor = (status) => {
     if (['Pagada', 'Completado', 'Activo', 'Al día', 'Disponible', 'Confirmado', 'Listo'].includes(status)) return 'text-emerald-300';
-    if (['Pendiente', 'Mantenimiento', 'Programado', 'Reservado', 'En proceso', 'En inspección'].includes(status)) return 'text-amber-300';
+    if (['Pendiente', 'Mantenimiento', 'Programado', 'Reservado', 'En proceso', 'En inspección', 'En renta'].includes(status)) return 'text-amber-300';
     return 'text-red-300';
   };
 
@@ -223,7 +226,7 @@ export default function Dashboard() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-red-300">Novedad</p>
             <h3 className="mt-2 text-xl font-black tracking-tight">Experiencia más real dentro del demo</h3>
             <p className="mt-3 text-sm leading-7 text-zinc-300">
-              Ahora incluye navegación lateral, login demo, facturación simulada, calendario, buscador de clientes y gráficos premium para que el sistema se sienta más vivo.
+              Ahora incluye navegación lateral, login demo, facturación simulada, calendario, buscador de clientes, gráficos premium y modales para clientes y vehículos.
             </p>
           </div>
         </div>
@@ -287,7 +290,13 @@ export default function Dashboard() {
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar cliente" className="rounded-2xl border border-white/10 bg-black/40 py-2.5 pl-10 pr-4 text-sm text-white outline-none placeholder:text-zinc-500" />
           </div>
-          <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white">
+          <button
+            onClick={() => {
+              setActiveTab('clients');
+              setShowClientModal(true);
+            }}
+            className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white"
+          >
             <UserPlus className="h-4 w-4" /> Nuevo
           </button>
         </div>
@@ -360,7 +369,13 @@ export default function Dashboard() {
         <div><p className="text-sm text-zinc-400">Gestión de unidades</p><h2 className="text-xl font-bold tracking-tight">Inventario de vehículos</h2></div>
         <div className="flex gap-3">
           <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white"><Filter className="h-4 w-4" /> Filtrar</button>
-          <button className="inline-flex items-center gap-2 rounded-2xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white"><Plus className="h-4 w-4" /> Agregar unidad</button>
+          <button
+            onClick={() => {
+              setActiveTab('vehicles');
+              setShowVehicleModal(true);
+            }}
+            className="inline-flex items-center gap-2 rounded-2xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white"
+          ><Plus className="h-4 w-4" /> Agregar unidad</button>
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -483,7 +498,9 @@ export default function Dashboard() {
 
             <motion.div {...fadeUp} className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.4)] backdrop-blur-2xl lg:p-8">
               <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5"><LayoutDashboard className="h-5 w-5 text-red-500" /></div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5"> 
+                 <img src="/autocore-logo.png"alt="AutoCore"className="h-10 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)]"/>
+</div>
                 <div><p className="text-xl font-black tracking-tight">Auto<span className="text-red-500">Core</span></p><p className="-mt-1 text-[11px] uppercase tracking-[0.3em] text-zinc-400">Demo Access</p></div>
               </div>
               <div className="rounded-[1.5rem] border border-white/10 bg-zinc-950/80 p-5">
@@ -522,7 +539,8 @@ export default function Dashboard() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5"><LayoutDashboard className="h-5 w-5 text-red-500" /></div>
+             <img
+    src="/autocore-logo.png"alt="AutoCore"className="h-10 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)]"/>
             <div><p className="text-xl font-black tracking-tight">Auto<span className="text-red-500">Core</span></p><p className="-mt-1 text-[11px] uppercase tracking-[0.3em] text-zinc-400">Demo Dashboard</p></div>
           </div>
           <div className="flex items-center gap-3">
@@ -556,10 +574,39 @@ export default function Dashboard() {
             <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-zinc-950/80 p-4">
               <div className="mb-3 flex items-center gap-2"><Settings className="h-4 w-4 text-red-500" /><p className="text-sm font-semibold text-white">Acciones rápidas</p></div>
               <div className="space-y-2 text-sm text-zinc-400">
-                <button onClick={() => setShowInvoiceModal(true)} className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left hover:bg-white/[0.06]">Crear factura</button>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">Registrar cliente</div>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">Agregar vehículo</div>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">Generar reporte</div>
+                <button
+                  onClick={() => {
+                    setActiveTab('billing');
+                    setShowInvoiceModal(true);
+                  }}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left hover:bg-white/[0.06]"
+                >
+                  Crear factura
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveTab('clients');
+                    setShowClientModal(true);
+                  }}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left hover:bg-white/[0.06]"
+                >
+                  Registrar cliente
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveTab('vehicles');
+                    setShowVehicleModal(true);
+                  }}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left hover:bg-white/[0.06]"
+                >
+                  Agregar vehículo
+                </button>
+                <button
+                  onClick={() => setActiveTab('reports')}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left hover:bg-white/[0.06]"
+                >
+                  Generar reporte
+                </button>
               </div>
             </div>
           </aside>
@@ -602,6 +649,68 @@ export default function Dashboard() {
             </div>
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4"><p className="text-sm text-zinc-400">Vista previa</p><p className="mt-2 text-lg font-semibold text-white">Factura demo lista para presentar al cliente</p><p className="mt-2 text-sm leading-6 text-zinc-500">Este modal es parte de la nueva actualización para que el usuario sienta que realmente puede interactuar con el sistema.</p></div>
             <div className="mt-6 flex justify-end gap-3"><button onClick={() => setShowInvoiceModal(false)} className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white">Cancelar</button><button className="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white">Guardar factura</button></div>
+          </div>
+        </div>
+      )}
+
+      {showClientModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
+            <div className="mb-6 flex items-center justify-between">
+              <div><p className="text-sm uppercase tracking-[0.2em] text-red-300">Nuevo cliente</p><h3 className="mt-2 text-2xl font-black tracking-tight">Registrar cliente demo</h3></div>
+              <button onClick={() => setShowClientModal(false)} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white">Cerrar</button>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Nombre del negocio" />
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Contacto" />
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Teléfono" />
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Email" />
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <select className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white">
+                <option>Tipo de negocio</option>
+                <option>Dealer</option>
+                <option>Rent Car</option>
+                <option>Taller</option>
+                <option>Repuestos</option>
+              </select>
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Balance inicial" />
+            </div>
+            <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4"><p className="text-sm text-zinc-400">Vista previa</p><p className="mt-2 text-lg font-semibold text-white">Cliente demo listo para registrarse</p><p className="mt-2 text-sm leading-6 text-zinc-500">Este modal le da más realismo al módulo de clientes y mejora la presentación comercial.</p></div>
+            <div className="mt-6 flex justify-end gap-3"><button onClick={() => setShowClientModal(false)} className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white">Cancelar</button><button className="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white">Guardar cliente</button></div>
+          </div>
+        </div>
+      )}
+
+      {showVehicleModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
+            <div className="mb-6 flex items-center justify-between">
+              <div><p className="text-sm uppercase tracking-[0.2em] text-red-300">Nueva unidad</p><h3 className="mt-2 text-2xl font-black tracking-tight">Agregar vehículo demo</h3></div>
+              <button onClick={() => setShowVehicleModal(false)} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white">Cerrar</button>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Marca / modelo" />
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Año" />
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="Placa" />
+              <input className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-zinc-500" placeholder="VIN" />
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <select className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white">
+                <option>Tipo de operación</option>
+                <option>Dealer</option>
+                <option>Rent Car</option>
+              </select>
+              <select className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white">
+                <option>Estado</option>
+                <option>Disponible</option>
+                <option>En renta</option>
+                <option>Mantenimiento</option>
+                <option>Reservado</option>
+              </select>
+            </div>
+            <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4"><p className="text-sm text-zinc-400">Vista previa</p><p className="mt-2 text-lg font-semibold text-white">Vehículo demo listo para agregarse</p><p className="mt-2 text-sm leading-6 text-zinc-500">Ahora el módulo de unidades también tiene interacción visual para que el sistema se vea más completo.</p></div>
+            <div className="mt-6 flex justify-end gap-3"><button onClick={() => setShowVehicleModal(false)} className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white">Cancelar</button><button className="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white">Guardar vehículo</button></div>
           </div>
         </div>
       )}
