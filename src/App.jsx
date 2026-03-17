@@ -941,7 +941,7 @@ function AutoCoreLandingPage() {
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <a
-                  href="mailto:ventas@autocoresystem.com"
+                  href="mailto:autocoresystem@gmail.com"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold transition hover:scale-[1.02]"
                 >
                   <FileText className="h-4 w-4" />
