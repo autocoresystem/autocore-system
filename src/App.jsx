@@ -1110,7 +1110,7 @@ function AutoCoreLandingPage() {
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                   <p className="text-sm text-zinc-400">Correo</p>
-                  <p className="mt-1 font-semibold">ventas@autocoresystem.com</p>
+                  <p className="mt-1 font-semibold">autocoresystem@gmail.com</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                   <p className="text-sm text-zinc-400">WhatsApp</p>
