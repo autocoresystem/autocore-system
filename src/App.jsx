@@ -109,14 +109,14 @@ function HeroParticleText() {
     const ctx = canvas.getContext("2d");
     let animationFrameId;
     let particles = [];
-    let pulse = 0;
+    let time = 0;
 
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    const DPR = Math.min(window.devicePixelRatio || 1, 1.5);
 
     const buildParticles = () => {
       const rect = canvas.getBoundingClientRect();
-      const width = Math.max(1100, Math.floor(rect.width));
-      const height = Math.max(420, Math.floor(rect.height));
+      const width = Math.max(900, Math.floor(rect.width));
+      const height = Math.max(360, Math.floor(rect.height));
 
       canvas.width = width * DPR;
       canvas.height = height * DPR;
@@ -132,39 +132,35 @@ function HeroParticleText() {
       offCtx.textAlign = "center";
       offCtx.textBaseline = "middle";
 
-      const fontSize = Math.min(width * 0.15, 190);
+      const fontSize = Math.min(width * 0.11, 132);
       offCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
       offCtx.fillText("AutoCore Systems", width / 2, height / 2);
 
       const imageData = offCtx.getImageData(0, 0, width, height).data;
-      const gap = Math.max(3, Math.floor(width / 360));
 
+      const gap = Math.max(5, Math.floor(width / 220));
       particles = [];
+
       for (let y = 0; y < height; y += gap) {
         for (let x = 0; x < width; x += gap) {
           const index = (y * width + x) * 4;
-          if (imageData[index + 3] > 70) {
-            const spreadX = (Math.random() - 0.5) * 180;
-            const spreadY = (Math.random() - 0.5) * 70;
-            const burstX = (Math.random() - 0.5) * 300;
-            const burstY = (Math.random() - 0.5) * 110;
-
+          if (imageData[index + 3] > 90) {
             particles.push({
               tx: x,
               ty: y,
-              ox: x + spreadX,
-              oy: y + spreadY,
-              bx: x + burstX,
-              by: y + burstY,
-              size: Math.random() * 1.9 + 0.65,
-              alpha: Math.random() * 0.48 + 0.25,
-              driftX: (Math.random() - 0.5) * 1.3,
-              driftY: (Math.random() - 0.5) * 0.7,
+              sx: x + (Math.random() - 0.5) * 420,
+              sy: y + (Math.random() - 0.5) * 180,
+              driftX: (Math.random() - 0.5) * 0.9,
+              driftY: (Math.random() - 0.5) * 0.5,
+              size: Math.random() * 1.6 + 0.7,
+              alpha: Math.random() * 0.35 + 0.45,
             });
           }
         }
       }
     };
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
     const draw = () => {
       const rect = canvas.getBoundingClientRect();
@@ -172,37 +168,42 @@ function HeroParticleText() {
       const height = rect.height;
 
       ctx.clearRect(0, 0, width, height);
-      pulse += 0.018;
 
-      const explode = (Math.sin(pulse) + 1) / 2;
-      const wave = (Math.sin(pulse * 1.45) + 1) / 2;
+      time += 0.016;
+
+      const introDuration = 2.2;
+      const introT = Math.min(time / introDuration, 1);
+      const compact = easeOutCubic(introT);
+
+      const breathe = Math.sin(time * 1.4) * 0.5 + 0.5;
 
       for (const p of particles) {
-        const targetX =
-          p.tx * (1 - explode * 0.18) +
-          p.ox * (explode * 0.08) +
-          p.bx * (wave * 0.09);
+        const baseX = p.sx * (1 - compact) + p.tx * compact;
+        const baseY = p.sy * (1 - compact) + p.ty * compact;
 
-        const targetY =
-          p.ty * (1 - explode * 0.18) +
-          p.oy * (explode * 0.06) +
-          p.by * (wave * 0.04);
+        const px =
+          baseX +
+          Math.sin(time * 1.2 + p.tx * 0.01) * p.driftX * (2 + breathe * 4);
 
-        const px = targetX + Math.sin(pulse + p.tx * 0.008) * p.driftX * 10;
-        const py = targetY + Math.cos(pulse + p.ty * 0.01) * p.driftY * 10;
+        const py =
+          baseY +
+          Math.cos(time * 1.1 + p.ty * 0.01) * p.driftY * (2 + breathe * 4);
 
         ctx.beginPath();
         ctx.arc(px, py, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
-        ctx.shadowBlur = 16;
-        ctx.shadowColor = "rgba(255,255,255,0.22)";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "rgba(255,255,255,0.16)";
         ctx.fill();
       }
 
       animationFrameId = requestAnimationFrame(draw);
     };
 
-    const handleResize = () => buildParticles();
+    const handleResize = () => {
+      time = 0;
+      buildParticles();
+    };
 
     buildParticles();
     draw();
@@ -216,10 +217,10 @@ function HeroParticleText() {
 
   return (
     <div className="relative w-full">
-      <div className="absolute inset-0 mx-auto h-40 w-[38rem] max-w-full rounded-full bg-red-600/10 blur-3xl sm:h-52 lg:h-64" />
+      <div className="absolute inset-0 mx-auto h-40 w-[34rem] max-w-full rounded-full bg-red-600/10 blur-3xl sm:h-52 lg:h-64" />
       <canvas
         ref={canvasRef}
-        className="relative z-10 block h-[300px] w-full sm:h-[380px] lg:h-[500px]"
+        className="relative z-10 block h-[260px] w-full sm:h-[320px] lg:h-[420px]"
       />
     </div>
   );
@@ -477,7 +478,7 @@ function AutoCoreLandingPage() {
             <div className="relative py-2 sm:py-4 lg:py-6">
               <HeroParticleText />
             </div>
-            <p className="-mt-2 text-center text-xs uppercase tracking-[0.45em] text-zinc-400 sm:text-sm">
+            <p className="mt-1 text-center text-[11px] uppercase tracking-[0.38em] text-zinc-400 sm:text-sm">
               Cloud POS · Facturación · Control total
             </p>
           </motion.div>
