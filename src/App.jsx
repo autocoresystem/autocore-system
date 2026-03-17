@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import { motion } from "framer-motion";
@@ -115,8 +115,8 @@ function HeroParticleText() {
 
     const buildParticles = () => {
       const rect = canvas.getBoundingClientRect();
-      const width = Math.max(300, Math.floor(rect.width));
-      const height = Math.max(220, Math.floor(rect.height));
+      const width = Math.max(1000, Math.floor(rect.width));
+      const height = Math.max(360, Math.floor(rect.height));
 
       canvas.width = width * DPR;
       canvas.height = height * DPR;
@@ -132,32 +132,34 @@ function HeroParticleText() {
       offCtx.textAlign = "center";
       offCtx.textBaseline = "middle";
 
-      const fontSize = Math.min(width * 0.16, 84);
+      const fontSize = Math.min(width * 0.15, 180);
       offCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
       offCtx.fillText("AutoCore Systems", width / 2, height / 2);
 
       const imageData = offCtx.getImageData(0, 0, width, height).data;
-      const gap = Math.max(4, Math.floor(width / 180));
+      const gap = Math.max(3, Math.floor(width / 360));
 
       particles = [];
       for (let y = 0; y < height; y += gap) {
         for (let x = 0; x < width; x += gap) {
           const index = (y * width + x) * 4;
-          if (imageData[index + 3] > 80) {
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * 18;
+          if (imageData[index + 3] > 70) {
+            const spreadX = (Math.random() - 0.5) * 120;
+            const spreadY = (Math.random() - 0.5) * 50;
+            const burstX = (Math.random() - 0.5) * 200;
+            const burstY = (Math.random() - 0.5) * 80;
 
             particles.push({
-              x,
-              y,
               tx: x,
               ty: y,
-              ox: x + Math.cos(angle) * distance,
-              oy: y + Math.sin(angle) * distance,
-              size: Math.random() * 1.8 + 0.8,
-              alpha: Math.random() * 0.5 + 0.35,
-              driftX: (Math.random() - 0.5) * 0.4,
-              driftY: (Math.random() - 0.5) * 0.4,
+              ox: x + spreadX,
+              oy: y + spreadY,
+              bx: x + burstX,
+              by: y + burstY,
+              size: Math.random() * 1.8 + 0.7,
+              alpha: Math.random() * 0.45 + 0.28,
+              driftX: (Math.random() - 0.5) * 1.2,
+              driftY: (Math.random() - 0.5) * 0.55,
             });
           }
         }
@@ -170,28 +172,39 @@ function HeroParticleText() {
       const height = rect.height;
 
       ctx.clearRect(0, 0, width, height);
-
       pulse += 0.02;
-      const blend = (Math.sin(pulse) + 1) / 2;
+
+      const explode = (Math.sin(pulse) + 1) / 2;
+      const wave = (Math.sin(pulse * 1.7) + 1) / 2;
 
       for (const p of particles) {
-        const px = p.tx * (1 - blend * 0.22) + p.ox * (blend * 0.22) + Math.sin(pulse + p.tx * 0.01) * p.driftX * 8;
-        const py = p.ty * (1 - blend * 0.22) + p.oy * (blend * 0.22) + Math.cos(pulse + p.ty * 0.01) * p.driftY * 8;
+        const targetX =
+          p.tx * (1 - explode * 0.16) +
+          p.ox * (explode * 0.08) +
+          p.bx * (wave * 0.08);
+
+        const targetY =
+          p.ty * (1 - explode * 0.16) +
+          p.oy * (explode * 0.08) +
+          p.by * (wave * 0.05);
+
+        const px =
+          targetX + Math.sin(pulse + p.tx * 0.01) * p.driftX * 10;
+        const py =
+          targetY + Math.cos(pulse + p.ty * 0.012) * p.driftY * 10;
 
         ctx.beginPath();
         ctx.arc(px, py, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
         ctx.shadowBlur = 14;
-        ctx.shadowColor = "rgba(255,255,255,0.2)";
+        ctx.shadowColor = "rgba(255,255,255,0.22)";
         ctx.fill();
       }
 
       animationFrameId = requestAnimationFrame(draw);
     };
 
-    const handleResize = () => {
-      buildParticles();
-    };
+    const handleResize = () => buildParticles();
 
     buildParticles();
     draw();
@@ -204,14 +217,11 @@ function HeroParticleText() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="w-full">
       <canvas
         ref={canvasRef}
-        className="h-[240px] w-full max-w-[760px] sm:h-[280px] lg:h-[320px]"
+        className="block h-[280px] w-full sm:h-[360px] lg:h-[460px]"
       />
-      <p className="mt-2 text-center text-xs uppercase tracking-[0.45em] text-zinc-400 sm:text-sm">
-        Cloud POS · Facturación · Control total
-      </p>
     </div>
   );
 }
@@ -261,19 +271,16 @@ function AutoCoreLandingPage() {
     { name: "Pequeñas y medianas empresas", icon: Store },
   ];
 
-  const modules = useMemo(
-    () => [
-      "POS y caja",
-      "Facturación",
-      "Clientes",
-      "Inventario",
-      "Cuentas por cobrar",
-      "Reportes",
-      "Contratos",
-      "Cotizaciones",
-    ],
-    []
-  );
+  const modules = [
+    "POS y caja",
+    "Facturación",
+    "Clientes",
+    "Inventario",
+    "Cuentas por cobrar",
+    "Reportes",
+    "Contratos",
+    "Cotizaciones",
+  ];
 
   const plans = [
     {
@@ -457,16 +464,27 @@ function AutoCoreLandingPage() {
 
       <section className="relative overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.03),transparent_28%)]" />
-        <div className="absolute left-1/2 top-12 h-80 w-80 -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
+        <div className="absolute left-1/2 top-16 h-96 w-96 -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
 
-        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-          <div className="relative z-10 grid items-center gap-14 lg:grid-cols-[1.02fr_0.98fr]">
-            <motion.div {...fadeUp} className="relative z-20">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
-                <Sparkles className="h-3.5 w-3.5" />
-                AutoCore System · Software premium para negocios modernos
+        <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-20">
+          <motion.div {...fadeUp} className="relative z-10">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
+              <Sparkles className="h-3.5 w-3.5" />
+              AutoCore System · Software premium para negocios modernos
+            </div>
+          </motion.div>
+
+          <motion.div {...fadeUp} className="relative z-10">
+            <div className="relative overflow-hidden rounded-[2.4rem] border border-white/10 bg-black/40 px-4 py-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:px-8 lg:px-10 lg:py-12">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_36%),radial-gradient(circle_at_top,rgba(255,0,0,0.12),transparent_26%)]" />
+              <div className="relative z-10">
+                <HeroParticleText />
               </div>
+            </div>
+          </motion.div>
 
+          <div className="relative z-10 mt-10 grid items-start gap-14 lg:grid-cols-[1.02fr_0.98fr]">
+            <motion.div {...fadeUp}>
               <h1 className="max-w-4xl text-4xl font-black leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl">
                 La forma más elegante y profesional de vender, facturar y controlar tu negocio en la nube
               </h1>
@@ -514,58 +532,46 @@ function AutoCoreLandingPage() {
               </div>
             </motion.div>
 
-            <motion.div {...fadeUp} transition={{ duration: 0.7 }} className="relative z-10">
-              <div className="relative min-h-[760px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_38%),radial-gradient(circle_at_top,rgba(255,0,0,0.16),transparent_26%)]" />
+            <motion.div {...fadeUp}>
+              <div className="rounded-[2rem] border border-white/10 bg-black/60 p-5 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="text-sm text-zinc-400">AutoCore Executive Preview</p>
+                  <span className="text-xs uppercase tracking-[0.2em] text-red-300">
+                    PREMIUM STACK
+                  </span>
+                </div>
 
-                <div className="relative z-10 flex min-h-[760px] flex-col justify-between p-6">
-                  <div className="flex min-h-[320px] items-center justify-center px-2 pt-4">
-                    <HeroParticleText />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {demoMetrics.map((metric) => (
+                    <div
+                      key={metric.label}
+                      className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-4"
+                    >
+                      <p className="text-sm text-zinc-500">{metric.label}</p>
+                      <p className="mt-2 text-3xl font-black tracking-tight">
+                        {metric.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-white/10 bg-black p-5">
+                  <div className="mb-4 flex items-center justify-between">
+                    <p className="text-sm text-zinc-400">Módulos activos</p>
+                    <span className="text-xs uppercase tracking-[0.2em] text-red-300">
+                      Premium stack
+                    </span>
                   </div>
 
-                  <div className="mt-6">
-                    <div className="rounded-[1.5rem] border border-white/10 bg-black/70 p-5 backdrop-blur-xl">
-                      <div className="mb-4 flex items-center justify-between">
-                        <p className="text-sm text-zinc-400">AutoCore Executive Preview</p>
-                        <span className="text-xs uppercase tracking-[0.2em] text-red-300">
-                          PREMIUM STACK
-                        </span>
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        {demoMetrics.map((metric) => (
-                          <div
-                            key={metric.label}
-                            className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-4"
-                          >
-                            <p className="text-sm text-zinc-500">{metric.label}</p>
-                            <p className="mt-2 text-3xl font-black tracking-tight">
-                              {metric.value}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="mt-4 rounded-2xl border border-white/10 bg-black p-5">
-                        <div className="mb-4 flex items-center justify-between">
-                          <p className="text-sm text-zinc-400">Módulos activos</p>
-                          <span className="text-xs uppercase tracking-[0.2em] text-red-300">
-                            Premium stack
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          {modules.map((tag) => (
-                            <span
-                              key={tag}
-                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                  <div className="flex flex-wrap gap-2">
+                    {modules.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
