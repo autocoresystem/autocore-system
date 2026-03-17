@@ -115,8 +115,8 @@ function HeroParticleText() {
 
     const buildParticles = () => {
       const rect = canvas.getBoundingClientRect();
-      const width = Math.max(1000, Math.floor(rect.width));
-      const height = Math.max(360, Math.floor(rect.height));
+      const width = Math.max(1100, Math.floor(rect.width));
+      const height = Math.max(420, Math.floor(rect.height));
 
       canvas.width = width * DPR;
       canvas.height = height * DPR;
@@ -132,7 +132,7 @@ function HeroParticleText() {
       offCtx.textAlign = "center";
       offCtx.textBaseline = "middle";
 
-      const fontSize = Math.min(width * 0.15, 180);
+      const fontSize = Math.min(width * 0.15, 190);
       offCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
       offCtx.fillText("AutoCore Systems", width / 2, height / 2);
 
@@ -144,10 +144,10 @@ function HeroParticleText() {
         for (let x = 0; x < width; x += gap) {
           const index = (y * width + x) * 4;
           if (imageData[index + 3] > 70) {
-            const spreadX = (Math.random() - 0.5) * 120;
-            const spreadY = (Math.random() - 0.5) * 50;
-            const burstX = (Math.random() - 0.5) * 200;
-            const burstY = (Math.random() - 0.5) * 80;
+            const spreadX = (Math.random() - 0.5) * 180;
+            const spreadY = (Math.random() - 0.5) * 70;
+            const burstX = (Math.random() - 0.5) * 300;
+            const burstY = (Math.random() - 0.5) * 110;
 
             particles.push({
               tx: x,
@@ -156,10 +156,10 @@ function HeroParticleText() {
               oy: y + spreadY,
               bx: x + burstX,
               by: y + burstY,
-              size: Math.random() * 1.8 + 0.7,
-              alpha: Math.random() * 0.45 + 0.28,
-              driftX: (Math.random() - 0.5) * 1.2,
-              driftY: (Math.random() - 0.5) * 0.55,
+              size: Math.random() * 1.9 + 0.65,
+              alpha: Math.random() * 0.48 + 0.25,
+              driftX: (Math.random() - 0.5) * 1.3,
+              driftY: (Math.random() - 0.5) * 0.7,
             });
           }
         }
@@ -172,31 +172,29 @@ function HeroParticleText() {
       const height = rect.height;
 
       ctx.clearRect(0, 0, width, height);
-      pulse += 0.02;
+      pulse += 0.018;
 
       const explode = (Math.sin(pulse) + 1) / 2;
-      const wave = (Math.sin(pulse * 1.7) + 1) / 2;
+      const wave = (Math.sin(pulse * 1.45) + 1) / 2;
 
       for (const p of particles) {
         const targetX =
-          p.tx * (1 - explode * 0.16) +
+          p.tx * (1 - explode * 0.18) +
           p.ox * (explode * 0.08) +
-          p.bx * (wave * 0.08);
+          p.bx * (wave * 0.09);
 
         const targetY =
-          p.ty * (1 - explode * 0.16) +
-          p.oy * (explode * 0.08) +
-          p.by * (wave * 0.05);
+          p.ty * (1 - explode * 0.18) +
+          p.oy * (explode * 0.06) +
+          p.by * (wave * 0.04);
 
-        const px =
-          targetX + Math.sin(pulse + p.tx * 0.01) * p.driftX * 10;
-        const py =
-          targetY + Math.cos(pulse + p.ty * 0.012) * p.driftY * 10;
+        const px = targetX + Math.sin(pulse + p.tx * 0.008) * p.driftX * 10;
+        const py = targetY + Math.cos(pulse + p.ty * 0.01) * p.driftY * 10;
 
         ctx.beginPath();
         ctx.arc(px, py, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
-        ctx.shadowBlur = 14;
+        ctx.shadowBlur = 16;
         ctx.shadowColor = "rgba(255,255,255,0.22)";
         ctx.fill();
       }
@@ -217,10 +215,11 @@ function HeroParticleText() {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="relative w-full">
+      <div className="absolute inset-0 mx-auto h-40 w-[38rem] max-w-full rounded-full bg-red-600/10 blur-3xl sm:h-52 lg:h-64" />
       <canvas
         ref={canvasRef}
-        className="block h-[280px] w-full sm:h-[360px] lg:h-[460px]"
+        className="relative z-10 block h-[300px] w-full sm:h-[380px] lg:h-[500px]"
       />
     </div>
   );
@@ -464,7 +463,7 @@ function AutoCoreLandingPage() {
 
       <section className="relative overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.03),transparent_28%)]" />
-        <div className="absolute left-1/2 top-16 h-96 w-96 -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
+        <div className="absolute left-1/2 top-16 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
 
         <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-20">
           <motion.div {...fadeUp} className="relative z-10">
@@ -475,12 +474,12 @@ function AutoCoreLandingPage() {
           </motion.div>
 
           <motion.div {...fadeUp} className="relative z-10">
-            <div className="relative overflow-hidden rounded-[2.4rem] border border-white/10 bg-black/40 px-4 py-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:px-8 lg:px-10 lg:py-12">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_36%),radial-gradient(circle_at_top,rgba(255,0,0,0.12),transparent_26%)]" />
-              <div className="relative z-10">
-                <HeroParticleText />
-              </div>
+            <div className="relative py-2 sm:py-4 lg:py-6">
+              <HeroParticleText />
             </div>
+            <p className="-mt-2 text-center text-xs uppercase tracking-[0.45em] text-zinc-400 sm:text-sm">
+              Cloud POS · Facturación · Control total
+            </p>
           </motion.div>
 
           <div className="relative z-10 mt-10 grid items-start gap-14 lg:grid-cols-[1.02fr_0.98fr]">
