@@ -144,11 +144,12 @@ function AutoCoreLandingPage() {
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/75 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-700 via-zinc-900 to-black shadow-[0_0_40px_rgba(255,0,0,0.12)]">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 to-transparent" />
-              <Database className="relative h-5 w-5 text-red-500" />
-            </div>
+          <div className="flex items-center gap-3">        
+  <img
+    src="/autocore-logo.png"
+    alt="AutoCore"
+    className="h-10 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)]"
+  />
             <div>
               <p className="text-2xl font-black tracking-tight text-white">Auto<span className="text-red-500">Core</span></p>
               <p className="-mt-1 text-[11px] uppercase tracking-[0.38em] text-zinc-400">System</p>
