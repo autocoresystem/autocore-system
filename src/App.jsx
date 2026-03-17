@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import { motion } from "framer-motion";
@@ -43,21 +43,21 @@ function ParticleBackground() {
     const ctx = canvas.getContext("2d");
     let animationFrameId;
 
-    const setCanvasSize = () => {
+    const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
 
-    setCanvasSize();
-    window.addEventListener("resize", setCanvasSize);
+    resize();
+    window.addEventListener("resize", resize);
 
-    const particles = Array.from({ length: 85 }, () => ({
+    const particles = Array.from({ length: 95 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 2.2 + 0.8,
-      dx: (Math.random() - 0.5) * 0.25,
-      dy: (Math.random() - 0.5) * 0.25,
-      a: Math.random() * 0.55 + 0.15,
+      r: Math.random() * 2 + 0.8,
+      dx: (Math.random() - 0.5) * 0.22,
+      dy: (Math.random() - 0.5) * 0.22,
+      a: Math.random() * 0.5 + 0.12,
     }));
 
     const draw = () => {
@@ -75,8 +75,8 @@ function ParticleBackground() {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${p.a})`;
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = "rgba(255,255,255,0.18)";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "rgba(255,255,255,0.14)";
         ctx.fill();
       }
 
@@ -87,7 +87,7 @@ function ParticleBackground() {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", setCanvasSize);
+      window.removeEventListener("resize", resize);
     };
   }, []);
 
@@ -96,6 +96,123 @@ function ParticleBackground() {
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-0 opacity-80"
     />
+  );
+}
+
+function HeroParticleText() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    let animationFrameId;
+    let particles = [];
+    let pulse = 0;
+
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+    const buildParticles = () => {
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(300, Math.floor(rect.width));
+      const height = Math.max(220, Math.floor(rect.height));
+
+      canvas.width = width * DPR;
+      canvas.height = height * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      const off = document.createElement("canvas");
+      off.width = width;
+      off.height = height;
+      const offCtx = off.getContext("2d");
+
+      offCtx.clearRect(0, 0, width, height);
+      offCtx.fillStyle = "#ffffff";
+      offCtx.textAlign = "center";
+      offCtx.textBaseline = "middle";
+
+      const fontSize = Math.min(width * 0.16, 84);
+      offCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
+      offCtx.fillText("AutoCore Systems", width / 2, height / 2);
+
+      const imageData = offCtx.getImageData(0, 0, width, height).data;
+      const gap = Math.max(4, Math.floor(width / 180));
+
+      particles = [];
+      for (let y = 0; y < height; y += gap) {
+        for (let x = 0; x < width; x += gap) {
+          const index = (y * width + x) * 4;
+          if (imageData[index + 3] > 80) {
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 18;
+
+            particles.push({
+              x,
+              y,
+              tx: x,
+              ty: y,
+              ox: x + Math.cos(angle) * distance,
+              oy: y + Math.sin(angle) * distance,
+              size: Math.random() * 1.8 + 0.8,
+              alpha: Math.random() * 0.5 + 0.35,
+              driftX: (Math.random() - 0.5) * 0.4,
+              driftY: (Math.random() - 0.5) * 0.4,
+            });
+          }
+        }
+      }
+    };
+
+    const draw = () => {
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      pulse += 0.02;
+      const blend = (Math.sin(pulse) + 1) / 2;
+
+      for (const p of particles) {
+        const px = p.tx * (1 - blend * 0.22) + p.ox * (blend * 0.22) + Math.sin(pulse + p.tx * 0.01) * p.driftX * 8;
+        const py = p.ty * (1 - blend * 0.22) + p.oy * (blend * 0.22) + Math.cos(pulse + p.ty * 0.01) * p.driftY * 8;
+
+        ctx.beginPath();
+        ctx.arc(px, py, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = "rgba(255,255,255,0.2)";
+        ctx.fill();
+      }
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    const handleResize = () => {
+      buildParticles();
+    };
+
+    buildParticles();
+    draw();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <canvas
+        ref={canvasRef}
+        className="h-[240px] w-full max-w-[760px] sm:h-[280px] lg:h-[320px]"
+      />
+      <p className="mt-2 text-center text-xs uppercase tracking-[0.45em] text-zinc-400 sm:text-sm">
+        Cloud POS · Facturación · Control total
+      </p>
+    </div>
   );
 }
 
@@ -144,16 +261,19 @@ function AutoCoreLandingPage() {
     { name: "Pequeñas y medianas empresas", icon: Store },
   ];
 
-  const modules = [
-    "POS y caja",
-    "Facturación",
-    "Clientes",
-    "Inventario",
-    "Cuentas por cobrar",
-    "Reportes",
-    "Contratos",
-    "Cotizaciones",
-  ];
+  const modules = useMemo(
+    () => [
+      "POS y caja",
+      "Facturación",
+      "Clientes",
+      "Inventario",
+      "Cuentas por cobrar",
+      "Reportes",
+      "Contratos",
+      "Cotizaciones",
+    ],
+    []
+  );
 
   const plans = [
     {
@@ -243,8 +363,6 @@ function AutoCoreLandingPage() {
     transition: { duration: 0.6 },
   };
 
-  const closeMobileMenu = () => setMobileMenuOpen(false);
-
   return (
     <div className="min-h-screen bg-black text-white [font-family:Inter,ui-sans-serif,system-ui,sans-serif]">
       <ParticleBackground />
@@ -299,59 +417,33 @@ function AutoCoreLandingPage() {
             </div>
 
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((v) => !v)}
               className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 text-white transition hover:bg-white/10 lg:hidden"
             >
-              {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
 
           {mobileMenuOpen && (
             <div className="border-t border-white/10 pb-4 pt-4 lg:hidden">
               <div className="flex flex-col gap-2">
-                <a
-                  href="#servicios"
-                  onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-3 text-base text-zinc-200 transition hover:bg-white/5"
-                >
+                <a href="#servicios" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Servicios
                 </a>
-                <a
-                  href="#modulos"
-                  onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-3 text-base text-zinc-200 transition hover:bg-white/5"
-                >
+                <a href="#modulos" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Módulos
                 </a>
-                <a
-                  href="#planes"
-                  onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-3 text-base text-zinc-200 transition hover:bg-white/5"
-                >
+                <a href="#planes" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Planes
                 </a>
-                <Link
-                  to="/dashboard"
-                  onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-3 text-base text-zinc-200 transition hover:bg-white/5"
-                >
+                <Link to="/dashboard" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Demo
                 </Link>
-                <a
-                  href="#contacto"
-                  onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-3 text-base text-zinc-200 transition hover:bg-white/5"
-                >
+                <a href="#contacto" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
                   Contacto
                 </a>
-
                 <a
                   href="#contacto"
-                  onClick={closeMobileMenu}
                   className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-4 py-3 font-semibold text-white"
                 >
                   Solicitar cotización
@@ -368,7 +460,7 @@ function AutoCoreLandingPage() {
         <div className="absolute left-1/2 top-12 h-80 w-80 -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
 
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-28">
-          <div className="relative z-10 grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="relative z-10 grid items-center gap-14 lg:grid-cols-[1.02fr_0.98fr]">
             <motion.div {...fadeUp} className="relative z-20">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -383,10 +475,10 @@ function AutoCoreLandingPage() {
                 AutoCore System combina diseño premium, control operativo y tecnología moderna para dealers, rent car, talleres, repuestos y negocios que quieren proyectar una imagen seria, organizada y lista para crecer.
               </p>
 
-              <div className="relative z-30 mt-8 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <a
                   href="#contacto"
-                  className="relative z-30 inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 text-center font-semibold shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.02]"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 text-center font-semibold shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.02]"
                 >
                   Solicitar cotización
                   <ArrowRight className="h-4 w-4" />
@@ -394,7 +486,7 @@ function AutoCoreLandingPage() {
 
                 <Link
                   to="/dashboard"
-                  className="relative z-30 inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-center font-semibold text-zinc-100 transition hover:bg-white/10"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-center font-semibold text-zinc-100 transition hover:bg-white/10"
                 >
                   Ver demo del sistema
                   <ChevronRight className="h-4 w-4" />
@@ -422,53 +514,13 @@ function AutoCoreLandingPage() {
               </div>
             </motion.div>
 
-            <motion.div
-              {...fadeUp}
-              transition={{ duration: 0.7 }}
-              className="relative z-10"
-            >
-              <div className="relative min-h-[700px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
+            <motion.div {...fadeUp} transition={{ duration: 0.7 }} className="relative z-10">
+              <div className="relative min-h-[760px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_38%),radial-gradient(circle_at_top,rgba(255,0,0,0.16),transparent_26%)]" />
 
-                <div className="relative z-10 flex min-h-[700px] flex-col justify-between p-6">
-                  <div className="flex min-h-[260px] items-center justify-center px-4 pt-6 text-center">
-                    <div>
-                      <motion.h2
-                        initial={{ opacity: 0, y: 20, scale: 0.96 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 1.1 }}
-                        className="text-5xl font-black tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl"
-                        style={{
-                          textShadow:
-                            "0 0 20px rgba(255,255,255,0.14), 0 0 50px rgba(255,0,0,0.10)",
-                        }}
-                      >
-                        AutoCore
-                        <motion.span
-                          animate={{
-                            opacity: [0.9, 1, 0.9],
-                            textShadow: [
-                              "0 0 12px rgba(255,0,0,0.18)",
-                              "0 0 28px rgba(255,0,0,0.34)",
-                              "0 0 12px rgba(255,0,0,0.18)",
-                            ],
-                          }}
-                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                          className="text-red-500"
-                        >
-                          {" "}System
-                        </motion.span>
-                      </motion.h2>
-
-                      <motion.p
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 0.88, y: 0 }}
-                        transition={{ delay: 0.35, duration: 0.8 }}
-                        className="mx-auto mt-5 max-w-xl text-xs uppercase tracking-[0.4em] text-zinc-400 sm:text-sm"
-                      >
-                        Cloud POS · Facturación · Control total
-                      </motion.p>
-                    </div>
+                <div className="relative z-10 flex min-h-[760px] flex-col justify-between p-6">
+                  <div className="flex min-h-[320px] items-center justify-center px-2 pt-4">
+                    <HeroParticleText />
                   </div>
 
                   <div className="mt-6">
