@@ -98,7 +98,6 @@ function ParticleBackground() {
     />
   );
 }
-
 function HeroParticleText() {
   const canvasRef = useRef(null);
 
@@ -115,12 +114,17 @@ function HeroParticleText() {
 
     const buildParticles = () => {
       const rect = canvas.getBoundingClientRect();
-      const width = Math.max(900, Math.floor(rect.width));
-      const height = Math.max(360, Math.floor(rect.height));
+      const width = Math.floor(rect.width || 0);
+      const height = Math.floor(rect.height || 0);
+
+      if (!width || !height) return;
+
+      const isMobile = width < 640;
 
       canvas.width = width * DPR;
       canvas.height = height * DPR;
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.clearRect(0, 0, width, height);
 
       const off = document.createElement("canvas");
       off.width = width;
@@ -132,13 +136,22 @@ function HeroParticleText() {
       offCtx.textAlign = "center";
       offCtx.textBaseline = "middle";
 
-      const fontSize = Math.min(width * 0.10, 120);
+      const fontSize = isMobile
+        ? Math.min(width * 0.12, 54)
+        : Math.min(width * 0.10, 120);
+
       offCtx.font = `900 ${fontSize}px Inter, Arial, sans-serif`;
       offCtx.fillText("AutoCore Systems", width / 2, height / 2);
 
       const imageData = offCtx.getImageData(0, 0, width, height).data;
 
-      const gap = Math.max(5, Math.floor(width / 220));
+      const gap = isMobile
+        ? Math.max(6, Math.floor(width / 90))
+        : Math.max(5, Math.floor(width / 220));
+
+      const spreadX = isMobile ? 90 : 220;
+      const spreadY = isMobile ? 45 : 100;
+
       particles = [];
 
       for (let y = 0; y < height; y += gap) {
@@ -148,11 +161,13 @@ function HeroParticleText() {
             particles.push({
               tx: x,
               ty: y,
-              sx: x + (Math.random() - 0.5) * 420,
-              sy: y + (Math.random() - 0.5) * 180,
-              driftX: (Math.random() - 0.5) * 0.9,
-              driftY: (Math.random() - 0.5) * 0.5,
-              size: Math.random() * 1.6 + 0.7,
+              sx: x + (Math.random() - 0.5) * spreadX,
+              sy: y + (Math.random() - 0.5) * spreadY,
+              driftX: (Math.random() - 0.5) * (isMobile ? 0.35 : 0.9),
+              driftY: (Math.random() - 0.5) * (isMobile ? 0.22 : 0.5),
+              size: isMobile
+                ? Math.random() * 1.1 + 0.6
+                : Math.random() * 1.6 + 0.7,
               alpha: Math.random() * 0.35 + 0.45,
             });
           }
@@ -164,18 +179,20 @@ function HeroParticleText() {
 
     const draw = () => {
       const rect = canvas.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
+      const width = Math.floor(rect.width || 0);
+      const height = Math.floor(rect.height || 0);
+      if (!width || !height) return;
+
+      const isMobile = width < 640;
 
       ctx.clearRect(0, 0, width, height);
 
       time += 0.016;
 
-      const introDuration = 2.2;
+      const introDuration = isMobile ? 1.4 : 2.2;
       const introT = Math.min(time / introDuration, 1);
       const compact = easeOutCubic(introT);
-
-      const breathe = Math.sin(time * 1.4) * 0.5 + 0.5;
+      const breathe = Math.sin(time * (isMobile ? 1.1 : 1.4)) * 0.5 + 0.5;
 
       for (const p of particles) {
         const baseX = p.sx * (1 - compact) + p.tx * compact;
@@ -183,16 +200,20 @@ function HeroParticleText() {
 
         const px =
           baseX +
-          Math.sin(time * 1.2 + p.tx * 0.01) * p.driftX * (2 + breathe * 4);
+          Math.sin(time * 1.1 + p.tx * 0.01) *
+            p.driftX *
+            (isMobile ? 2 : 2 + breathe * 4);
 
         const py =
           baseY +
-          Math.cos(time * 1.1 + p.ty * 0.01) * p.driftY * (2 + breathe * 4);
+          Math.cos(time * 1.05 + p.ty * 0.01) *
+            p.driftY *
+            (isMobile ? 2 : 2 + breathe * 4);
 
         ctx.beginPath();
         ctx.arc(px, py, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = isMobile ? 6 : 10;
         ctx.shadowColor = "rgba(255,255,255,0.16)";
         ctx.fill();
       }
@@ -217,14 +238,15 @@ function HeroParticleText() {
 
   return (
     <div className="relative w-full">
-      <div className="absolute inset-0 mx-auto h-40 w-[34rem] max-w-full rounded-full bg-red-600/10 blur-3xl sm:h-52 lg:h-64" />
+      <div className="absolute inset-0 mx-auto h-28 w-[16rem] max-w-full rounded-full bg-red-600/10 blur-3xl sm:h-40 sm:w-[34rem] lg:h-64" />
       <canvas
         ref={canvasRef}
-        className="relative z-10 block h-[260px] w-full sm:h-[320px] lg:h-[420px]"
+        className="relative z-10 block h-[170px] w-full sm:h-[260px] lg:h-[420px]"
       />
     </div>
   );
 }
+
 
 function AutoCoreLandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -478,8 +500,7 @@ function AutoCoreLandingPage() {
             <div className="relative py-2 sm:py-4 lg:py-6">
               <HeroParticleText />
             </div>
-            <p className="mt-1 text-center text-[11px] uppercase tracking-[0.38em] text-zinc-400 sm:text-sm">
-              Cloud POS · Facturación · Control total
+          <p className="mt-1 px-2 text-center text-[10px] uppercase tracking-[0.28em] text-zinc-400 sm:text-sm sm:tracking-[0.38em]">              Cloud POS · Facturación · Control total
             </p>
           </motion.div>
 
