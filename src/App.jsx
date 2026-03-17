@@ -427,88 +427,91 @@ function AutoCoreLandingPage() {
               transition={{ duration: 0.7 }}
               className="relative z-10"
             >
-              <div className="relative min-h-[620px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
+              <div className="relative min-h-[700px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_38%),radial-gradient(circle_at_top,rgba(255,0,0,0.16),transparent_26%)]" />
 
-                <div className="pointer-events-none absolute inset-0 flex items-start justify-center px-6 pt-20">
-                  <div className="relative text-center">
-                    <motion.h2
-                      initial={{ opacity: 0, y: 20, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ duration: 1.1 }}
-                      className="text-5xl font-black tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl"
-                      style={{
-                        textShadow:
-                          "0 0 20px rgba(255,255,255,0.14), 0 0 50px rgba(255,0,0,0.10)",
-                      }}
-                    >
-                      AutoCore
-                      <motion.span
-                        animate={{
-                          opacity: [0.9, 1, 0.9],
-                          textShadow: [
-                            "0 0 12px rgba(255,0,0,0.18)",
-                            "0 0 28px rgba(255,0,0,0.34)",
-                            "0 0 12px rgba(255,0,0,0.18)",
-                          ],
+                <div className="relative z-10 flex min-h-[700px] flex-col justify-between p-6">
+                  <div className="flex min-h-[260px] items-center justify-center px-4 pt-6 text-center">
+                    <div>
+                      <motion.h2
+                        initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 1.1 }}
+                        className="text-5xl font-black tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl"
+                        style={{
+                          textShadow:
+                            "0 0 20px rgba(255,255,255,0.14), 0 0 50px rgba(255,0,0,0.10)",
                         }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="text-red-500"
                       >
-                        {" "}System
-                      </motion.span>
-                    </motion.h2>
-
-                    <motion.p
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 0.88, y: 0 }}
-                      transition={{ delay: 0.35, duration: 0.8 }}
-                      className="mx-auto mt-5 max-w-xl text-xs uppercase tracking-[0.4em] text-zinc-400 sm:text-sm"
-                    >
-                      Cloud POS · Facturación · Control total
-                    </motion.p>
-                  </div>
-                </div>
-
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <div className="rounded-[1.5rem] border border-white/10 bg-black/70 p-5 backdrop-blur-xl">
-                    <div className="mb-4 flex items-center justify-between">
-                      <p className="text-sm text-zinc-400">AutoCore Executive Preview</p>
-                      <span className="text-xs uppercase tracking-[0.2em] text-red-300">
-                        PREMIUM STACK
-                      </span>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {demoMetrics.map((metric) => (
-                        <div
-                          key={metric.label}
-                          className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-4"
+                        AutoCore
+                        <motion.span
+                          animate={{
+                            opacity: [0.9, 1, 0.9],
+                            textShadow: [
+                              "0 0 12px rgba(255,0,0,0.18)",
+                              "0 0 28px rgba(255,0,0,0.34)",
+                              "0 0 12px rgba(255,0,0,0.18)",
+                            ],
+                          }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                          className="text-red-500"
                         >
-                          <p className="text-sm text-zinc-500">{metric.label}</p>
-                          <p className="mt-2 text-3xl font-black tracking-tight">
-                            {metric.value}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                          {" "}System
+                        </motion.span>
+                      </motion.h2>
 
-                    <div className="mt-4 rounded-2xl border border-white/10 bg-black p-5">
+                      <motion.p
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 0.88, y: 0 }}
+                        transition={{ delay: 0.35, duration: 0.8 }}
+                        className="mx-auto mt-5 max-w-xl text-xs uppercase tracking-[0.4em] text-zinc-400 sm:text-sm"
+                      >
+                        Cloud POS · Facturación · Control total
+                      </motion.p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <div className="rounded-[1.5rem] border border-white/10 bg-black/70 p-5 backdrop-blur-xl">
                       <div className="mb-4 flex items-center justify-between">
-                        <p className="text-sm text-zinc-400">Módulos activos</p>
+                        <p className="text-sm text-zinc-400">AutoCore Executive Preview</p>
                         <span className="text-xs uppercase tracking-[0.2em] text-red-300">
-                          Premium stack
+                          PREMIUM STACK
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        {modules.map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {demoMetrics.map((metric) => (
+                          <div
+                            key={metric.label}
+                            className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-black p-4"
                           >
-                            {tag}
-                          </span>
+                            <p className="text-sm text-zinc-500">{metric.label}</p>
+                            <p className="mt-2 text-3xl font-black tracking-tight">
+                              {metric.value}
+                            </p>
+                          </div>
                         ))}
+                      </div>
+
+                      <div className="mt-4 rounded-2xl border border-white/10 bg-black p-5">
+                        <div className="mb-4 flex items-center justify-between">
+                          <p className="text-sm text-zinc-400">Módulos activos</p>
+                          <span className="text-xs uppercase tracking-[0.2em] text-red-300">
+                            Premium stack
+                          </span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          {modules.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
