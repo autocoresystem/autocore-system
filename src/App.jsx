@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import { motion } from "framer-motion";
@@ -32,6 +32,72 @@ import {
   Menu,
   X,
 } from "lucide-react";
+
+function ParticleBackground() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    let animationFrameId;
+
+    const setCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    setCanvasSize();
+    window.addEventListener("resize", setCanvasSize);
+
+    const particles = Array.from({ length: 85 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2.2 + 0.8,
+      dx: (Math.random() - 0.5) * 0.25,
+      dy: (Math.random() - 0.5) * 0.25,
+      a: Math.random() * 0.55 + 0.15,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const p of particles) {
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < -10) p.x = canvas.width + 10;
+        if (p.x > canvas.width + 10) p.x = -10;
+        if (p.y < -10) p.y = canvas.height + 10;
+        if (p.y > canvas.height + 10) p.y = -10;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = "rgba(255,255,255,0.18)";
+        ctx.fill();
+      }
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", setCanvasSize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="pointer-events-none fixed inset-0 z-0 opacity-80"
+    />
+  );
+}
 
 function AutoCoreLandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -177,19 +243,12 @@ function AutoCoreLandingPage() {
     transition: { duration: 0.6 },
   };
 
-  const floatingParticles = Array.from({ length: 28 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 8 + 3,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    duration: Math.random() * 8 + 8,
-    delay: Math.random() * 4,
-  }));
-
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
     <div className="min-h-screen bg-black text-white [font-family:Inter,ui-sans-serif,system-ui,sans-serif]">
+      <ParticleBackground />
+
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(255,0,0,0.14),transparent_18%),radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06),transparent_20%),radial-gradient(circle_at_bottom_left,rgba(120,120,120,0.08),transparent_22%)]" />
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-2xl">
@@ -368,60 +427,43 @@ function AutoCoreLandingPage() {
               transition={{ duration: 0.7 }}
               className="relative z-10"
             >
-              <div className="relative min-h-[560px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_40%),radial-gradient(circle_at_top,rgba(255,0,0,0.14),transparent_28%)]" />
+              <div className="relative min-h-[620px] overflow-hidden rounded-[2.2rem] border border-white/10 bg-black shadow-[0_30px_120px_rgba(0,0,0,0.55)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_38%),radial-gradient(circle_at_top,rgba(255,0,0,0.16),transparent_26%)]" />
 
-                <div className="absolute inset-0">
-                  {floatingParticles.map((p) => (
-                    <motion.span
-                      key={p.id}
-                      className="absolute rounded-full bg-white/70 blur-[1px]"
-                      style={{
-                        width: `${p.size}px`,
-                        height: `${p.size}px`,
-                        left: `${p.left}%`,
-                        top: `${p.top}%`,
-                      }}
-                      animate={{
-                        y: [0, -30, 10, -18, 0],
-                        x: [0, 10, -8, 12, 0],
-                        opacity: [0.12, 0.55, 0.24, 0.58, 0.12],
-                        scale: [0.8, 1.15, 0.95, 1.12, 0.8],
-                      }}
-                      transition={{
-                        duration: p.duration,
-                        repeat: Infinity,
-                        delay: p.delay,
-                        ease: "easeInOut",
-                      }}
-                    />
-                  ))}
-                </div>
-
-                <div className="absolute inset-0 flex items-center justify-center px-6">
+                <div className="pointer-events-none absolute inset-0 flex items-start justify-center px-6 pt-20">
                   <div className="relative text-center">
                     <motion.h2
-                      animate={{
-                        textShadow: [
-                          "0 0 18px rgba(255,255,255,0.12), 0 0 40px rgba(255,0,0,0.10)",
-                          "0 0 30px rgba(255,255,255,0.22), 0 0 80px rgba(255,0,0,0.18)",
-                          "0 0 18px rgba(255,255,255,0.12), 0 0 40px rgba(255,0,0,0.10)",
-                        ],
-                        letterSpacing: ["-0.045em", "-0.02em", "-0.045em"],
-                        opacity: [0.92, 1, 0.92],
+                      initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ duration: 1.1 }}
+                      className="text-5xl font-black tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl"
+                      style={{
+                        textShadow:
+                          "0 0 20px rgba(255,255,255,0.14), 0 0 50px rgba(255,0,0,0.10)",
                       }}
-                      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                      className="text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl"
                     >
                       AutoCore
-                      <span className="text-red-500"> System</span>
+                      <motion.span
+                        animate={{
+                          opacity: [0.9, 1, 0.9],
+                          textShadow: [
+                            "0 0 12px rgba(255,0,0,0.18)",
+                            "0 0 28px rgba(255,0,0,0.34)",
+                            "0 0 12px rgba(255,0,0,0.18)",
+                          ],
+                        }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="text-red-500"
+                      >
+                        {" "}System
+                      </motion.span>
                     </motion.h2>
 
                     <motion.p
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 0.9, y: 0 }}
-                      transition={{ delay: 0.3, duration: 0.8 }}
-                      className="mx-auto mt-5 max-w-xl text-sm uppercase tracking-[0.35em] text-zinc-400 sm:text-base"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 0.88, y: 0 }}
+                      transition={{ delay: 0.35, duration: 0.8 }}
+                      className="mx-auto mt-5 max-w-xl text-xs uppercase tracking-[0.4em] text-zinc-400 sm:text-sm"
                     >
                       Cloud POS · Facturación · Control total
                     </motion.p>
