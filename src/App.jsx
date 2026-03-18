@@ -52,9 +52,9 @@ function FontLoader() {
     document.head.appendChild(fontLink);
 
     return () => {
-      document.head.removeChild(preconnect1);
-      document.head.removeChild(preconnect2);
-      document.head.removeChild(fontLink);
+      if (document.head.contains(preconnect1)) document.head.removeChild(preconnect1);
+      if (document.head.contains(preconnect2)) document.head.removeChild(preconnect2);
+      if (document.head.contains(fontLink)) document.head.removeChild(fontLink);
     };
   }, []);
 
@@ -278,6 +278,42 @@ function HeroParticleText() {
 
 function AutoCoreLandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("porque");
+
+  const sectionIds = ["porque", "servicios", "modulos", "nosotros", "planes", "contacto"];
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleSections = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visibleSections.length > 0) {
+          setActiveSection(visibleSections[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-20% 0px -55% 0px",
+        threshold: [0.15, 0.3, 0.45, 0.6],
+      }
+    );
+
+    const elements = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = "smooth";
+    return () => {
+      document.documentElement.style.scrollBehavior = "auto";
+    };
+  }, []);
 
   const services = [
     {
@@ -444,12 +480,35 @@ function AutoCoreLandingPage() {
     "Capacitación, acompañamiento y mejoras",
   ];
 
+  const navItems = [
+    { id: "porque", label: "Por qué AutoCore" },
+    { id: "servicios", label: "Servicios" },
+    { id: "modulos", label: "Módulos" },
+    { id: "nosotros", label: "Nosotros" },
+    { id: "planes", label: "Planes" },
+    { id: "contacto", label: "Contacto" },
+  ];
+
   const fadeUp = {
     initial: { opacity: 0, y: 24 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, amount: 0.2 },
     transition: { duration: 0.6 },
   };
+
+  const desktopNavClass = (id) =>
+    `relative rounded-full px-3 py-2 text-sm font-medium transition ${
+      activeSection === id
+        ? "text-white bg-white/8 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
+        : "text-zinc-300 hover:text-white hover:bg-white/5"
+    }`;
+
+  const mobileNavClass = (id) =>
+    `rounded-xl px-3 py-3 text-base transition ${
+      activeSection === id
+        ? "bg-white/10 text-white"
+        : "text-zinc-200 hover:bg-white/5"
+    }`;
 
   return (
     <div
@@ -461,9 +520,9 @@ function AutoCoreLandingPage() {
 
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(255,0,0,0.14),transparent_18%),radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05),transparent_20%),radial-gradient(circle_at_bottom_left,rgba(120,120,120,0.08),transparent_22%)]" />
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/75 backdrop-blur-2xl">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex min-h-[72px] items-center justify-between gap-4">
+          <div className="flex min-h-[76px] items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <img
                 src="/autocore-logo.png"
@@ -483,63 +542,84 @@ function AutoCoreLandingPage() {
               </div>
             </div>
 
-            <div className="hidden items-center gap-8 lg:flex">
-              <nav className="flex items-center gap-8 text-sm text-zinc-300">
-                <a href="#servicios" className="transition hover:text-white">
-                  Servicios
-                </a>
-                <a href="#modulos" className="transition hover:text-white">
-                  Módulos
-                </a>
-                <a href="#nosotros" className="transition hover:text-white">
-                  Nosotros
-                </a>
-                <a href="#planes" className="transition hover:text-white">
-                  Planes
-                </a>
-                <a href="#contacto" className="transition hover:text-white">
-                  Contacto
-                </a>
+            <div className="hidden xl:flex xl:items-center xl:gap-4">
+              <nav className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
+                {navItems.map((item) => (
+                  <a key={item.id} href={`#${item.id}`} className={desktopNavClass(item.id)}>
+                    {item.label}
+                  </a>
+                ))}
+
+                <Link
+                  to="/dashboard"
+                  className="rounded-full px-3 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white"
+                >
+                  Demo
+                </Link>
               </nav>
 
-              <a
-                href="#contacto"
-                className="inline-flex items-center gap-2 rounded-2xl border border-red-500/30 bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_40px_rgba(255,0,0,0.18)] transition hover:scale-[1.02]"
-              >
-                Solicitar cotización
-                <ArrowRight className="h-4 w-4" />
-              </a>
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  Ver demo
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+
+                <a
+                  href="#contacto"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-red-500/30 bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_40px_rgba(255,0,0,0.18)] transition hover:scale-[1.02]"
+                >
+                  Solicitar cotización
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
             </div>
 
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
-              className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 text-white transition hover:bg-white/10 lg:hidden"
+              className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 text-white transition hover:bg-white/10 xl:hidden"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
 
           {mobileMenuOpen && (
-            <div className="border-t border-white/10 pb-4 pt-4 lg:hidden">
+            <div className="border-t border-white/10 pb-4 pt-4 xl:hidden">
               <div className="flex flex-col gap-2">
-                <a href="#servicios" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
-                  Servicios
-                </a>
-                <a href="#modulos" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
-                  Módulos
-                </a>
-                <a href="#nosotros" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
-                  Nosotros
-                </a>
-                <a href="#planes" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
-                  Planes
-                </a>
-                <a href="#contacto" className="rounded-xl px-3 py-3 text-base text-zinc-200 hover:bg-white/5">
-                  Contacto
-                </a>
+                {navItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className={mobileNavClass(item.id)}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+
+                <Link
+                  to="/dashboard"
+                  className="rounded-xl px-3 py-3 text-base text-zinc-200 transition hover:bg-white/5"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Demo
+                </Link>
+
+                <Link
+                  to="/dashboard"
+                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-3 font-semibold text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Ver demo
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+
                 <a
                   href="#contacto"
-                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-4 py-3 font-semibold text-white"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-4 py-3 font-semibold text-white"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   Solicitar cotización
                   <ArrowRight className="h-4 w-4" />
@@ -667,6 +747,14 @@ function AutoCoreLandingPage() {
                       </span>
                     ))}
                   </div>
+
+                  <Link
+                    to="/dashboard"
+                    className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+                  >
+                    Abrir demo completa
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </div>
             </motion.div>
@@ -699,7 +787,7 @@ function AutoCoreLandingPage() {
         </motion.div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-8">
+      <section id="porque" className="mx-auto max-w-7xl px-6 pb-20 lg:px-8">
         <motion.div
           {...fadeUp}
           className="rounded-[2.25rem] border border-white/10 bg-gradient-to-br from-red-600/10 via-black to-zinc-500/10 p-8 shadow-[0_40px_120px_rgba(0,0,0,0.35)] lg:p-12"
