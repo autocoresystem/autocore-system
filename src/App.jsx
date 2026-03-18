@@ -533,9 +533,10 @@ function AutoCoreLandingPage() {
 
   return (
     <div
-      className="min-h-screen bg-black text-white"
-      style={{ fontFamily: '"Manrope", ui-sans-serif, system-ui, sans-serif' }}
-    >
+  id="top"
+  className="min-h-screen bg-black text-white"
+  style={{ fontFamily: '"Manrope", ui-sans-serif, system-ui, sans-serif' }}
+>
       <FontLoader />
       <ParticleBackground />
 
@@ -544,24 +545,24 @@ function AutoCoreLandingPage() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/75 backdrop-blur-2xl">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex min-h-[76px] items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <img
-                src="/autocore-logo.png"
-                alt="AutoCore"
-                className="h-11 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)]"
-              />
-              <div>
-                <p
-                  className="text-2xl font-extrabold tracking-tight text-white"
-                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
-                >
-                  Auto<span className="text-red-500">Core</span>
-                </p>
-                <p className="-mt-1 text-[11px] uppercase tracking-[0.38em] text-zinc-400">
-                  Systems
-                </p>
-              </div>
-            </div>
+            <a href="#top" className="group flex items-center gap-3">
+  <img
+    src="/autocore-logo.png"
+    alt="AutoCore"
+    className="h-11 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)] transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_28px_rgba(255,0,0,0.82)]"
+  />
+  <div>
+    <p
+      className="text-2xl font-extrabold tracking-tight text-white transition duration-300 group-hover:text-white"
+      style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+    >
+      Auto<span className="text-red-500">Core</span>
+    </p>
+    <p className="-mt-1 text-[11px] uppercase tracking-[0.38em] text-zinc-400 transition duration-300 group-hover:text-zinc-300">
+      Systems
+    </p>
+  </div>
+</a>
 
             <div className="hidden xl:flex xl:items-center xl:gap-4">
               <nav className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
