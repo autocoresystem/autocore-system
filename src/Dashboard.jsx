@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -8,7 +9,6 @@ import {
   CarFront,
   Wallet,
   Clock3,
-  Bell,
   CheckCircle2,
   Wrench,
   Search,
@@ -207,9 +207,15 @@ export default function Dashboard() {
     )
       return "text-emerald-300";
     if (
-      ["Pendiente", "Mantenimiento", "Programado", "Reservado", "En proceso", "En inspección", "En renta"].includes(
-        status
-      )
+      [
+        "Pendiente",
+        "Mantenimiento",
+        "Programado",
+        "Reservado",
+        "En proceso",
+        "En inspección",
+        "En renta",
+      ].includes(status)
     )
       return "text-amber-300";
     return "text-red-300";
@@ -714,18 +720,19 @@ export default function Dashboard() {
           <div className="grid w-full gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="flex flex-col justify-center">
               <div className="mb-5 flex flex-wrap items-center gap-3">
-  <div className="inline-flex w-fit items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
-    <Lock className="h-3.5 w-3.5" /> Acceso al sistema
-  </div>
+                <div className="inline-flex w-fit items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
+                  <Lock className="h-3.5 w-3.5" /> Acceso al sistema
+                </div>
 
-  <a
-    href="/"
-    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-200 transition hover:bg-white/10"
-  >
-    <ArrowLeft className="h-3.5 w-3.5" />
-    Volver al inicio
-  </a>
-</div>
+                <a
+                  href="/"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-200 transition hover:bg-white/10"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Volver al inicio
+                </a>
+              </div>
+
               <h1 className="max-w-3xl text-4xl font-black leading-[1] tracking-tight sm:text-6xl">
                 Bienvenido a una experiencia moderna de gestión para tu negocio
               </h1>
@@ -837,21 +844,21 @@ export default function Dashboard() {
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-black/75 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-          <div className="flex items-center gap-3">
+          <Link to="/" className="group flex items-center gap-3">
             <img
               src="/autocore-logo.png"
               alt="AutoCore"
-              className="h-11 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)]"
+              className="h-11 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)] transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_28px_rgba(255,0,0,0.82)]"
             />
             <div>
-              <p className="text-xl font-black tracking-tight">
+              <p className="text-xl font-black tracking-tight transition duration-300 group-hover:text-white">
                 Auto<span className="text-red-500">Core</span>
               </p>
-              <p className="-mt-1 text-[11px] uppercase tracking-[0.3em] text-zinc-400">
+              <p className="-mt-1 text-[11px] uppercase tracking-[0.3em] text-zinc-400 transition duration-300 group-hover:text-zinc-300">
                 Systems Panel
               </p>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-3">
             <button
