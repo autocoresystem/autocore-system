@@ -523,16 +523,12 @@ function AutoCoreLandingPage() {
 
   const desktopNavClass = (id) =>
     `group relative rounded-full px-3 py-2.5 text-sm font-medium transition ${
-      activeSection === id
-        ? "text-white"
-        : "text-zinc-300 hover:text-white"
+      activeSection === id ? "text-white" : "text-zinc-300 hover:text-white"
     }`;
 
   const mobileNavClass = (id) =>
     `rounded-xl px-3 py-3 text-base transition ${
-      activeSection === id
-        ? "bg-white/10 text-white"
-        : "text-zinc-200 hover:bg-white/5"
+      activeSection === id ? "bg-white/10 text-white" : "text-zinc-200 hover:bg-white/5"
     }`;
 
   return (
@@ -588,7 +584,7 @@ function AutoCoreLandingPage() {
                   to="/dashboard"
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
                 >
-                  Ver demo
+                  Explorar plataforma
                   <ChevronRight className="h-4 w-4" />
                 </Link>
 
@@ -629,7 +625,7 @@ function AutoCoreLandingPage() {
                   className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-3 font-semibold text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Ver demo
+                  Explorar plataforma
                   <ChevronRight className="h-4 w-4" />
                 </Link>
 
@@ -694,7 +690,7 @@ function AutoCoreLandingPage() {
                   to="/dashboard"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-center font-semibold text-zinc-100 transition hover:bg-white/10"
                 >
-                  Ver demo del sistema
+                  Explorar plataforma
                   <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -769,7 +765,7 @@ function AutoCoreLandingPage() {
                     to="/dashboard"
                     className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
                   >
-                    Abrir demo completa
+                    Abrir vista interactiva
                     <ChevronRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -1084,6 +1080,101 @@ function AutoCoreLandingPage() {
               </a>
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <motion.div {...fadeUp}>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-red-300">
+              Plataforma interactiva
+            </p>
+            <h2
+              className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
+              style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+            >
+              Una vista diseñada para mostrar orden, control y operación en tiempo real
+            </h2>
+            <p className="mt-4 text-lg leading-8 text-zinc-300">
+              Explora una experiencia visual moderna que reúne clientes, facturación, unidades, operaciones y reportes dentro de una sola plataforma.
+            </p>
+            <div className="mt-8 space-y-4">
+              {[
+                "Resumen ejecutivo con información clave del negocio",
+                "Facturación organizada y seguimiento financiero",
+                "Gestión de clientes y relaciones comerciales",
+                "Control de unidades, operaciones y reportes",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl shadow-black/20"
+                >
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 text-red-500" />
+                  <p className="text-zinc-200">{item}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div {...fadeUp}>
+            <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-[0_35px_120px_rgba(0,0,0,0.4)] backdrop-blur-2xl">
+              <div className="rounded-[1.7rem] border border-white/10 bg-zinc-950 p-5">
+                <div className="mb-5 flex items-center justify-between">
+                  <p className="text-sm text-zinc-400">Vista interactiva</p>
+                  <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+                    Premium UI
+                  </span>
+                </div>
+
+                <div className="grid gap-4">
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    {demoMetrics.map((metric) => (
+                      <div
+                        key={metric.label}
+                        className="rounded-2xl border border-white/10 bg-black p-4"
+                      >
+                        <p className="text-xs text-zinc-500">{metric.label}</p>
+                        <p
+                          className="mt-2 text-xl font-extrabold tracking-tight"
+                          style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                        >
+                          {metric.value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black p-5">
+                    <p className="mb-4 text-sm text-zinc-400">Actividad reciente</p>
+                    <div className="space-y-3">
+                      {[
+                        "Factura generada",
+                        "Cliente registrado",
+                        "Pago recibido",
+                        "Reporte actualizado",
+                      ].map((row) => (
+                        <div
+                          key={row}
+                          className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3"
+                        >
+                          <span className="text-zinc-200">{row}</span>
+                          <span className="text-sm font-medium text-red-300">Listo</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/dashboard"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white transition hover:bg-white/10"
+                  >
+                    Abrir vista interactiva
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
