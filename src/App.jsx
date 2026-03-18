@@ -137,7 +137,7 @@ function HeroParticleText() {
     const ctx = canvas.getContext("2d");
     let animationFrameId;
     let particles = [];
-    let time = 0;
+    let startTime = performance.now();
 
     const DPR = Math.min(window.devicePixelRatio || 1, 1.5);
 
@@ -205,39 +205,64 @@ function HeroParticleText() {
     };
 
     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+    const easeInOutCubic = (t) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-    const draw = () => {
+    const draw = (now) => {
       const rect = canvas.getBoundingClientRect();
       const width = Math.floor(rect.width || 0);
       const height = Math.floor(rect.height || 0);
       if (!width || !height) return;
 
       const isMobile = width < 640;
+      const elapsed = (now - startTime) / 1000;
+
+      const introDuration = isMobile ? 1.25 : 2.1;
+      const holdDuration = isMobile ? 3.2 : 3.8;
+      const outroDuration = isMobile ? 1.15 : 1.7;
+      const pauseDuration = 0.35;
+
+      const totalDuration =
+        introDuration + holdDuration + outroDuration + pauseDuration;
+
+      const cycleTime = elapsed % totalDuration;
+
+      let compact = 0;
+
+      if (cycleTime < introDuration) {
+        compact = easeOutCubic(cycleTime / introDuration);
+      } else if (cycleTime < introDuration + holdDuration) {
+        compact = 1;
+      } else if (cycleTime < introDuration + holdDuration + outroDuration) {
+        const t = (cycleTime - introDuration - holdDuration) / outroDuration;
+        compact = 1 - easeInOutCubic(t);
+      } else {
+        compact = 0;
+      }
 
       ctx.clearRect(0, 0, width, height);
 
-      time += 0.016;
-
-      const introDuration = isMobile ? 1.4 : 2.2;
-      const introT = Math.min(time / introDuration, 1);
-      const compact = easeOutCubic(introT);
-      const breathe = Math.sin(time * (isMobile ? 1.1 : 1.4)) * 0.5 + 0.5;
+      const breathe = Math.sin(elapsed * (isMobile ? 1.05 : 1.35)) * 0.5 + 0.5;
 
       for (const p of particles) {
         const baseX = p.sx * (1 - compact) + p.tx * compact;
         const baseY = p.sy * (1 - compact) + p.ty * compact;
 
+        const driftStrength = compact > 0.92 ? 1 : compact;
+
         const px =
           baseX +
-          Math.sin(time * 1.1 + p.tx * 0.01) *
+          Math.sin(elapsed * 1.08 + p.tx * 0.01) *
             p.driftX *
-            (isMobile ? 2 : 2 + breathe * 4);
+            (isMobile ? 2 : 2 + breathe * 4) *
+            driftStrength;
 
         const py =
           baseY +
-          Math.cos(time * 1.05 + p.ty * 0.01) *
+          Math.cos(elapsed * 1.03 + p.ty * 0.01) *
             p.driftY *
-            (isMobile ? 2 : 2 + breathe * 4);
+            (isMobile ? 2 : 2 + breathe * 4) *
+            driftStrength;
 
         ctx.beginPath();
         ctx.arc(px, py, p.size, 0, Math.PI * 2);
@@ -251,12 +276,12 @@ function HeroParticleText() {
     };
 
     const handleResize = () => {
-      time = 0;
+      startTime = performance.now();
       buildParticles();
     };
 
     buildParticles();
-    draw();
+    animationFrameId = requestAnimationFrame(draw);
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -497,10 +522,10 @@ function AutoCoreLandingPage() {
   };
 
   const desktopNavClass = (id) =>
-    `relative rounded-full px-3 py-2 text-sm font-medium transition ${
+    `group relative rounded-full px-3 py-2.5 text-sm font-medium transition ${
       activeSection === id
-        ? "text-white bg-white/8 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
-        : "text-zinc-300 hover:text-white hover:bg-white/5"
+        ? "text-white"
+        : "text-zinc-300 hover:text-white"
     }`;
 
   const mobileNavClass = (id) =>
@@ -546,22 +571,22 @@ function AutoCoreLandingPage() {
               <nav className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
                 {navItems.map((item) => (
                   <a key={item.id} href={`#${item.id}`} className={desktopNavClass(item.id)}>
-                    {item.label}
+                    <span className="relative z-10">{item.label}</span>
+                    <span
+                      className={`absolute inset-x-3 bottom-[5px] h-[2.5px] rounded-full bg-red-500 transition-all duration-300 ease-out ${
+                        activeSection === item.id
+                          ? "scale-x-100 opacity-100"
+                          : "scale-x-0 opacity-0"
+                      }`}
+                    />
                   </a>
                 ))}
-
-                <Link
-                  to="/dashboard"
-                  className="rounded-full px-3 py-2 text-sm font-medium text-zinc-300 transition hover:bg-white/5 hover:text-white"
-                >
-                  Demo
-                </Link>
               </nav>
 
               <div className="flex items-center gap-3">
                 <Link
                   to="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
                 >
                   Ver demo
                   <ChevronRight className="h-4 w-4" />
@@ -598,14 +623,6 @@ function AutoCoreLandingPage() {
                     {item.label}
                   </a>
                 ))}
-
-                <Link
-                  to="/dashboard"
-                  className="rounded-xl px-3 py-3 text-base text-zinc-200 transition hover:bg-white/5"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Demo
-                </Link>
 
                 <Link
                   to="/dashboard"
