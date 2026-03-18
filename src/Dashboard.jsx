@@ -55,25 +55,75 @@ export default function Dashboard() {
   const [showPassword, setShowPassword] = useState(false);
 
   const stats = [
-    { title: "Ingresos del mes", value: "$84,240", sub: "+12.4% vs mes pasado", icon: Wallet },
-    { title: "Clientes activos", value: "318", sub: "27 nuevos esta semana", icon: Users },
-    { title: "Vehículos activos", value: "46", sub: "8 en proceso de entrega", icon: CarFront },
-    { title: "Facturas emitidas", value: "1,284", sub: "98 pendientes de pago", icon: Receipt },
+    {
+      title: "Ventas del mes",
+      value: "$84,240",
+      sub: "+12.4% frente al mes anterior",
+      icon: Wallet,
+    },
+    {
+      title: "Clientes activos",
+      value: "318",
+      sub: "27 nuevas relaciones esta semana",
+      icon: Users,
+    },
+    {
+      title: "Unidades activas",
+      value: "46",
+      sub: "8 en proceso operativo",
+      icon: CarFront,
+    },
+    {
+      title: "Facturas emitidas",
+      value: "1,284",
+      sub: "98 con seguimiento pendiente",
+      icon: Receipt,
+    },
   ];
 
   const recentActivity = [
-    { title: "Factura #1048 generada", status: "Completado", time: "Hace 5 min" },
-    { title: "Nuevo cliente registrado", status: "Listo", time: "Hace 14 min" },
-    { title: "Contrato enviado para firma", status: "Pendiente", time: "Hace 25 min" },
+    { title: "Factura #1048 emitida", status: "Completado", time: "Hace 5 min" },
+    { title: "Nuevo cliente incorporado", status: "Listo", time: "Hace 14 min" },
+    { title: "Contrato enviado para revisión", status: "Pendiente", time: "Hace 25 min" },
     { title: "Pago recibido de Auto Dealer Pro", status: "Confirmado", time: "Hace 40 min" },
   ];
 
   const clients = [
-    { name: "Auto Dealer Pro", contact: "Carlos Mendez", type: "Dealer", balance: "$3,240", status: "Activo" },
-    { name: "Premium Rent Solutions", contact: "Maria Lopez", type: "Rent Car", balance: "$1,120", status: "Al día" },
-    { name: "Taller Rivera", contact: "Luis Rivera", type: "Taller", balance: "$890", status: "Pendiente" },
-    { name: "North Parts Supply", contact: "Ana Gomez", type: "Repuestos", balance: "$0", status: "Al día" },
-    { name: "Elite Motors Group", contact: "José Cabrera", type: "Dealer", balance: "$4,810", status: "Activo" },
+    {
+      name: "Auto Dealer Pro",
+      contact: "Carlos Mendez",
+      type: "Dealer",
+      balance: "$3,240",
+      status: "Activo",
+    },
+    {
+      name: "Premium Rent Solutions",
+      contact: "Maria Lopez",
+      type: "Rent Car",
+      balance: "$1,120",
+      status: "Al día",
+    },
+    {
+      name: "Taller Rivera",
+      contact: "Luis Rivera",
+      type: "Taller",
+      balance: "$890",
+      status: "Pendiente",
+    },
+    {
+      name: "North Parts Supply",
+      contact: "Ana Gomez",
+      type: "Repuestos",
+      balance: "$0",
+      status: "Al día",
+    },
+    {
+      name: "Elite Motors Group",
+      contact: "José Cabrera",
+      type: "Dealer",
+      balance: "$4,810",
+      status: "Activo",
+    },
   ];
 
   const invoices = [
@@ -102,9 +152,9 @@ export default function Dashboard() {
 
   const reportCards = [
     { title: "Ventas por canal", value: "$38,200", sub: "Dealer, rent car y taller", icon: BarChart3 },
-    { title: "Cuentas por cobrar", value: "$12,480", sub: "17 facturas pendientes", icon: CreditCard },
+    { title: "Cuentas por cobrar", value: "$12,480", sub: "17 facturas por seguimiento", icon: CreditCard },
     { title: "Inventario de repuestos", value: "284", sub: "Piezas registradas", icon: Package },
-    { title: "Alertas del sistema", value: "6", sub: "2 requieren atención hoy", icon: AlertTriangle },
+    { title: "Alertas operativas", value: "6", sub: "2 requieren atención hoy", icon: AlertTriangle },
   ];
 
   const salesChartData = [
@@ -141,7 +191,7 @@ export default function Dashboard() {
         .toLowerCase()
         .includes(search.toLowerCase())
     );
-  }, [clients, search]);
+  }, [search]);
 
   const fadeUp = {
     initial: { opacity: 0, y: 18 },
@@ -192,7 +242,7 @@ export default function Dashboard() {
           <div className="mb-5 flex items-center justify-between">
             <div>
               <p className="text-sm text-zinc-400">Actividad reciente</p>
-              <h2 className="text-xl font-bold tracking-tight">Movimientos del sistema</h2>
+              <h2 className="text-xl font-bold tracking-tight">Movimientos del negocio</h2>
             </div>
             <Clock3 className="h-5 w-5 text-red-400" />
           </div>
@@ -243,14 +293,14 @@ export default function Dashboard() {
 
           <div className="rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-red-600/10 via-black to-zinc-500/10 p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-red-300">
-              Novedad
+              Plataforma integrada
             </p>
             <h3 className="mt-2 text-xl font-black tracking-tight">
-              Experiencia más real dentro del demo
+              Todo lo esencial en una sola experiencia
             </h3>
             <p className="mt-3 text-sm leading-7 text-zinc-300">
-              Ahora incluye navegación lateral, login demo, facturación simulada, calendario,
-              buscador de clientes, gráficos premium y modales para clientes y vehículos.
+              Clientes, facturación, seguimiento operativo, unidades, taller y reportes
+              reunidos en un panel visual moderno, claro y fácil de navegar.
             </p>
           </div>
         </div>
@@ -261,7 +311,7 @@ export default function Dashboard() {
           <div className="mb-5 flex items-center justify-between">
             <div>
               <p className="text-sm text-zinc-400">Ventas semanales</p>
-              <h2 className="text-xl font-bold tracking-tight">Gráfico comercial</h2>
+              <h2 className="text-xl font-bold tracking-tight">Rendimiento comercial</h2>
             </div>
             <BarChart3 className="h-5 w-5 text-red-500" />
           </div>
@@ -324,8 +374,8 @@ export default function Dashboard() {
     <div className="rounded-[1.5rem] border border-white/10 bg-zinc-950/80 p-6">
       <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm text-zinc-400">CRM comercial</p>
-          <h2 className="text-xl font-bold tracking-tight">Base de clientes</h2>
+          <p className="text-sm text-zinc-400">Gestión de clientes</p>
+          <h2 className="text-xl font-bold tracking-tight">Base de relaciones comerciales</h2>
         </div>
         <div className="flex gap-3">
           <div className="relative">
@@ -437,7 +487,7 @@ export default function Dashboard() {
         <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6">
           <div className="mb-4 flex items-center gap-2">
             <ClipboardList className="h-5 w-5 text-red-500" />
-            <h3 className="text-lg font-bold tracking-tight">Pasos de una venta</h3>
+            <h3 className="text-lg font-bold tracking-tight">Flujo comercial</h3>
           </div>
           <div className="space-y-3">
             {["Cliente contactado", "Cotización enviada", "Factura generada", "Pago procesado"].map(
@@ -624,22 +674,22 @@ export default function Dashboard() {
 
         <div className="rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-red-600/10 via-black to-zinc-500/10 p-6">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-red-300">
-            Presentación comercial
+            Visión integral
           </p>
           <h3 className="mt-3 text-2xl font-black tracking-tight">
-            Esta demo deja ver mucho más del producto
+            Un panel diseñado para ver la operación con claridad
           </h3>
           <p className="mt-3 leading-7 text-zinc-300">
-            Ahora el cliente puede explorar distintas áreas del sistema: clientes, facturación,
-            unidades, taller y reportes. Eso hace que el demo se sienta completo y más vendible.
+            El sistema reúne información comercial, financiera y operativa en una experiencia
+            visual moderna que facilita el seguimiento del negocio.
           </p>
           <div className="mt-6 space-y-3">
             {[
-              "Vista ejecutiva",
-              "CRM de clientes",
-              "Panel de facturación",
-              "Inventario de vehículos",
-              "Órdenes de taller",
+              "Resumen ejecutivo",
+              "Gestión de clientes",
+              "Facturación centralizada",
+              "Control de unidades",
+              "Seguimiento de taller",
               "Reportes visuales",
             ].map((item) => (
               <div
@@ -664,21 +714,20 @@ export default function Dashboard() {
           <div className="grid w-full gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="flex flex-col justify-center">
               <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
-                <Lock className="h-3.5 w-3.5" /> Login Demo
+                <Lock className="h-3.5 w-3.5" /> Acceso al sistema
               </div>
               <h1 className="max-w-3xl text-4xl font-black leading-[1] tracking-tight sm:text-6xl">
-                Entra a una experiencia demo que se siente como un software real
+                Bienvenido a una experiencia moderna de gestión para tu negocio
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-300">
-                Esta entrada premium ayuda a impresionar más al cliente desde el primer segundo.
-                Luego podrá explorar dashboard, clientes, facturación, vehículos, taller y reportes
-                con gráficos visuales.
+                Accede a una plataforma diseñada para centralizar facturación, clientes, unidades,
+                operaciones y reportes en una sola interfaz clara, profesional y fácil de usar.
               </p>
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
                 {[
-                  ["Acceso elegante", "Pantalla de entrada premium"],
-                  ["Demo comercial", "Lista para presentar"],
-                  ["UX moderna", "Sensación de producto real"],
+                  ["Acceso seguro", "Entrada clara y profesional"],
+                  ["Operación centralizada", "Módulos conectados entre sí"],
+                  ["Vista ejecutiva", "Información clave al instante"],
                 ].map(([title, sub]) => (
                   <div key={title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="font-semibold text-white">{title}</p>
@@ -703,18 +752,18 @@ export default function Dashboard() {
                     Auto<span className="text-red-500">Core</span>
                   </p>
                   <p className="-mt-1 text-[11px] uppercase tracking-[0.3em] text-zinc-400">
-                    Demo Access
+                    Systems Access
                   </p>
                 </div>
               </div>
 
               <div className="rounded-[1.5rem] border border-white/10 bg-zinc-950/80 p-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-red-300">
-                  Acceso al sistema
+                  Acceso a la plataforma
                 </p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight">Iniciar demo</h2>
+                <h2 className="mt-2 text-2xl font-black tracking-tight">Iniciar sesión</h2>
                 <p className="mt-2 text-sm leading-6 text-zinc-400">
-                  Pantalla visual para reforzar la sensación de producto SaaS premium.
+                  Una entrada elegante y moderna para acceder a la experiencia completa del sistema.
                 </p>
 
                 <div className="mt-6 space-y-4">
@@ -749,19 +798,19 @@ export default function Dashboard() {
                     onClick={() => setIsLoggedIn(true)}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold text-white shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.01]"
                   >
-                    Entrar al demo
+                    Entrar al sistema
                     <ChevronRight className="h-4 w-4" />
                   </button>
                 </div>
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <p className="text-sm text-zinc-500">Acceso</p>
-                    <p className="mt-1 font-semibold text-white">Demo comercial</p>
+                    <p className="text-sm text-zinc-500">Experiencia</p>
+                    <p className="mt-1 font-semibold text-white">Acceso profesional</p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                     <p className="text-sm text-zinc-500">Incluye</p>
-                    <p className="mt-1 font-semibold text-white">Gráficos + módulos</p>
+                    <p className="mt-1 font-semibold text-white">Módulos y reportes</p>
                   </div>
                 </div>
               </div>
@@ -789,7 +838,7 @@ export default function Dashboard() {
                 Auto<span className="text-red-500">Core</span>
               </p>
               <p className="-mt-1 text-[11px] uppercase tracking-[0.3em] text-zinc-400">
-                Demo Dashboard
+                Systems Panel
               </p>
             </div>
           </div>
@@ -800,7 +849,7 @@ export default function Dashboard() {
               className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               <Lock className="h-4 w-4" />
-              Salir demo
+              Cerrar acceso
             </button>
 
             <a
@@ -808,7 +857,7 @@ export default function Dashboard() {
               className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               <ArrowLeft className="h-4 w-4" />
-              Volver al menú
+              Volver al inicio
             </a>
 
             <button className="rounded-2xl border border-white/10 bg-white/5 p-3 transition hover:bg-white/10">
@@ -823,13 +872,13 @@ export default function Dashboard() {
           <aside className="rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
             <div className="mb-6 rounded-[1.5rem] border border-red-500/20 bg-red-500/10 p-4">
               <p className="text-sm font-semibold uppercase tracking-[0.22em] text-red-300">
-                Demo comercial
+                Plataforma integrada
               </p>
               <h1 className="mt-2 text-2xl font-black tracking-tight">
-                Versión completa del sistema
+                Gestión centralizada del negocio
               </h1>
               <p className="mt-2 text-sm leading-6 text-zinc-300">
-                Navega por distintas áreas para mostrarle al cliente todo lo que AutoCore puede hacer.
+                Accede a clientes, facturación, unidades, operaciones y reportes desde una sola experiencia.
               </p>
             </div>
 
@@ -894,7 +943,7 @@ export default function Dashboard() {
                   onClick={() => setActiveTab("reports")}
                   className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left hover:bg-white/[0.06]"
                 >
-                  Generar reporte
+                  Ver reportes
                 </button>
               </div>
             </div>
@@ -907,10 +956,10 @@ export default function Dashboard() {
                   Panel ejecutivo
                 </p>
                 <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
-                  Demo interactivo del sistema
+                  Vista general del sistema
                 </h2>
                 <p className="mt-3 max-w-2xl text-zinc-300">
-                  Una demostración pensada para enseñar orden, control y presencia profesional a clientes de dealers, rent car, talleres y negocios modernos.
+                  Una plataforma diseñada para brindar orden, control y una visión clara de la operación diaria del negocio.
                 </p>
               </div>
 
@@ -921,11 +970,11 @@ export default function Dashboard() {
                 </div>
                 <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-zinc-300">
                   <BadgeDollarSign className="h-4 w-4 text-red-400" />
-                  Venta premium
+                  Gestión financiera
                 </div>
                 <div className="inline-flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-semibold text-red-300">
                   <MessageCircle className="h-4 w-4" />
-                  Demo premium
+                  Interfaz premium
                 </div>
               </div>
             </div>
@@ -945,8 +994,8 @@ export default function Dashboard() {
           <div className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-red-300">Factura rápida</p>
-                <h3 className="mt-2 text-2xl font-black tracking-tight">Nueva factura demo</h3>
+                <p className="text-sm uppercase tracking-[0.2em] text-red-300">Facturación</p>
+                <h3 className="mt-2 text-2xl font-black tracking-tight">Nueva factura</h3>
               </div>
               <button
                 onClick={() => setShowInvoiceModal(false)}
@@ -965,9 +1014,9 @@ export default function Dashboard() {
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <p className="text-sm text-zinc-400">Vista previa</p>
-              <p className="mt-2 text-lg font-semibold text-white">Factura demo lista para presentar al cliente</p>
+              <p className="mt-2 text-lg font-semibold text-white">Factura lista para registrarse</p>
               <p className="mt-2 text-sm leading-6 text-zinc-500">
-                Este modal es parte de la nueva actualización para que el usuario sienta que realmente puede interactuar con el sistema.
+                Esta vista muestra cómo se organiza el proceso de facturación dentro de una experiencia más clara y profesional.
               </p>
             </div>
 
@@ -991,8 +1040,8 @@ export default function Dashboard() {
           <div className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-red-300">Nuevo cliente</p>
-                <h3 className="mt-2 text-2xl font-black tracking-tight">Registrar cliente demo</h3>
+                <p className="text-sm uppercase tracking-[0.2em] text-red-300">Clientes</p>
+                <h3 className="mt-2 text-2xl font-black tracking-tight">Registrar cliente</h3>
               </div>
               <button
                 onClick={() => setShowClientModal(false)}
@@ -1022,9 +1071,9 @@ export default function Dashboard() {
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <p className="text-sm text-zinc-400">Vista previa</p>
-              <p className="mt-2 text-lg font-semibold text-white">Cliente demo listo para registrarse</p>
+              <p className="mt-2 text-lg font-semibold text-white">Cliente listo para incorporarse</p>
               <p className="mt-2 text-sm leading-6 text-zinc-500">
-                Este modal le da más realismo al módulo de clientes y mejora la presentación comercial.
+                Este flujo permite organizar los datos del cliente de forma clara desde el primer momento.
               </p>
             </div>
 
@@ -1048,8 +1097,8 @@ export default function Dashboard() {
           <div className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.5)]">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-red-300">Nueva unidad</p>
-                <h3 className="mt-2 text-2xl font-black tracking-tight">Agregar vehículo demo</h3>
+                <p className="text-sm uppercase tracking-[0.2em] text-red-300">Vehículos</p>
+                <h3 className="mt-2 text-2xl font-black tracking-tight">Agregar unidad</h3>
               </div>
               <button
                 onClick={() => setShowVehicleModal(false)}
@@ -1083,9 +1132,9 @@ export default function Dashboard() {
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <p className="text-sm text-zinc-400">Vista previa</p>
-              <p className="mt-2 text-lg font-semibold text-white">Vehículo demo listo para agregarse</p>
+              <p className="mt-2 text-lg font-semibold text-white">Unidad lista para registrarse</p>
               <p className="mt-2 text-sm leading-6 text-zinc-500">
-                Ahora el módulo de unidades también tiene interacción visual para que el sistema se vea más completo.
+                El módulo de unidades permite mantener mejor control del inventario y del estado operativo.
               </p>
             </div>
 
