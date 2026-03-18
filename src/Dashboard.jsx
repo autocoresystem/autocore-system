@@ -713,9 +713,19 @@ export default function Dashboard() {
         <div className="mx-auto flex min-h-screen max-w-7xl items-center px-6 py-10 lg:px-8">
           <div className="grid w-full gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="flex flex-col justify-center">
-              <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
-                <Lock className="h-3.5 w-3.5" /> Acceso al sistema
-              </div>
+              <div className="mb-5 flex flex-wrap items-center gap-3">
+  <div className="inline-flex w-fit items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
+    <Lock className="h-3.5 w-3.5" /> Acceso al sistema
+  </div>
+
+  <a
+    href="/"
+    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-200 transition hover:bg-white/10"
+  >
+    <ArrowLeft className="h-3.5 w-3.5" />
+    Volver al inicio
+  </a>
+</div>
               <h1 className="max-w-3xl text-4xl font-black leading-[1] tracking-tight sm:text-6xl">
                 Bienvenido a una experiencia moderna de gestión para tu negocio
               </h1>
@@ -859,10 +869,6 @@ export default function Dashboard() {
               <ArrowLeft className="h-4 w-4" />
               Volver al inicio
             </a>
-
-            <button className="rounded-2xl border border-white/10 bg-white/5 p-3 transition hover:bg-white/10">
-              <Bell className="h-4 w-4 text-zinc-300" />
-            </button>
           </div>
         </div>
       </header>
