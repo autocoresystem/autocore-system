@@ -1215,7 +1215,7 @@ function AutoCoreLandingPage() {
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                   <p className="text-sm text-zinc-400">Correo</p>
-                  <p className="mt-1 font-semibold">ventas@autocoresystem.com</p>
+                  <p className="mt-1 font-semibold">autocoresystem@gmail.com</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                   <p className="text-sm text-zinc-400">WhatsApp</p>
@@ -1242,90 +1242,115 @@ function AutoCoreLandingPage() {
                 </span>
               </div>
 
-              <form className="space-y-5">
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-zinc-300">
-                      Nombre
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Tu nombre"
-                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-zinc-300">
-                      Negocio
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Nombre del negocio"
-                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-                    />
-                  </div>
-                </div>
+              <form
+  action="https://formsubmit.co/autocoresystem@gmail.com"
+  method="POST"
+  className="space-y-5"
+>
+  <input type="hidden" name="_subject" value="Nueva solicitud desde AutoCore Systems" />
+  <input type="hidden" name="_captcha" value="false" />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_next" value="https://autocore-system.onrender.com/?success=true#contacto" />
 
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-zinc-300">
-                      Teléfono
-                    </label>
-                    <input
-                      type="tel"
-                      placeholder="Tu teléfono"
-                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-zinc-300">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="tuemail@negocio.com"
-                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-                    />
-                  </div>
-                </div>
+  <div className="grid gap-5 md:grid-cols-2">
+    <div>
+      <label className="mb-2 block text-sm font-medium text-zinc-300">
+        Nombre
+      </label>
+      <input
+        type="text"
+        name="nombre"
+        required
+        placeholder="Tu nombre"
+        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+      />
+    </div>
 
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-300">
-                    Tipo de negocio
-                  </label>
-                  <select className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-red-500/40">
-                    <option value="">Selecciona una opción</option>
-                    {businessTypes.map((type) => (
-                      <option key={type} value={type} className="bg-zinc-950">
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+    <div>
+      <label className="mb-2 block text-sm font-medium text-zinc-300">
+        Negocio
+      </label>
+      <input
+        type="text"
+        name="negocio"
+        required
+        placeholder="Nombre del negocio"
+        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+      />
+    </div>
+  </div>
 
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-300">
-                    Mensaje
-                  </label>
-                  <textarea
-                    rows={6}
-                    placeholder="Cuéntanos qué tipo de solución necesitas para tu negocio"
-                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-                  />
-                </div>
+  <div className="grid gap-5 md:grid-cols-2">
+    <div>
+      <label className="mb-2 block text-sm font-medium text-zinc-300">
+        Teléfono
+      </label>
+      <input
+        type="tel"
+        name="telefono"
+        required
+        placeholder="Tu teléfono"
+        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+      />
+    </div>
 
-                <button
-                  type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold text-white shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.01]"
-                >
-                  Enviar solicitud
-                  <ArrowRight className="h-4 w-4" />
-                </button>
+    <div>
+      <label className="mb-2 block text-sm font-medium text-zinc-300">
+        Email
+      </label>
+      <input
+        type="email"
+        name="email"
+        required
+        placeholder="tuemail@negocio.com"
+        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+      />
+    </div>
+  </div>
 
-                <p className="text-sm leading-7 text-zinc-400">
-                  Completa el formulario y nuestro equipo te contactará para orientarte sobre la opción más adecuada para tu negocio.
-                </p>
-              </form>
+  <div>
+    <label className="mb-2 block text-sm font-medium text-zinc-300">
+      Tipo de negocio
+    </label>
+    <select
+      name="tipo_negocio"
+      required
+      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-red-500/40"
+    >
+      <option value="">Selecciona una opción</option>
+      {businessTypes.map((type) => (
+        <option key={type} value={type} className="bg-zinc-950">
+          {type}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <div>
+    <label className="mb-2 block text-sm font-medium text-zinc-300">
+      Mensaje
+    </label>
+    <textarea
+      rows={6}
+      name="mensaje"
+      required
+      placeholder="Cuéntanos qué tipo de solución necesitas para tu negocio"
+      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+    />
+  </div>
+
+  <button
+    type="submit"
+    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold text-white shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.01]"
+  >
+    Enviar solicitud
+    <ArrowRight className="h-4 w-4" />
+  </button>
+
+  <p className="text-sm leading-7 text-zinc-400">
+    Completa el formulario y nuestro equipo te contactará para orientarte sobre la opción más adecuada para tu negocio.
+  </p>
+</form>
             </div>
           </motion.div>
         </div>
