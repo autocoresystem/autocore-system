@@ -1197,12 +1197,14 @@ function AutoCoreLandingPage() {
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <a
-                  href="mailto:autocoresystem@gmail.com"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold transition hover:scale-[1.02]"
-                >
-                  <FileText className="h-4 w-4" />
-                  Escribir por email
-                </a>
+  href="https://mail.google.com/mail/?view=cm&fs=1&to=autocoresystem@gmail.com&su=Solicitud%20de%20informaci%C3%B3n%20-%20AutoCore%20Systems"
+  target="_blank"
+  rel="noreferrer"
+  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold transition hover:scale-[1.02]"
+>
+  <FileText className="h-4 w-4" />
+  Escribir por email
+</a>
                 <a
                   href="https://wa.me/18000000000"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 font-semibold transition hover:bg-white/10"
