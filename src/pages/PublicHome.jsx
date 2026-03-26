@@ -597,19 +597,11 @@ function AutoCoreLandingPage() {
                 </a>
 
                 <Link
-                  to="/login"
+                  to="/login-plus"
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
                 >
                   Login
                   <ChevronRight className="h-4 w-4" />
-                </Link>
-
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-red-500/30 bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_40px_rgba(255,0,0,0.18)] transition hover:scale-[1.02]"
-                >
-                  Registrarse
-                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
@@ -655,21 +647,12 @@ function AutoCoreLandingPage() {
                 </a>
 
                 <Link
-                  to="/login"
+                   to="/login-plus"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-3 font-semibold text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Login
                   <ChevronRight className="h-4 w-4" />
-                </Link>
-
-                <Link
-                  to="/register"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-4 py-3 font-semibold text-white"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Registrarse
-                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>

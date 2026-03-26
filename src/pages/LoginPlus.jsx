@@ -282,6 +282,16 @@ export default function LoginPlus() {
                 Back to website
               </button>
             </div>
+            <p className="mt-6 text-center text-sm text-zinc-500">
+  Don’t have an account?{" "}
+  <button
+    type="button"
+    onClick={() => navigate("/register-plus")}
+    className="text-red-300 transition hover:text-red-200"
+  >
+    Request access
+  </button>
+</p>
 
             <p className="mt-6 text-center text-sm text-zinc-500">
               Demo access: use{" "}
