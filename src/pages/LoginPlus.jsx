@@ -1,21 +1,39 @@
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, ShieldCheck, Sparkles, Lock, Mail } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [ready, setReady] = useState(false);
 
   const [form, setForm] = useState({
-    name: "",
-    lastName: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => setReady(true), 2200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 55 }, (_, i) => ({
+        id: i,
+        size: Math.random() * 3 + 1,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: Math.random() * 12 + 10,
+        delay: Math.random() * 4,
+        opacity: Math.random() * 0.5 + 0.2,
+        driftX: Math.random() * 30 - 15,
+        driftY: Math.random() * 30 - 15,
+      })),
+    []
+  );
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -23,323 +41,317 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!ready) return;
 
-    if (!isRegister) {
-      if (form.email === "admin@test.com") {
-        navigate("/admin");
-      } else {
-        navigate("/portal");
-      }
+    if (form.email === "admin@test.com") {
+      navigate("/admin");
     } else {
-      alert("Cuenta creada (demo)");
-      setIsRegister(false);
+      navigate("/portal");
     }
   };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      {/* BACKGROUND */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(180,0,0,0.18),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(255,0,0,0.12),transparent_25%),linear-gradient(to_bottom_right,#020202,#090909,#000000)]" />
+      <ParticleField particles={particles} />
 
-      {/* GRID */}
-      <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:40px_40px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_35%),linear-gradient(to_bottom,rgba(255,255,255,0.03),transparent_30%,transparent_70%,rgba(255,255,255,0.02))]" />
 
-      {/* MOVING BLOBS */}
-      <motion.div
-        animate={{ x: [0, 80, 0], y: [0, -40, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-red-700/20 blur-[120px]"
-      />
-      <motion.div
-        animate={{ x: [0, -60, 0], y: [0, 50, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-red-500/10 blur-[140px]"
-      />
-      <motion.div
-        animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/3 right-1/4 h-48 w-48 rounded-full bg-white/5 blur-[100px]"
-      />
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
+        <div className="relative h-[620px] w-full max-w-7xl overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.02] shadow-[0_0_80px_rgba(255,255,255,0.04)] backdrop-blur-[2px]">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.015] via-transparent to-white/[0.02]" />
 
-      {/* MAIN */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 35, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="grid w-full max-w-6xl overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.04] shadow-[0_0_80px_rgba(255,0,0,0.08)] backdrop-blur-2xl md:grid-cols-2"
-        >
-          {/* LEFT PANEL */}
-          <div className="relative hidden min-h-[650px] overflow-hidden md:block">
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(120,0,0,0.35),rgba(0,0,0,0.75),rgba(255,0,0,0.08))]" />
-
+          <motion.div
+            initial={{ x: 500, opacity: 1 }}
+            animate={{ x: 0 }}
+            transition={{
+              duration: 1.45,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute top-1/2 right-[10%] z-30 hidden -translate-y-1/2 md:block"
+          >
             <motion.div
-              animate={{ y: [0, -12, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute left-10 top-10 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl"
+              animate={{ rotate: [0, 120, 180] }}
+              transition={{
+                duration: 1.6,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="relative"
             >
-              <div className="flex items-center gap-2 text-sm text-gray-200">
-                <Sparkles size={16} className="text-red-400" />
-                Sistema inteligente y moderno
-              </div>
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute right-10 top-28 rounded-2xl border border-red-500/20 bg-black/30 px-5 py-4 backdrop-blur-xl"
-            >
-              <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
-                Seguridad
-              </p>
-              <div className="mt-2 flex items-center gap-2 text-lg font-semibold text-white">
-                <ShieldCheck className="text-red-500" size={18} />
-                Acceso protegido
-              </div>
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-16 left-12 w-56 rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl"
-            >
-              <p className="text-xs text-gray-400">Sesiones activas</p>
-              <h4 className="mt-2 text-3xl font-bold">+1,284</h4>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "78%" }}
-                  transition={{ duration: 1.8 }}
-                  className="h-full rounded-full bg-gradient-to-r from-red-600 to-red-400"
-                />
-              </div>
-            </motion.div>
-
-            <div className="relative z-10 flex h-full flex-col justify-center px-14">
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="mb-4 text-sm uppercase tracking-[0.35em] text-red-400"
-              >
-                Future Access
-              </motion.p>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="max-w-md text-5xl font-extrabold leading-tight"
-              >
-                AutoCore <span className="text-red-500">System</span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-6 max-w-lg text-lg text-gray-300"
-              >
-                Una experiencia de acceso moderna, animada y premium para un
-                sistema que se siente poderoso desde el primer segundo.
-              </motion.p>
-
+              <GearLogo />
               <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-10 flex gap-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.5, 0.15] }}
+                transition={{ duration: 1.6 }}
+                className="absolute inset-0 rounded-full bg-white/10 blur-3xl"
+              />
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ x: 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{
+              delay: 0.35,
+              duration: 1.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute right-0 top-0 z-20 flex h-full w-full items-center justify-center md:w-[58%]"
+          >
+            <div className="w-full max-w-xl px-5 md:px-10">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.35, duration: 0.5 }}
+                className="rounded-[30px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_0_50px_rgba(255,255,255,0.03)] backdrop-blur-xl md:p-8"
               >
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-lg">
-                  <p className="text-xs text-gray-400">Tiempo real</p>
-                  <p className="mt-1 text-lg font-semibold">Dashboard live</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-lg">
-                  <p className="text-xs text-gray-400">UX premium</p>
-                  <p className="mt-1 text-lg font-semibold">Motion + Glass</p>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* RIGHT PANEL */}
-          <div className="relative flex min-h-[650px] items-center justify-center p-6 md:p-10">
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))]" />
-
-            <motion.div
-              initial={{ opacity: 0, x: 25 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.15, duration: 0.6 }}
-              className="relative z-10 w-full max-w-md"
-            >
-              <div className="mb-8">
                 <motion.div
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs text-red-300"
+                  transition={{ delay: 1.55, duration: 0.45 }}
+                  className="mb-8"
                 >
-                  <Sparkles size={14} />
-                  Premium access experience
+                  <div className="mb-4 flex items-center gap-3 md:hidden">
+                    <div className="scale-[0.42] origin-left">
+                      <GearLogo />
+                    </div>
+                    <span className="text-lg font-semibold tracking-wide">
+                      AutoCore System
+                    </span>
+                  </div>
+
+                  <p className="mb-2 text-xs uppercase tracking-[0.35em] text-white/45">
+                    Secure Access
+                  </p>
+                  <h1 className="text-3xl font-bold md:text-4xl">
+                    Bienvenido
+                  </h1>
+                  <p className="mt-3 max-w-md text-sm text-white/55 md:text-base">
+                    Accede a tu sistema con una entrada moderna, limpia y con
+                    identidad visual de AutoCore.
+                  </p>
                 </motion.div>
 
-                <h2 className="text-4xl font-bold tracking-tight">
-                  {isRegister ? "Crear cuenta" : "Bienvenido"}
-                </h2>
-                <p className="mt-3 text-base text-gray-400">
-                  {isRegister
-                    ? "Regístrate para entrar al ecosistema AutoCore."
-                    : "Inicia sesión en tu sistema con una experiencia futurista."}
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <AnimatePresence mode="wait">
-                  {isRegister && (
-                    <motion.div
-                      key="register-fields"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4 overflow-hidden"
-                    >
-                      <GlassInput
-                        name="name"
-                        placeholder="Nombre"
-                        value={form.name}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.7, duration: 0.4 }}
+                  >
+                    <InputShell icon={<Mail size={18} />}>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Correo electrónico"
+                        value={form.email}
                         onChange={handleChange}
+                        disabled={!ready}
+                        className="w-full bg-transparent px-1 py-4 text-white placeholder:text-white/35 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
                       />
-                      <GlassInput
-                        name="lastName"
-                        placeholder="Apellido"
-                        value={form.lastName}
+                    </InputShell>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.82, duration: 0.4 }}
+                  >
+                    <InputShell icon={<Lock size={18} />}>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder="Contraseña"
+                        value={form.password}
                         onChange={handleChange}
+                        disabled={!ready}
+                        className="w-full bg-transparent px-1 py-4 text-white placeholder:text-white/35 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
                       />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        disabled={!ready}
+                        className="text-white/45 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </InputShell>
+                  </motion.div>
 
-                <GlassInput
-                  name="email"
-                  type="email"
-                  placeholder="Correo electrónico"
-                  value={form.email}
-                  onChange={handleChange}
-                  icon={<Mail size={18} />}
-                />
-
-                <div className="group relative">
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-red-600/0 via-red-500/10 to-red-600/0 opacity-0 blur-xl transition duration-500 group-focus-within:opacity-100" />
-                  <div className="relative flex items-center rounded-2xl border border-white/10 bg-black/50 backdrop-blur-xl transition duration-300 focus-within:border-red-500/50 hover:border-white/20">
-                    <span className="pl-4 text-gray-500">
-                      <Lock size={18} />
-                    </span>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      placeholder="Contraseña"
-                      value={form.password}
-                      onChange={handleChange}
-                      className="w-full bg-transparent px-3 py-4 text-white placeholder:text-gray-500 focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="pr-4 text-gray-400 transition hover:text-white"
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                </div>
-
-                <AnimatePresence>
-                  {isRegister && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                    >
-                      <GlassInput
-                        name="confirmPassword"
-                        type="password"
-                        placeholder="Confirmar contraseña"
-                        value={form.confirmPassword}
-                        onChange={handleChange}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {!isRegister && (
-                  <div className="flex items-center justify-between px-1 text-sm">
-                    <label className="flex items-center gap-2 text-gray-400">
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.94, duration: 0.4 }}
+                    className="flex items-center justify-between px-1 text-sm"
+                  >
+                    <label className="flex items-center gap-2 text-white/50">
                       <input
                         type="checkbox"
-                        className="h-4 w-4 rounded border-white/20 bg-transparent accent-red-600"
+                        className="h-4 w-4 accent-white"
+                        disabled={!ready}
                       />
                       Recordarme
                     </label>
+
                     <button
                       type="button"
-                      className="text-gray-400 transition hover:text-red-400"
+                      className="text-white/50 transition hover:text-white"
+                      disabled={!ready}
                     >
                       ¿Olvidaste tu contraseña?
                     </button>
-                  </div>
-                )}
+                  </motion.div>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group relative mt-2 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-red-700 via-red-600 to-red-500 px-5 py-4 font-semibold text-white shadow-[0_10px_40px_rgba(255,0,0,0.25)]"
-                >
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition duration-1000 group-hover:translate-x-full" />
-                  <span className="relative z-10">
-                    {isRegister ? "Crear cuenta" : "Iniciar sesión"}
-                  </span>
-                </motion.button>
-              </form>
+                  <motion.button
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 2.05, duration: 0.45 }}
+                    whileHover={ready ? { scale: 1.015 } : {}}
+                    whileTap={ready ? { scale: 0.985 } : {}}
+                    disabled={!ready}
+                    className="group relative mt-3 w-full overflow-hidden rounded-2xl border border-white/15 bg-white px-5 py-4 font-semibold text-black transition disabled:cursor-not-allowed disabled:bg-white/30 disabled:text-black/50"
+                  >
+                    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/10 to-transparent transition duration-1000 group-hover:translate-x-full" />
+                    <span className="relative z-10">
+                      {ready ? "Iniciar sesión" : "Cargando acceso..."}
+                    </span>
+                  </motion.button>
+                </form>
 
-              <div className="mt-8 text-center text-sm text-gray-400">
-                {isRegister ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}{" "}
-                <button
-                  type="button"
-                  onClick={() => setIsRegister(!isRegister)}
-                  className="font-medium text-red-400 transition hover:text-red-300"
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2.15, duration: 0.5 }}
+                  className="mt-7 text-center text-sm text-white/45"
                 >
-                  {isRegister ? "Inicia sesión" : "Regístrate"}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
+                  ¿No tienes cuenta?{" "}
+                  <button
+                    type="button"
+                    className="font-medium text-white transition hover:text-white/75"
+                    disabled={!ready}
+                  >
+                    Regístrate
+                  </button>
+                </motion.div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.2, 0.1] }}
+            transition={{ delay: 1.15, duration: 1.1 }}
+            className="absolute left-[8%] top-1/2 hidden h-[320px] w-[320px] -translate-y-1/2 rounded-full bg-white/10 blur-[120px] md:block"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.75, duration: 0.6 }}
+            className="absolute left-[7%] top-1/2 z-10 hidden max-w-[340px] -translate-y-1/2 md:block"
+          >
+            <p className="mb-4 text-xs uppercase tracking-[0.45em] text-white/35">
+              Brand Motion
+            </p>
+            <h2 className="text-5xl font-bold leading-tight text-white/95">
+              AutoCore
+              <span className="block text-white/65">System</span>
+            </h2>
+            <p className="mt-5 text-base leading-7 text-white/45">
+              Una experiencia de acceso distinta. Minimalista, tecnológica y
+              construida alrededor del movimiento de tu marca.
+            </p>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
 }
 
-function GlassInput({
-  name,
-  type = "text",
-  placeholder,
-  value,
-  onChange,
-  icon,
-}) {
+function InputShell({ icon, children }) {
   return (
     <div className="group relative">
-      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-red-600/0 via-red-500/10 to-red-600/0 opacity-0 blur-xl transition duration-500 group-focus-within:opacity-100" />
-      <div className="relative flex items-center rounded-2xl border border-white/10 bg-black/50 backdrop-blur-xl transition duration-300 focus-within:border-red-500/50 hover:border-white/20">
-        {icon && <span className="pl-4 text-gray-500">{icon}</span>}
-        <input
-          type={type}
-          name={name}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          className="w-full bg-transparent px-4 py-4 text-white placeholder:text-gray-500 focus:outline-none"
-        />
+      <div className="absolute inset-0 rounded-2xl bg-white/[0.03] opacity-0 blur-xl transition duration-300 group-focus-within:opacity-100" />
+      <div className="relative flex items-center gap-3 rounded-2xl border border-white/10 bg-black/40 px-4 transition duration-300 hover:border-white/15 focus-within:border-white/30">
+        <span className="text-white/35">{icon}</span>
+        {children}
       </div>
+    </div>
+  );
+}
+
+function ParticleField({ particles }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {particles.map((p) => (
+        <motion.span
+          key={p.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+            opacity: p.opacity,
+          }}
+          animate={{
+            x: [0, p.driftX, 0],
+            y: [0, p.driftY, 0],
+            opacity: [p.opacity * 0.7, p.opacity, p.opacity * 0.7],
+          }}
+          transition={{
+            duration: p.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: p.delay,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function GearLogo() {
+  return (
+    <div className="relative flex h-[190px] w-[190px] items-center justify-center">
+      <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
+
+      <svg
+        viewBox="0 0 200 200"
+        className="relative z-10 h-full w-full drop-shadow-[0_0_22px_rgba(255,255,255,0.18)]"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g>
+          <path
+            d="M100 18L114 24L129 19L138 31L154 32L158 48L172 56L169 72L180 84L171 98L177 113L164 123L163 139L147 143L139 157L123 154L111 166L97 159L82 164L71 152L55 151L49 136L34 129L35 113L24 101L31 87L27 72L40 62L42 46L58 41L67 27L83 30L100 18Z"
+            fill="url(#gearFill)"
+            stroke="rgba(255,255,255,0.7)"
+            strokeWidth="2.5"
+          />
+          <circle
+            cx="100"
+            cy="94"
+            r="30"
+            fill="rgba(0,0,0,0.75)"
+            stroke="rgba(255,255,255,0.7)"
+            strokeWidth="2.5"
+          />
+          <circle
+            cx="100"
+            cy="94"
+            r="12"
+            fill="rgba(255,255,255,0.9)"
+            opacity="0.9"
+          />
+        </g>
+
+        <defs>
+          <linearGradient id="gearFill" x1="30" y1="20" x2="170" y2="170">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+            <stop offset="45%" stopColor="rgba(210,210,210,0.88)" />
+            <stop offset="100%" stopColor="rgba(120,120,120,0.95)" />
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   );
 }
