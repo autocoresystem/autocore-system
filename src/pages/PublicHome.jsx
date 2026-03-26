@@ -532,10 +532,10 @@ function AutoCoreLandingPage() {
 
   return (
     <div
-  id="top"
-  className="min-h-screen bg-black text-white"
-  style={{ fontFamily: '"Manrope", ui-sans-serif, system-ui, sans-serif' }}
->
+      id="top"
+      className="min-h-screen bg-black text-white"
+      style={{ fontFamily: '"Manrope", ui-sans-serif, system-ui, sans-serif' }}
+    >
       <FontLoader />
       <ParticleBackground />
 
@@ -545,23 +545,23 @@ function AutoCoreLandingPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex min-h-[76px] items-center justify-between gap-4">
             <a href="#top" className="group flex items-center gap-3">
-  <img
-    src="/autocore-logo.png"
-    alt="AutoCore"
-    className="h-11 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)] transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_28px_rgba(255,0,0,0.82)]"
-  />
-  <div>
-    <p
-      className="text-2xl font-extrabold tracking-tight text-white transition duration-300 group-hover:text-white"
-      style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
-    >
-      Auto<span className="text-red-500">Core</span>
-    </p>
-    <p className="-mt-1 text-[11px] uppercase tracking-[0.38em] text-zinc-400 transition duration-300 group-hover:text-zinc-300">
-      Systems
-    </p>
-  </div>
-</a>
+              <img
+                src="/autocore-logo.png"
+                alt="AutoCore"
+                className="h-11 w-auto drop-shadow-[0_0_20px_rgba(255,0,0,0.6)] transition duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_28px_rgba(255,0,0,0.82)]"
+              />
+              <div>
+                <p
+                  className="text-2xl font-extrabold tracking-tight text-white transition duration-300 group-hover:text-white"
+                  style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                >
+                  Auto<span className="text-red-500">Core</span>
+                </p>
+                <p className="-mt-1 text-[11px] uppercase tracking-[0.38em] text-zinc-400 transition duration-300 group-hover:text-zinc-300">
+                  Systems
+                </p>
+              </div>
+            </a>
 
             <div className="hidden xl:flex xl:items-center xl:gap-4">
               <nav className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
@@ -595,6 +595,22 @@ function AutoCoreLandingPage() {
                   Solicitar cotización
                   <ArrowRight className="h-4 w-4" />
                 </a>
+
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  Login
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  to="/register"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-red-500/30 bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_40px_rgba(255,0,0,0.18)] transition hover:scale-[1.02]"
+                >
+                  Registrarse
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
             </div>
 
@@ -637,6 +653,24 @@ function AutoCoreLandingPage() {
                   Solicitar cotización
                   <ArrowRight className="h-4 w-4" />
                 </a>
+
+                <Link
+                  to="/login"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-3 font-semibold text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Login
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  to="/register"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-4 py-3 font-semibold text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Registrarse
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
             </div>
           )}
@@ -678,14 +712,6 @@ function AutoCoreLandingPage() {
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <a
-                  href="#contacto"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 text-center font-semibold shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.02]"
-                >
-                  Solicitar cotización
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-
                 <Link
                   to="/dashboard"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-center font-semibold text-zinc-100 transition hover:bg-white/10"
@@ -693,6 +719,14 @@ function AutoCoreLandingPage() {
                   Explorar plataforma
                   <ChevronRight className="h-4 w-4" />
                 </Link>
+
+                <a
+                  href="#contacto"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 text-center font-semibold shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.02]"
+                >
+                  Solicitar cotización
+                  <ArrowRight className="h-4 w-4" />
+                </a>
               </div>
 
               <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -1197,14 +1231,14 @@ function AutoCoreLandingPage() {
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <a
-  href="https://mail.google.com/mail/?view=cm&fs=1&to=autocoresystem@gmail.com&su=Solicitud%20de%20informaci%C3%B3n%20-%20AutoCore%20Systems"
-  target="_blank"
-  rel="noreferrer"
-  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold transition hover:scale-[1.02]"
->
-  <FileText className="h-4 w-4" />
-  Escribir por email
-</a>
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=autocoresystem@gmail.com&su=Solicitud%20de%20informaci%C3%B3n%20-%20AutoCore%20Systems"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold transition hover:scale-[1.02]"
+                >
+                  <FileText className="h-4 w-4" />
+                  Escribir por email
+                </a>
                 <a
                   href="https://wa.me/18000000000"
                   className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 font-semibold transition hover:bg-white/10"
@@ -1245,114 +1279,114 @@ function AutoCoreLandingPage() {
               </div>
 
               <form
-  action="https://formsubmit.co/autocoresystem@gmail.com"
-  method="POST"
-  className="space-y-5"
->
-  <input type="hidden" name="_subject" value="Nueva solicitud desde AutoCore Systems" />
-  <input type="hidden" name="_captcha" value="false" />
-  <input type="hidden" name="_template" value="table" />
-  <input type="hidden" name="_next" value="https://autocore-system.onrender.com/?success=true#contacto" />
+                action="https://formsubmit.co/autocoresystem@gmail.com"
+                method="POST"
+                className="space-y-5"
+              >
+                <input type="hidden" name="_subject" value="Nueva solicitud desde AutoCore Systems" />
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="_next" value="https://autocore-system.onrender.com/?success=true#contacto" />
 
-  <div className="grid gap-5 md:grid-cols-2">
-    <div>
-      <label className="mb-2 block text-sm font-medium text-zinc-300">
-        Nombre
-      </label>
-      <input
-        type="text"
-        name="nombre"
-        required
-        placeholder="Tu nombre"
-        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-      />
-    </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-300">
+                      Nombre
+                    </label>
+                    <input
+                      type="text"
+                      name="nombre"
+                      required
+                      placeholder="Tu nombre"
+                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+                    />
+                  </div>
 
-    <div>
-      <label className="mb-2 block text-sm font-medium text-zinc-300">
-        Negocio
-      </label>
-      <input
-        type="text"
-        name="negocio"
-        required
-        placeholder="Nombre del negocio"
-        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-      />
-    </div>
-  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-300">
+                      Negocio
+                    </label>
+                    <input
+                      type="text"
+                      name="negocio"
+                      required
+                      placeholder="Nombre del negocio"
+                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+                    />
+                  </div>
+                </div>
 
-  <div className="grid gap-5 md:grid-cols-2">
-    <div>
-      <label className="mb-2 block text-sm font-medium text-zinc-300">
-        Teléfono
-      </label>
-      <input
-        type="tel"
-        name="telefono"
-        required
-        placeholder="Tu teléfono"
-        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-      />
-    </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-300">
+                      Teléfono
+                    </label>
+                    <input
+                      type="tel"
+                      name="telefono"
+                      required
+                      placeholder="Tu teléfono"
+                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+                    />
+                  </div>
 
-    <div>
-      <label className="mb-2 block text-sm font-medium text-zinc-300">
-        Email
-      </label>
-      <input
-        type="email"
-        name="email"
-        required
-        placeholder="tuemail@negocio.com"
-        className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-      />
-    </div>
-  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-zinc-300">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="tuemail@negocio.com"
+                      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+                    />
+                  </div>
+                </div>
 
-  <div>
-    <label className="mb-2 block text-sm font-medium text-zinc-300">
-      Tipo de negocio
-    </label>
-    <select
-      name="tipo_negocio"
-      required
-      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-red-500/40"
-    >
-      <option value="">Selecciona una opción</option>
-      {businessTypes.map((type) => (
-        <option key={type} value={type} className="bg-zinc-950">
-          {type}
-        </option>
-      ))}
-    </select>
-  </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-zinc-300">
+                    Tipo de negocio
+                  </label>
+                  <select
+                    name="tipo_negocio"
+                    required
+                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-red-500/40"
+                  >
+                    <option value="">Selecciona una opción</option>
+                    {businessTypes.map((type) => (
+                      <option key={type} value={type} className="bg-zinc-950">
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-  <div>
-    <label className="mb-2 block text-sm font-medium text-zinc-300">
-      Mensaje
-    </label>
-    <textarea
-      rows={6}
-      name="mensaje"
-      required
-      placeholder="Cuéntanos qué tipo de solución necesitas para tu negocio"
-      className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
-    />
-  </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-zinc-300">
+                    Mensaje
+                  </label>
+                  <textarea
+                    rows={6}
+                    name="mensaje"
+                    required
+                    placeholder="Cuéntanos qué tipo de solución necesitas para tu negocio"
+                    className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/40"
+                  />
+                </div>
 
-  <button
-    type="submit"
-    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold text-white shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.01]"
-  >
-    Enviar solicitud
-    <ArrowRight className="h-4 w-4" />
-  </button>
+                <button
+                  type="submit"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3.5 font-semibold text-white shadow-[0_18px_60px_rgba(255,0,0,0.22)] transition hover:scale-[1.01]"
+                >
+                  Enviar solicitud
+                  <ArrowRight className="h-4 w-4" />
+                </button>
 
-  <p className="text-sm leading-7 text-zinc-400">
-    Completa el formulario y nuestro equipo te contactará para orientarte sobre la opción más adecuada para tu negocio.
-  </p>
-</form>
+                <p className="text-sm leading-7 text-zinc-400">
+                  Completa el formulario y nuestro equipo te contactará para orientarte sobre la opción más adecuada para tu negocio.
+                </p>
+              </form>
             </div>
           </motion.div>
         </div>
