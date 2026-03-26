@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/apple-touch-icon.png"; // cámbialo si tu archivo tiene otro nombre
 
 export default function Login() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [interactive, setInteractive] = useState(false);
 
   const [form, setForm] = useState({
     email: "",
@@ -15,22 +16,25 @@ export default function Login() {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => setReady(true), 2200);
+    const timer = setTimeout(() => {
+      setInteractive(true);
+    }, 4300);
+
     return () => clearTimeout(timer);
   }, []);
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 55 }, (_, i) => ({
+      Array.from({ length: 70 }, (_, i) => ({
         id: i,
-        size: Math.random() * 3 + 1,
+        size: Math.random() * 2.8 + 1,
         left: Math.random() * 100,
         top: Math.random() * 100,
-        duration: Math.random() * 12 + 10,
-        delay: Math.random() * 4,
-        opacity: Math.random() * 0.5 + 0.2,
-        driftX: Math.random() * 30 - 15,
-        driftY: Math.random() * 30 - 15,
+        duration: Math.random() * 14 + 10,
+        delay: Math.random() * 5,
+        driftX: Math.random() * 60 - 30,
+        driftY: Math.random() * 50 - 25,
+        opacity: Math.random() * 0.45 + 0.2,
       })),
     []
   );
@@ -41,7 +45,7 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!ready) return;
+    if (!interactive) return;
 
     if (form.email === "admin@test.com") {
       navigate("/admin");
@@ -52,90 +56,116 @@ export default function Login() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      <ParticleField particles={particles} />
+      <AnimatedBackground particles={particles} />
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_35%),linear-gradient(to_bottom,rgba(255,255,255,0.03),transparent_30%,transparent_70%,rgba(255,255,255,0.02))]" />
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-6">
+        <div className="relative h-[720px] w-full max-w-[1600px] overflow-hidden rounded-[34px] border border-white/10 bg-black/20 shadow-[0_0_100px_rgba(255,0,0,0.08)] backdrop-blur-sm">
+          {/* halo central */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,30,30,0.10),transparent_22%),radial-gradient(circle_at_50%_55%,rgba(255,255,255,0.05),transparent_30%)]" />
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
-        <div className="relative h-[620px] w-full max-w-7xl overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.02] shadow-[0_0_80px_rgba(255,255,255,0.04)] backdrop-blur-[2px]">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.015] via-transparent to-white/[0.02]" />
-
+          {/* LOGO ANIMATION */}
           <motion.div
-            initial={{ x: 500, opacity: 1 }}
-            animate={{ x: 0 }}
+            initial={{
+              x: 0,
+              y: 0,
+              scale: 0.12,
+              opacity: 0,
+            }}
+            animate={{
+              x: [0, 0, 0, 240, 350, 350],
+              y: [0, 0, 0, 0, 0, 0],
+              scale: [0.12, 1, 1, 1, 0.8, 0.8],
+              opacity: [0, 1, 1, 1, 1, 1],
+            }}
             transition={{
-              duration: 1.45,
+              duration: 4.1,
+              times: [0, 0.18, 0.42, 0.68, 0.86, 1],
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="absolute top-1/2 right-[10%] z-30 hidden -translate-y-1/2 md:block"
+            className="absolute left-1/2 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 md:block"
           >
-            <motion.div
-              animate={{ rotate: [0, 120, 180] }}
-              transition={{
-                duration: 1.6,
-                ease: [0.22, 1, 0.36, 1],
+            <motion.img
+              src={logo}
+              alt="AutoCore logo"
+              className="h-[230px] w-[230px] object-contain drop-shadow-[0_0_35px_rgba(255,40,40,0.25)]"
+              animate={{
+                rotate: [0, 0, 8, -6, 0, 0],
               }}
-              className="relative"
-            >
-              <GearLogo />
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.5, 0.15] }}
-                transition={{ duration: 1.6 }}
-                className="absolute inset-0 rounded-full bg-white/10 blur-3xl"
-              />
-            </motion.div>
+              transition={{
+                duration: 3.6,
+                times: [0, 0.3, 0.5, 0.7, 1, 1],
+                ease: "easeInOut",
+              }}
+            />
           </motion.div>
 
+          {/* BRAND TEXT */}
           <motion.div
-            initial={{ x: 300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+            initial={{ opacity: 0, x: -20, y: 15 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ delay: 3.7, duration: 0.7, ease: "easeOut" }}
+            className="absolute left-[8%] top-[57%] z-20 hidden md:block"
+          >
+            <p className="mb-3 text-xs uppercase tracking-[0.42em] text-white/35">
+              Brand Motion
+            </p>
+            <h1 className="text-6xl font-bold leading-[0.95]">
+              AutoCore
+              <span className="mt-2 block text-white/70">System</span>
+            </h1>
+          </motion.div>
+
+          {/* LOGIN PANEL */}
+          <motion.div
+            initial={{ x: 620, opacity: 0 }}
+            animate={{
+              x: [620, 620, 620, 260, 70, 0],
+              opacity: [0, 0, 1, 1, 1, 1],
+            }}
             transition={{
-              delay: 0.35,
-              duration: 1.15,
+              duration: 4.1,
+              times: [0, 0.28, 0.4, 0.68, 0.86, 1],
               ease: [0.22, 1, 0.36, 1],
             }}
             className="absolute right-0 top-0 z-20 flex h-full w-full items-center justify-center md:w-[58%]"
           >
-            <div className="w-full max-w-xl px-5 md:px-10">
+            <div className="w-full max-w-[620px] px-4 md:px-8">
               <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.35, duration: 0.5 }}
-                className="rounded-[30px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_0_50px_rgba(255,255,255,0.03)] backdrop-blur-xl md:p-8"
+                transition={{ delay: 3.15, duration: 0.55 }}
+                className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-7 shadow-[0_0_80px_rgba(255,255,255,0.03)] backdrop-blur-2xl md:p-10"
               >
                 <motion.div
-                  initial={{ opacity: 0, y: 18 }}
+                  initial={{ opacity: 0, y: 22 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.55, duration: 0.45 }}
+                  transition={{ delay: 3.35, duration: 0.5 }}
                   className="mb-8"
                 >
                   <div className="mb-4 flex items-center gap-3 md:hidden">
-                    <div className="scale-[0.42] origin-left">
-                      <GearLogo />
-                    </div>
-                    <span className="text-lg font-semibold tracking-wide">
-                      AutoCore System
-                    </span>
+                    <img
+                      src={logo}
+                      alt="AutoCore logo"
+                      className="h-12 w-12 object-contain"
+                    />
+                    <span className="text-xl font-semibold">AutoCore System</span>
                   </div>
 
-                  <p className="mb-2 text-xs uppercase tracking-[0.35em] text-white/45">
+                  <p className="mb-2 text-xs uppercase tracking-[0.38em] text-white/40">
                     Secure Access
                   </p>
-                  <h1 className="text-3xl font-bold md:text-4xl">
-                    Bienvenido
-                  </h1>
-                  <p className="mt-3 max-w-md text-sm text-white/55 md:text-base">
-                    Accede a tu sistema con una entrada moderna, limpia y con
-                    identidad visual de AutoCore.
+                  <h2 className="text-4xl font-bold md:text-5xl">Bienvenido</h2>
+                  <p className="mt-4 max-w-lg text-base leading-7 text-white/55">
+                    Accede a tu sistema con una experiencia visual más moderna,
+                    elegante y alineada con la identidad de AutoCore.
                   </p>
                 </motion.div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-5">
                   <motion.div
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.7, duration: 0.4 }}
+                    transition={{ delay: 3.5, duration: 0.45 }}
                   >
                     <InputShell icon={<Mail size={18} />}>
                       <input
@@ -144,16 +174,16 @@ export default function Login() {
                         placeholder="Correo electrónico"
                         value={form.email}
                         onChange={handleChange}
-                        disabled={!ready}
-                        className="w-full bg-transparent px-1 py-4 text-white placeholder:text-white/35 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={!interactive}
+                        className="w-full bg-transparent px-1 py-4 text-white placeholder:text-white/35 focus:outline-none disabled:opacity-60"
                       />
                     </InputShell>
                   </motion.div>
 
                   <motion.div
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.82, duration: 0.4 }}
+                    transition={{ delay: 3.65, duration: 0.45 }}
                   >
                     <InputShell icon={<Lock size={18} />}>
                       <input
@@ -162,14 +192,14 @@ export default function Login() {
                         placeholder="Contraseña"
                         value={form.password}
                         onChange={handleChange}
-                        disabled={!ready}
-                        className="w-full bg-transparent px-1 py-4 text-white placeholder:text-white/35 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={!interactive}
+                        className="w-full bg-transparent px-1 py-4 text-white placeholder:text-white/35 focus:outline-none disabled:opacity-60"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword((v) => !v)}
-                        disabled={!ready}
-                        className="text-white/45 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={!interactive}
+                        className="text-white/45 transition hover:text-white disabled:opacity-50"
                       >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -177,24 +207,24 @@ export default function Login() {
                   </motion.div>
 
                   <motion.div
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.94, duration: 0.4 }}
+                    transition={{ delay: 3.8, duration: 0.45 }}
                     className="flex items-center justify-between px-1 text-sm"
                   >
-                    <label className="flex items-center gap-2 text-white/50">
+                    <label className="flex items-center gap-2 text-white/45">
                       <input
                         type="checkbox"
-                        className="h-4 w-4 accent-white"
-                        disabled={!ready}
+                        className="h-4 w-4 accent-red-600"
+                        disabled={!interactive}
                       />
                       Recordarme
                     </label>
 
                     <button
                       type="button"
-                      className="text-white/50 transition hover:text-white"
-                      disabled={!ready}
+                      disabled={!interactive}
+                      className="text-white/45 transition hover:text-red-300 disabled:opacity-50"
                     >
                       ¿Olvidaste tu contraseña?
                     </button>
@@ -203,15 +233,15 @@ export default function Login() {
                   <motion.button
                     initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 2.05, duration: 0.45 }}
-                    whileHover={ready ? { scale: 1.015 } : {}}
-                    whileTap={ready ? { scale: 0.985 } : {}}
-                    disabled={!ready}
-                    className="group relative mt-3 w-full overflow-hidden rounded-2xl border border-white/15 bg-white px-5 py-4 font-semibold text-black transition disabled:cursor-not-allowed disabled:bg-white/30 disabled:text-black/50"
+                    transition={{ delay: 3.95, duration: 0.45 }}
+                    whileHover={interactive ? { scale: 1.015 } : {}}
+                    whileTap={interactive ? { scale: 0.985 } : {}}
+                    disabled={!interactive}
+                    className="group relative mt-2 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-red-700 via-red-600 to-red-500 px-5 py-4 font-semibold text-white shadow-[0_8px_30px_rgba(255,0,0,0.28)] transition disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/10 to-transparent transition duration-1000 group-hover:translate-x-full" />
+                    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition duration-1000 group-hover:translate-x-full" />
                     <span className="relative z-10">
-                      {ready ? "Iniciar sesión" : "Cargando acceso..."}
+                      {interactive ? "Iniciar sesión" : "Cargando acceso..."}
                     </span>
                   </motion.button>
                 </form>
@@ -219,14 +249,14 @@ export default function Login() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 2.15, duration: 0.5 }}
+                  transition={{ delay: 4.1, duration: 0.5 }}
                   className="mt-7 text-center text-sm text-white/45"
                 >
                   ¿No tienes cuenta?{" "}
                   <button
                     type="button"
-                    className="font-medium text-white transition hover:text-white/75"
-                    disabled={!ready}
+                    disabled={!interactive}
+                    className="font-medium text-red-400 transition hover:text-red-300 disabled:opacity-50"
                   >
                     Regístrate
                   </button>
@@ -235,31 +265,13 @@ export default function Login() {
             </div>
           </motion.div>
 
+          {/* extra left glow */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.2, 0.1] }}
-            transition={{ delay: 1.15, duration: 1.1 }}
-            className="absolute left-[8%] top-1/2 hidden h-[320px] w-[320px] -translate-y-1/2 rounded-full bg-white/10 blur-[120px] md:block"
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.8, duration: 1 }}
+            className="absolute left-[6%] top-[48%] hidden h-[300px] w-[300px] -translate-y-1/2 rounded-full bg-red-600/10 blur-[130px] md:block"
           />
-
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.75, duration: 0.6 }}
-            className="absolute left-[7%] top-1/2 z-10 hidden max-w-[340px] -translate-y-1/2 md:block"
-          >
-            <p className="mb-4 text-xs uppercase tracking-[0.45em] text-white/35">
-              Brand Motion
-            </p>
-            <h2 className="text-5xl font-bold leading-tight text-white/95">
-              AutoCore
-              <span className="block text-white/65">System</span>
-            </h2>
-            <p className="mt-5 text-base leading-7 text-white/45">
-              Una experiencia de acceso distinta. Minimalista, tecnológica y
-              construida alrededor del movimiento de tu marca.
-            </p>
-          </motion.div>
         </div>
       </div>
     </div>
@@ -269,8 +281,8 @@ export default function Login() {
 function InputShell({ icon, children }) {
   return (
     <div className="group relative">
-      <div className="absolute inset-0 rounded-2xl bg-white/[0.03] opacity-0 blur-xl transition duration-300 group-focus-within:opacity-100" />
-      <div className="relative flex items-center gap-3 rounded-2xl border border-white/10 bg-black/40 px-4 transition duration-300 hover:border-white/15 focus-within:border-white/30">
+      <div className="absolute inset-0 rounded-2xl bg-red-500/10 opacity-0 blur-xl transition duration-300 group-focus-within:opacity-100" />
+      <div className="relative flex items-center gap-3 rounded-2xl border border-white/10 bg-black/40 px-4 transition duration-300 hover:border-white/20 focus-within:border-red-500/40">
         <span className="text-white/35">{icon}</span>
         {children}
       </div>
@@ -278,80 +290,43 @@ function InputShell({ icon, children }) {
   );
 }
 
-function ParticleField({ particles }) {
+function AnimatedBackground({ particles }) {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {particles.map((p) => (
-        <motion.span
-          key={p.id}
-          className="absolute rounded-full bg-white"
-          style={{
-            width: p.size,
-            height: p.size,
-            left: `${p.left}%`,
-            top: `${p.top}%`,
-            opacity: p.opacity,
-          }}
-          animate={{
-            x: [0, p.driftX, 0],
-            y: [0, p.driftY, 0],
-            opacity: [p.opacity * 0.7, p.opacity, p.opacity * 0.7],
-          }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: p.delay,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+    <>
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,#000000_0%,#050505_18%,#120000_36%,#1b0303_52%,#050505_72%,#000000_100%)]" />
 
-function GearLogo() {
-  return (
-    <div className="relative flex h-[190px] w-[190px] items-center justify-center">
-      <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,0,0,0.15),transparent_18%),radial-gradient(circle_at_75%_25%,rgba(255,60,60,0.08),transparent_18%),radial-gradient(circle_at_55%_70%,rgba(255,0,0,0.10),transparent_22%),radial-gradient(circle_at_85%_80%,rgba(255,255,255,0.04),transparent_14%)]" />
 
-      <svg
-        viewBox="0 0 200 200"
-        className="relative z-10 h-full w-full drop-shadow-[0_0_22px_rgba(255,255,255,0.18)]"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g>
-          <path
-            d="M100 18L114 24L129 19L138 31L154 32L158 48L172 56L169 72L180 84L171 98L177 113L164 123L163 139L147 143L139 157L123 154L111 166L97 159L82 164L71 152L55 151L49 136L34 129L35 113L24 101L31 87L27 72L40 62L42 46L58 41L67 27L83 30L100 18Z"
-            fill="url(#gearFill)"
-            stroke="rgba(255,255,255,0.7)"
-            strokeWidth="2.5"
-          />
-          <circle
-            cx="100"
-            cy="94"
-            r="30"
-            fill="rgba(0,0,0,0.75)"
-            stroke="rgba(255,255,255,0.7)"
-            strokeWidth="2.5"
-          />
-          <circle
-            cx="100"
-            cy="94"
-            r="12"
-            fill="rgba(255,255,255,0.9)"
-            opacity="0.9"
-          />
-        </g>
+      <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] [background-size:44px_44px]" />
 
-        <defs>
-          <linearGradient id="gearFill" x1="30" y1="20" x2="170" y2="170">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
-            <stop offset="45%" stopColor="rgba(210,210,210,0.88)" />
-            <stop offset="100%" stopColor="rgba(120,120,120,0.95)" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {particles.map((p) => (
+          <motion.span
+            key={p.id}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: p.size,
+              height: p.size,
+              left: `${p.left}%`,
+              top: `${p.top}%`,
+              opacity: p.opacity,
+              boxShadow: "0 0 8px rgba(255,255,255,0.5)",
+            }}
+            animate={{
+              x: [0, p.driftX, 0, -p.driftX * 0.4, 0],
+              y: [0, p.driftY, 0, -p.driftY * 0.3, 0],
+              opacity: [p.opacity * 0.5, p.opacity, p.opacity * 0.8, p.opacity],
+              scale: [1, 1.15, 1, 0.95, 1],
+            }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              delay: p.delay,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+    </>
   );
 }
