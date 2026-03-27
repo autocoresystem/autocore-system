@@ -18,19 +18,18 @@ export default function Login() {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 220),   // logo aparece
-      setTimeout(() => setPhase(2), 680),   // logo crece
-      setTimeout(() => setPhase(3), 1700),  // pausa visual
-      setTimeout(() => setPhase(4), 2200),  // línea de energía
-      setTimeout(() => setPhase(5), 2550),  // panel entra
-      setTimeout(() => setPhase(6), 3150),  // golpe 1
-      setTimeout(() => setPhase(7), 3800),  // golpe 2
-      setTimeout(() => setPhase(8), 4550),  // golpe 3
-      setTimeout(() => setPhase(9), 5350),  // acomodo final
+      setTimeout(() => setPhase(1), 200),   // logo aparece
+      setTimeout(() => setPhase(2), 650),   // logo crece
+      setTimeout(() => setPhase(3), 1700),  // pausa
+      setTimeout(() => setPhase(4), 2250),  // panel entra
+      setTimeout(() => setPhase(5), 3000),  // impacto 1
+      setTimeout(() => setPhase(6), 3650),  // impacto 2
+      setTimeout(() => setPhase(7), 4400),  // impacto 3
+      setTimeout(() => setPhase(8), 5300),  // acomodo logo
       setTimeout(() => {
-        setPhase(10);                       // branding final
+        setPhase(9);                        // branding final
         setInteractive(true);
-      }, 6100),
+      }, 6000),
     ];
 
     return () => timers.forEach(clearTimeout);
@@ -38,16 +37,16 @@ export default function Login() {
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 130 }, (_, i) => ({
+      Array.from({ length: 125 }, (_, i) => ({
         id: i,
-        size: Math.random() * 2.8 + 0.7,
+        size: Math.random() * 2.5 + 0.7,
         left: Math.random() * 100,
         top: Math.random() * 100,
-        duration: 10 + Math.random() * 12,
+        duration: 10 + Math.random() * 10,
         delay: Math.random() * 6,
-        driftX: Math.random() * 90 - 45,
-        driftY: Math.random() * 70 - 35,
-        opacity: 0.16 + Math.random() * 0.55,
+        driftX: Math.random() * 80 - 40,
+        driftY: Math.random() * 60 - 30,
+        opacity: 0.15 + Math.random() * 0.5,
       })),
     []
   );
@@ -67,12 +66,9 @@ export default function Login() {
     }
   };
 
-  const logoAnimation = getLogoAnimation(phase);
-  const panelAnimation = getPanelAnimation(phase);
-  const brandVisible = phase >= 10;
-  const formVisible = phase >= 9;
-  const impactNow = phase >= 6 && phase <= 8;
-  const energyLineVisible = phase === 4 || phase === 5;
+  const impactNow = phase >= 5 && phase <= 7;
+  const brandVisible = phase >= 9;
+  const formVisible = phase >= 8;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
@@ -80,89 +76,34 @@ export default function Login() {
 
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-4">
         <motion.div
-          animate={getStageShake(phase)}
-          transition={getStageShakeTransition(phase)}
-          className="relative h-[790px] w-full max-w-[1700px] overflow-hidden rounded-[40px] border border-white/10 bg-black/20 shadow-[0_0_120px_rgba(255,0,0,0.16)]"
+          animate={getSceneShake(phase)}
+          transition={getSceneShakeTransition(phase)}
+          className="relative h-[800px] w-full max-w-[1700px] overflow-hidden rounded-[40px] border border-white/10 bg-black/20 shadow-[0_0_120px_rgba(255,0,0,0.14)]"
         >
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(255,0,0,0.12),transparent_16%),radial-gradient(circle_at_74%_35%,rgba(255,255,255,0.04),transparent_15%),radial-gradient(circle_at_20%_65%,rgba(255,0,0,0.06),transparent_16%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_52%_48%,rgba(255,0,0,0.10),transparent_18%),radial-gradient(circle_at_78%_35%,rgba(255,255,255,0.04),transparent_16%)]" />
 
-          {/* DESTELLO INICIAL */}
-          <AnimatePresence>
-            {(phase === 1 || phase === 2) && (
-              <motion.div
-                key={`initial-burst-${phase}`}
-                initial={{ opacity: 0, scale: 0.3 }}
-                animate={{ opacity: [0, 0.35, 0], scale: [0.3, 1.35, 1.8] }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="pointer-events-none absolute left-1/2 top-1/2 z-20 hidden h-[260px] w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/20 blur-[70px] md:block"
-              />
-            )}
-          </AnimatePresence>
-
-          {/* ANILLO DE ENERGÍA */}
-          <AnimatePresence>
-            {phase >= 2 && phase <= 3 && (
-              <motion.div
-                initial={{ scale: 0.6, opacity: 0 }}
-                animate={{ scale: [0.6, 1.2, 1.45], opacity: [0, 0.35, 0] }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1.1, ease: "easeOut" }}
-                className="pointer-events-none absolute left-1/2 top-1/2 z-20 hidden h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-300/35 md:block"
-              />
-            )}
-          </AnimatePresence>
-
-          {/* LÍNEA DE ENERGÍA */}
-          <AnimatePresence>
-            {energyLineVisible && (
-              <motion.div
-                initial={{ x: -500, opacity: 0 }}
-                animate={{ x: [0, 320, 760], opacity: [0, 0.9, 0] }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="pointer-events-none absolute left-[44%] top-1/2 z-20 hidden h-[4px] w-[320px] -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-red-400 to-transparent shadow-[0_0_25px_rgba(255,0,0,0.85)] md:block"
-              />
-            )}
-          </AnimatePresence>
-
-          {/* FLASH DE IMPACTO */}
+          {/* SOFT IMPACT FX */}
           <AnimatePresence mode="wait">
             {impactNow && (
               <motion.div
-                key={`flash-${phase}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.18, 0.06, 0] }}
+                key={`impact-${phase}`}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: [0, 0.28, 0], scale: [0.7, 1.45, 1.8] }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-                className="pointer-events-none absolute inset-0 z-40 bg-white"
+                transition={{ duration: 0.55, ease: "easeOut" }}
+                className="pointer-events-none absolute left-[55%] top-1/2 z-10 hidden h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-300/25 md:block"
               />
             )}
           </AnimatePresence>
 
-          {/* SHOCKWAVE */}
-          <AnimatePresence mode="wait">
-            {impactNow && (
-              <motion.div
-                key={`wave-${phase}`}
-                initial={{ scale: 0.45, opacity: 0.42 }}
-                animate={{ scale: 2.2, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.58, ease: "easeOut" }}
-                className="pointer-events-none absolute left-[55%] top-1/2 z-20 hidden h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-300/30 md:block"
-              />
-            )}
-          </AnimatePresence>
-
-          {/* GLOW DE IMPACTO */}
           <AnimatePresence>
             {impactNow && (
               <motion.div
                 initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.45, 0.16] }}
+                animate={{ opacity: [0, 0.35, 0.1] }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.48 }}
-                className="pointer-events-none absolute left-[42%] top-1/2 z-10 hidden h-[260px] w-[500px] -translate-y-1/2 rounded-full bg-red-500/25 blur-[100px] md:block"
+                transition={{ duration: 0.45 }}
+                className="pointer-events-none absolute left-[42%] top-1/2 z-10 hidden h-[260px] w-[500px] -translate-y-1/2 rounded-full bg-red-500/20 blur-[110px] md:block"
               />
             )}
           </AnimatePresence>
@@ -170,95 +111,87 @@ export default function Login() {
           {/* LOGO PRINCIPAL */}
           <motion.div
             className="absolute left-1/2 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 md:block"
-            animate={logoAnimation}
-            transition={logoAnimation.transition}
+            animate={getLogoMotion(phase)}
+            transition={getLogoMotionTransition(phase)}
           >
             <motion.img
               src={logo}
               alt="AutoCore logo"
-              className="h-[255px] w-[255px] object-contain drop-shadow-[0_0_60px_rgba(255,40,40,0.42)]"
+              className="h-[245px] w-[245px] object-contain drop-shadow-[0_0_55px_rgba(255,40,40,0.35)]"
               animate={getLogoRotation(phase)}
               transition={getLogoRotationTransition(phase)}
             />
           </motion.div>
 
-          {/* BRAND FINAL MÁS PROFESIONAL */}
+          {/* BRAND LEFT FINAL */}
           <AnimatePresence>
             {brandVisible && (
               <motion.div
-                initial={{ opacity: 0, x: -30, y: 14, scale: 0.96 }}
-                animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                initial={{ opacity: 0, x: -24, y: 10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.65, ease: "easeOut" }}
-                className="absolute left-[6%] top-[31%] z-20 hidden md:block"
+                transition={{ duration: 0.55, ease: "easeOut" }}
+                className="absolute left-[6%] top-[27%] z-20 hidden max-w-[520px] md:block"
               >
                 <div className="flex items-center gap-5">
                   <motion.img
                     src={logo}
-                    alt="AutoCore brand logo"
-                    className="h-[98px] w-[98px] object-contain drop-shadow-[0_0_35px_rgba(255,40,40,0.28)]"
-                    initial={{ rotate: -10, scale: 0.9 }}
-                    animate={{ rotate: 0, scale: 1 }}
-                    transition={{ duration: 0.45 }}
+                    alt="AutoCore brand"
+                    className="h-[92px] w-[92px] object-contain drop-shadow-[0_0_30px_rgba(255,40,40,0.26)]"
+                    initial={{ scale: 0.92, rotate: -8 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ duration: 0.45, ease: "easeOut" }}
                   />
                   <div>
-                    <p className="mb-2 text-xs uppercase tracking-[0.45em] text-white/35">
+                    <p className="mb-2 text-xs uppercase tracking-[0.42em] text-white/35">
                       AutoCore Identity
                     </p>
                     <h1 className="text-5xl font-bold leading-[0.95]">
                       AutoCore
-                      <span className="mt-2 block bg-gradient-to-r from-white to-white/65 bg-clip-text text-transparent">
-                        System
-                      </span>
+                      <span className="mt-2 block text-white/72">System</span>
                     </h1>
                   </div>
                 </div>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 14 }}
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.18, duration: 0.55 }}
-                  className="mt-8 max-w-[530px]"
+                  transition={{ delay: 0.14, duration: 0.45 }}
+                  className="mt-10"
                 >
-                  <p className="text-sm uppercase tracking-[0.38em] text-red-300/70">
+                  <p className="text-sm uppercase tracking-[0.36em] text-red-300/70">
                     Bienvenida
                   </p>
-                  <h3 className="mt-3 text-2xl font-semibold text-white/95">
-                    Una entrada visual más pulida, mecánica y profesional
+
+                  <h3 className="mt-4 max-w-[500px] text-[30px] font-semibold leading-tight text-white/95">
+                    Una experiencia visual más fluida, elegante y con presencia real
                   </h3>
-                  <p className="mt-4 text-base leading-8 text-white/58">
-                    AutoCore combina movimiento, identidad y presencia para
-                    ofrecer una experiencia de acceso más refinada. El sistema
-                    se siente vivo, fuerte y elegante desde el primer impacto.
+
+                  <p className="mt-5 max-w-[500px] text-[15px] leading-8 text-white/58">
+                    AutoCore combina movimiento, identidad y precisión para crear
+                    una entrada más refinada. Todo se siente más natural, más
+                    premium y más alineado con una marca moderna.
                   </p>
 
-                  <div className="mt-7 grid grid-cols-2 gap-4">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
-                      <p className="text-xs uppercase tracking-[0.25em] text-white/35">
-                        Motion
-                      </p>
-                      <p className="mt-2 text-lg font-semibold text-white/90">
-                        Giro mecánico
-                      </p>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
-                      <p className="text-xs uppercase tracking-[0.25em] text-white/35">
-                        Finish
-                      </p>
-                      <p className="mt-2 text-lg font-semibold text-white/90">
-                        Más profesional
-                      </p>
-                    </div>
+                  <div className="mt-8 grid grid-cols-2 gap-4">
+                    <InfoCard
+                      title="Movimiento"
+                      value="Más dinámico"
+                    />
+                    <InfoCard
+                      title="Presencia"
+                      value="Más profesional"
+                    />
                   </div>
                 </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* PANEL LOGIN */}
+          {/* LOGIN PANEL */}
           <motion.div
-            animate={panelAnimation}
-            transition={panelAnimation.transition}
+            animate={getPanelMotion(phase)}
+            transition={getPanelMotionTransition(phase)}
             className="absolute right-0 top-0 z-20 flex h-full w-full items-center justify-center md:w-[56%]"
           >
             <div className="w-full max-w-[650px] px-4 md:px-8">
@@ -270,9 +203,9 @@ export default function Login() {
                 <AnimatePresence>
                   {formVisible && (
                     <motion.div
-                      initial={{ opacity: 0, y: 18 }}
+                      initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5 }}
+                      transition={{ duration: 0.45 }}
                     >
                       <div className="mb-8">
                         <div className="mb-4 flex items-center gap-3 md:hidden">
@@ -294,8 +227,7 @@ export default function Login() {
                         </h2>
                         <p className="mt-4 max-w-lg text-base leading-7 text-white/55">
                           Inicia sesión en tu sistema con una experiencia más
-                          limpia, más sólida y más alineada con el nivel visual
-                          de AutoCore.
+                          limpia, más natural y más alineada con el nivel visual de AutoCore.
                         </p>
                       </div>
 
@@ -386,202 +318,138 @@ export default function Login() {
   );
 }
 
-function getLogoAnimation(phase) {
+function getLogoMotion(phase) {
   switch (phase) {
     case 0:
-      return {
-        x: 0,
-        y: 0,
-        scale: 0.12,
-        opacity: 0,
-        transition: { duration: 0.2, ease: "easeOut" },
-      };
+      return { x: 0, y: 0, scale: 0.14, opacity: 0 };
     case 1:
-      return {
-        x: 0,
-        y: 0,
-        scale: 0.12,
-        opacity: 1,
-        transition: { duration: 0.25, ease: "easeOut" },
-      };
+      return { x: 0, y: 0, scale: 0.14, opacity: 1 };
     case 2:
-      return {
-        x: 0,
-        y: 0,
-        scale: 1.08,
-        opacity: 1,
-        transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
-      };
+      return { x: 0, y: 0, scale: 1.02, opacity: 1 };
     case 3:
     case 4:
+      return { x: 0, y: 0, scale: 1.02, opacity: 1 };
     case 5:
-      return {
-        x: 0,
-        y: 0,
-        scale: 1.08,
-        opacity: 1,
-        transition: { duration: 0.35, ease: "easeOut" },
-      };
+      return { x: 150, y: 0, scale: 1.01, opacity: 1 };
     case 6:
-      return {
-        x: 185,
-        y: 0,
-        scale: 1.03,
-        opacity: 1,
-        transition: { duration: 0.34, ease: [0.22, 1, 0.36, 1] },
-      };
+      return { x: 255, y: 0, scale: 0.97, opacity: 1 };
     case 7:
-      return {
-        x: 290,
-        y: 0,
-        scale: 0.98,
-        opacity: 1,
-        transition: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
-      };
+      return { x: 360, y: 0, scale: 0.92, opacity: 1 };
     case 8:
-      return {
-        x: 395,
-        y: 0,
-        scale: 0.92,
-        opacity: 1,
-        transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
-      };
+      return { x: 455, y: -52, scale: 0.78, opacity: 1 };
     case 9:
-      return {
-        x: 470,
-        y: -65,
-        scale: 0.78,
-        opacity: 1,
-        transition: { duration: 0.74, ease: [0.22, 1, 0.36, 1] },
-      };
-    case 10:
-      return {
-        x: 470,
-        y: -65,
-        scale: 0.78,
-        opacity: 0,
-        transition: { duration: 0.3, ease: "easeOut" },
-      };
+      return { x: 455, y: -52, scale: 0.78, opacity: 0 };
     default:
       return {};
   }
 }
 
+function getLogoMotionTransition(phase) {
+  if (phase === 2) {
+    return { duration: 0.95, ease: [0.22, 1, 0.36, 1] };
+  }
+  if (phase >= 5 && phase <= 8) {
+    return { type: "spring", stiffness: 120, damping: 18, mass: 0.9 };
+  }
+  if (phase === 9) {
+    return { duration: 0.3, ease: "easeOut" };
+  }
+  return { duration: 0.3, ease: "easeOut" };
+}
+
 function getLogoRotation(phase) {
   switch (phase) {
-    case 0:
-    case 1:
-      return { rotate: 0 };
     case 2:
+      return { rotate: 70 };
     case 3:
+      return { rotate: 115 };
     case 4:
+      return { rotate: 165 };
     case 5:
-      return { rotate: [0, 40, 75, 110] };
+      return { rotate: 250 };
     case 6:
-      return { rotate: [110, 190, 250] };
+      return { rotate: 340 };
     case 7:
-      return { rotate: [250, 320, 390] };
+      return { rotate: 430 };
     case 8:
-      return { rotate: [390, 450, 520] };
+      return { rotate: 500 };
     case 9:
-      return { rotate: [520, 560] };
-    case 10:
-      return { rotate: 560 };
+      return { rotate: 500 };
     default:
       return { rotate: 0 };
   }
 }
 
 function getLogoRotationTransition(phase) {
-  switch (phase) {
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-      return { duration: 1.6, ease: "linear" };
-    case 6:
-    case 7:
-    case 8:
-      return { duration: 0.35, ease: [0.22, 1, 0.36, 1] };
-    case 9:
-      return { duration: 0.7, ease: "easeOut" };
-    default:
-      return { duration: 0.2 };
+  if (phase >= 2 && phase <= 5) {
+    return { duration: 0.7, ease: [0.22, 1, 0.36, 1] };
   }
+  if (phase >= 6 && phase <= 8) {
+    return { type: "spring", stiffness: 100, damping: 16, mass: 0.9 };
+  }
+  return { duration: 0.3, ease: "easeOut" };
 }
 
-function getPanelAnimation(phase) {
+function getPanelMotion(phase) {
   switch (phase) {
     case 0:
     case 1:
     case 2:
     case 3:
+      return { x: 1040, opacity: 0 };
     case 4:
-      return {
-        x: 1040,
-        opacity: 0,
-        transition: { duration: 0.2, ease: "easeOut" },
-      };
+      return { x: 760, opacity: 1 };
     case 5:
-      return {
-        x: 680,
-        opacity: 1,
-        transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
-      };
+      return { x: 610, opacity: 1 };
     case 6:
-      return {
-        x: 535,
-        opacity: 1,
-        transition: { duration: 0.34, ease: [0.34, 1.56, 0.64, 1] },
-      };
+      return { x: 430, opacity: 1 };
     case 7:
-      return {
-        x: 385,
-        opacity: 1,
-        transition: { duration: 0.36, ease: [0.34, 1.56, 0.64, 1] },
-      };
+      return { x: 210, opacity: 1 };
     case 8:
-      return {
-        x: 180,
-        opacity: 1,
-        transition: { duration: 0.42, ease: [0.34, 1.56, 0.64, 1] },
-      };
     case 9:
-    case 10:
-      return {
-        x: 0,
-        opacity: 1,
-        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-      };
+      return { x: 0, opacity: 1 };
     default:
       return {};
   }
 }
 
+function getPanelMotionTransition(phase) {
+  if (phase === 4) {
+    return { type: "spring", stiffness: 90, damping: 18 };
+  }
+  if (phase >= 5 && phase <= 7) {
+    return { type: "spring", stiffness: 120, damping: 16, mass: 0.95 };
+  }
+  if (phase >= 8) {
+    return { type: "spring", stiffness: 90, damping: 16 };
+  }
+  return { duration: 0.25, ease: "easeOut" };
+}
+
 function getPanelShake(phase) {
-  if (phase === 6) return { x: [0, 10, -8, 5, 0], y: [0, -2, 1, 0] };
-  if (phase === 7) return { x: [0, 14, -9, 6, 0], y: [0, -3, 1, 0] };
-  if (phase === 8) return { x: [0, 18, -11, 7, 0], y: [0, -4, 2, 0] };
+  if (phase === 5) return { x: [0, 7, -4, 2, 0], y: [0, -1, 0, 0] };
+  if (phase === 6) return { x: [0, 10, -6, 3, 0], y: [0, -2, 1, 0] };
+  if (phase === 7) return { x: [0, 13, -8, 4, 0], y: [0, -2, 1, 0] };
   return { x: 0, y: 0 };
 }
 
 function getPanelShakeTransition(phase) {
-  if (phase >= 6 && phase <= 8) {
-    return { duration: 0.36, ease: "easeInOut" };
+  if (phase >= 5 && phase <= 7) {
+    return { duration: 0.32, ease: "easeInOut" };
   }
   return { duration: 0.2 };
 }
 
-function getStageShake(phase) {
+function getSceneShake(phase) {
+  if (phase === 5) return { x: [0, -2, 1, 0] };
   if (phase === 6) return { x: [0, -3, 2, 0] };
-  if (phase === 7) return { x: [0, -4, 3, 0] };
-  if (phase === 8) return { x: [0, -5, 3, 0] };
+  if (phase === 7) return { x: [0, -4, 2, 0] };
   return { x: 0 };
 }
 
-function getStageShakeTransition(phase) {
-  if (phase >= 6 && phase <= 8) {
-    return { duration: 0.3, ease: "easeInOut" };
+function getSceneShakeTransition(phase) {
+  if (phase >= 5 && phase <= 7) {
+    return { duration: 0.26, ease: "easeInOut" };
   }
   return { duration: 0.2 };
 }
@@ -594,6 +462,19 @@ function InputShell({ icon, children }) {
         <span className="text-white/35">{icon}</span>
         {children}
       </div>
+    </div>
+  );
+}
+
+function InfoCard({ title, value }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
+      <p className="text-xs uppercase tracking-[0.25em] text-white/35">
+        {title}
+      </p>
+      <p className="mt-2 text-lg font-semibold text-white/90">
+        {value}
+      </p>
     </div>
   );
 }
@@ -628,7 +509,7 @@ function AnimatedBackground({ particles, phase }) {
               x: [0, p.driftX, 0, -p.driftX * 0.45, 0],
               y: [0, p.driftY, 0, -p.driftY * 0.35, 0],
               opacity: [p.opacity * 0.45, p.opacity, p.opacity * 0.8, p.opacity],
-              scale: [1, 1.25, 1, 0.92, 1],
+              scale: [1, 1.2, 1, 0.94, 1],
             }}
             transition={{
               duration: p.duration,
@@ -644,15 +525,15 @@ function AnimatedBackground({ particles, phase }) {
 }
 
 function getBackgroundZoom(phase) {
-  if (phase === 6) return { scale: [1, 1.015, 1] };
-  if (phase === 7) return { scale: [1, 1.02, 1] };
-  if (phase === 8) return { scale: [1, 1.03, 1] };
+  if (phase === 5) return { scale: 1.012 };
+  if (phase === 6) return { scale: 1.018 };
+  if (phase === 7) return { scale: 1.022 };
   return { scale: 1 };
 }
 
 function getBackgroundZoomTransition(phase) {
-  if (phase >= 6 && phase <= 8) {
-    return { duration: 0.42, ease: "easeInOut" };
+  if (phase >= 5 && phase <= 7) {
+    return { duration: 0.38, ease: "easeInOut" };
   }
-  return { duration: 0.2 };
+  return { duration: 0.25 };
 }
