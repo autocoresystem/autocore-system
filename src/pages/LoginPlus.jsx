@@ -20,13 +20,13 @@ export default function Login() {
     const timers = [
       setTimeout(() => setPhase(1), 220),   // logo aparece
       setTimeout(() => setPhase(2), 680),   // logo crece
-      setTimeout(() => setPhase(3), 1700),  // pausa / glow
+      setTimeout(() => setPhase(3), 1700),  // pausa visual
       setTimeout(() => setPhase(4), 2200),  // línea de energía
       setTimeout(() => setPhase(5), 2550),  // panel entra
       setTimeout(() => setPhase(6), 3150),  // golpe 1
       setTimeout(() => setPhase(7), 3800),  // golpe 2
       setTimeout(() => setPhase(8), 4550),  // golpe 3
-      setTimeout(() => setPhase(9), 5350),  // acomodo logo
+      setTimeout(() => setPhase(9), 5350),  // acomodo final
       setTimeout(() => {
         setPhase(10);                       // branding final
         setInteractive(true);
@@ -100,7 +100,7 @@ export default function Login() {
             )}
           </AnimatePresence>
 
-          {/* ANILLO DE ENERGÍA INICIAL */}
+          {/* ANILLO DE ENERGÍA */}
           <AnimatePresence>
             {phase >= 2 && phase <= 3 && (
               <motion.div
@@ -132,9 +132,9 @@ export default function Login() {
               <motion.div
                 key={`flash-${phase}`}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.2, 0.07, 0] }}
+                animate={{ opacity: [0, 0.18, 0.06, 0] }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.42 }}
+                transition={{ duration: 0.4 }}
                 className="pointer-events-none absolute inset-0 z-40 bg-white"
               />
             )}
@@ -146,9 +146,9 @@ export default function Login() {
               <motion.div
                 key={`wave-${phase}`}
                 initial={{ scale: 0.45, opacity: 0.42 }}
-                animate={{ scale: 2.3, opacity: 0 }}
+                animate={{ scale: 2.2, opacity: 0 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.62, ease: "easeOut" }}
+                transition={{ duration: 0.58, ease: "easeOut" }}
                 className="pointer-events-none absolute left-[55%] top-1/2 z-20 hidden h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-300/30 md:block"
               />
             )}
@@ -159,9 +159,9 @@ export default function Login() {
             {impactNow && (
               <motion.div
                 initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.5, 0.18] }}
+                animate={{ opacity: [0, 0.45, 0.16] }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.48 }}
                 className="pointer-events-none absolute left-[42%] top-1/2 z-10 hidden h-[260px] w-[500px] -translate-y-1/2 rounded-full bg-red-500/25 blur-[100px] md:block"
               />
             )}
@@ -177,12 +177,12 @@ export default function Login() {
               src={logo}
               alt="AutoCore logo"
               className="h-[255px] w-[255px] object-contain drop-shadow-[0_0_60px_rgba(255,40,40,0.42)]"
-              animate={getLogoSpin(phase)}
-              transition={getLogoSpinTransition(phase)}
+              animate={getLogoRotation(phase)}
+              transition={getLogoRotationTransition(phase)}
             />
           </motion.div>
 
-          {/* BRAND FINAL */}
+          {/* BRAND FINAL MÁS PROFESIONAL */}
           <AnimatePresence>
             {brandVisible && (
               <motion.div
@@ -190,16 +190,16 @@ export default function Login() {
                 animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.65, ease: "easeOut" }}
-                className="absolute left-[6%] top-[32%] z-20 hidden md:block"
+                className="absolute left-[6%] top-[31%] z-20 hidden md:block"
               >
                 <div className="flex items-center gap-5">
                   <motion.img
                     src={logo}
                     alt="AutoCore brand logo"
-                    className="h-[100px] w-[100px] object-contain drop-shadow-[0_0_35px_rgba(255,40,40,0.32)]"
+                    className="h-[98px] w-[98px] object-contain drop-shadow-[0_0_35px_rgba(255,40,40,0.28)]"
                     initial={{ rotate: -10, scale: 0.9 }}
                     animate={{ rotate: 0, scale: 1 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.45 }}
                   />
                   <div>
                     <p className="mb-2 text-xs uppercase tracking-[0.45em] text-white/35">
@@ -207,7 +207,9 @@ export default function Login() {
                     </p>
                     <h1 className="text-5xl font-bold leading-[0.95]">
                       AutoCore
-                      <span className="mt-2 block text-white/72">System</span>
+                      <span className="mt-2 block bg-gradient-to-r from-white to-white/65 bg-clip-text text-transparent">
+                        System
+                      </span>
                     </h1>
                   </div>
                 </div>
@@ -216,18 +218,18 @@ export default function Login() {
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.18, duration: 0.55 }}
-                  className="mt-8 max-w-[520px]"
+                  className="mt-8 max-w-[530px]"
                 >
                   <p className="text-sm uppercase tracking-[0.38em] text-red-300/70">
                     Bienvenida
                   </p>
                   <h3 className="mt-3 text-2xl font-semibold text-white/95">
-                    Una entrada pensada para sentirse poderosa desde el primer segundo
+                    Una entrada visual más pulida, mecánica y profesional
                   </h3>
                   <p className="mt-4 text-base leading-8 text-white/58">
-                    AutoCore combina presencia visual, movimiento e identidad de
-                    marca para ofrecer una experiencia más moderna, más fuerte y
-                    mucho más memorable que un login tradicional.
+                    AutoCore combina movimiento, identidad y presencia para
+                    ofrecer una experiencia de acceso más refinada. El sistema
+                    se siente vivo, fuerte y elegante desde el primer impacto.
                   </p>
 
                   <div className="mt-7 grid grid-cols-2 gap-4">
@@ -236,15 +238,15 @@ export default function Login() {
                         Motion
                       </p>
                       <p className="mt-2 text-lg font-semibold text-white/90">
-                        Entrada cinemática
+                        Giro mecánico
                       </p>
                     </div>
                     <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
                       <p className="text-xs uppercase tracking-[0.25em] text-white/35">
-                        Branding
+                        Finish
                       </p>
                       <p className="mt-2 text-lg font-semibold text-white/90">
-                        Identidad premium
+                        Más profesional
                       </p>
                     </div>
                   </div>
@@ -291,8 +293,9 @@ export default function Login() {
                           Bienvenido
                         </h2>
                         <p className="mt-4 max-w-lg text-base leading-7 text-white/55">
-                          Inicia sesión en tu sistema con una experiencia de acceso
-                          dinámica, moderna y alineada con la energía de AutoCore.
+                          Inicia sesión en tu sistema con una experiencia más
+                          limpia, más sólida y más alineada con el nivel visual
+                          de AutoCore.
                         </p>
                       </div>
 
@@ -464,18 +467,47 @@ function getLogoAnimation(phase) {
   }
 }
 
-function getLogoSpin(phase) {
-  if (phase === 6) return { rotate: [0, 10, -6, 0] };
-  if (phase === 7) return { rotate: [0, -10, 5, 0] };
-  if (phase === 8) return { rotate: [0, 8, -4, 0] };
-  return { rotate: 0 };
+function getLogoRotation(phase) {
+  switch (phase) {
+    case 0:
+    case 1:
+      return { rotate: 0 };
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      return { rotate: [0, 40, 75, 110] };
+    case 6:
+      return { rotate: [110, 190, 250] };
+    case 7:
+      return { rotate: [250, 320, 390] };
+    case 8:
+      return { rotate: [390, 450, 520] };
+    case 9:
+      return { rotate: [520, 560] };
+    case 10:
+      return { rotate: 560 };
+    default:
+      return { rotate: 0 };
+  }
 }
 
-function getLogoSpinTransition(phase) {
-  if (phase >= 6 && phase <= 8) {
-    return { duration: 0.32, ease: "easeInOut" };
+function getLogoRotationTransition(phase) {
+  switch (phase) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      return { duration: 1.6, ease: "linear" };
+    case 6:
+    case 7:
+    case 8:
+      return { duration: 0.35, ease: [0.22, 1, 0.36, 1] };
+    case 9:
+      return { duration: 0.7, ease: "easeOut" };
+    default:
+      return { duration: 0.2 };
   }
-  return { duration: 0.2 };
 }
 
 function getPanelAnimation(phase) {
