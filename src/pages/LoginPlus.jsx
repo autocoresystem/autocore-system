@@ -18,18 +18,19 @@ export default function Login() {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 200),   // logo aparece
-      setTimeout(() => setPhase(2), 650),   // logo crece
-      setTimeout(() => setPhase(3), 1650),  // pausa dramática
-      setTimeout(() => setPhase(4), 2150),  // login entra derecha
-      setTimeout(() => setPhase(5), 2750),  // golpe 1
-      setTimeout(() => setPhase(6), 3350),  // golpe 2
-      setTimeout(() => setPhase(7), 4050),  // golpe 3
-      setTimeout(() => setPhase(8), 4850),  // logo acomoda
+      setTimeout(() => setPhase(1), 220),   // logo aparece
+      setTimeout(() => setPhase(2), 680),   // logo crece
+      setTimeout(() => setPhase(3), 1700),  // pausa / glow
+      setTimeout(() => setPhase(4), 2200),  // línea de energía
+      setTimeout(() => setPhase(5), 2550),  // panel entra
+      setTimeout(() => setPhase(6), 3150),  // golpe 1
+      setTimeout(() => setPhase(7), 3800),  // golpe 2
+      setTimeout(() => setPhase(8), 4550),  // golpe 3
+      setTimeout(() => setPhase(9), 5350),  // acomodo logo
       setTimeout(() => {
-        setPhase(9);                        // branding final
+        setPhase(10);                       // branding final
         setInteractive(true);
-      }, 5450),
+      }, 6100),
     ];
 
     return () => timers.forEach(clearTimeout);
@@ -37,7 +38,7 @@ export default function Login() {
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 120 }, (_, i) => ({
+      Array.from({ length: 130 }, (_, i) => ({
         id: i,
         size: Math.random() * 2.8 + 0.7,
         left: Math.random() * 100,
@@ -46,7 +47,7 @@ export default function Login() {
         delay: Math.random() * 6,
         driftX: Math.random() * 90 - 45,
         driftY: Math.random() * 70 - 35,
-        opacity: 0.18 + Math.random() * 0.55,
+        opacity: 0.16 + Math.random() * 0.55,
       })),
     []
   );
@@ -68,16 +69,103 @@ export default function Login() {
 
   const logoAnimation = getLogoAnimation(phase);
   const panelAnimation = getPanelAnimation(phase);
-  const brandVisible = phase >= 9;
-  const formVisible = phase >= 8;
+  const brandVisible = phase >= 10;
+  const formVisible = phase >= 9;
+  const impactNow = phase >= 6 && phase <= 8;
+  const energyLineVisible = phase === 4 || phase === 5;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      <AnimatedBackground particles={particles} />
+      <AnimatedBackground particles={particles} phase={phase} />
 
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-4">
-        <div className="relative h-[790px] w-full max-w-[1700px] overflow-hidden rounded-[40px] border border-white/10 bg-black/20 shadow-[0_0_120px_rgba(255,0,0,0.12)]">
+        <motion.div
+          animate={getStageShake(phase)}
+          transition={getStageShakeTransition(phase)}
+          className="relative h-[790px] w-full max-w-[1700px] overflow-hidden rounded-[40px] border border-white/10 bg-black/20 shadow-[0_0_120px_rgba(255,0,0,0.16)]"
+        >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(255,0,0,0.12),transparent_16%),radial-gradient(circle_at_74%_35%,rgba(255,255,255,0.04),transparent_15%),radial-gradient(circle_at_20%_65%,rgba(255,0,0,0.06),transparent_16%)]" />
+
+          {/* DESTELLO INICIAL */}
+          <AnimatePresence>
+            {(phase === 1 || phase === 2) && (
+              <motion.div
+                key={`initial-burst-${phase}`}
+                initial={{ opacity: 0, scale: 0.3 }}
+                animate={{ opacity: [0, 0.35, 0], scale: [0.3, 1.35, 1.8] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="pointer-events-none absolute left-1/2 top-1/2 z-20 hidden h-[260px] w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/20 blur-[70px] md:block"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* ANILLO DE ENERGÍA INICIAL */}
+          <AnimatePresence>
+            {phase >= 2 && phase <= 3 && (
+              <motion.div
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: [0.6, 1.2, 1.45], opacity: [0, 0.35, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.1, ease: "easeOut" }}
+                className="pointer-events-none absolute left-1/2 top-1/2 z-20 hidden h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-300/35 md:block"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* LÍNEA DE ENERGÍA */}
+          <AnimatePresence>
+            {energyLineVisible && (
+              <motion.div
+                initial={{ x: -500, opacity: 0 }}
+                animate={{ x: [0, 320, 760], opacity: [0, 0.9, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="pointer-events-none absolute left-[44%] top-1/2 z-20 hidden h-[4px] w-[320px] -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-red-400 to-transparent shadow-[0_0_25px_rgba(255,0,0,0.85)] md:block"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* FLASH DE IMPACTO */}
+          <AnimatePresence mode="wait">
+            {impactNow && (
+              <motion.div
+                key={`flash-${phase}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.2, 0.07, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.42 }}
+                className="pointer-events-none absolute inset-0 z-40 bg-white"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* SHOCKWAVE */}
+          <AnimatePresence mode="wait">
+            {impactNow && (
+              <motion.div
+                key={`wave-${phase}`}
+                initial={{ scale: 0.45, opacity: 0.42 }}
+                animate={{ scale: 2.3, opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.62, ease: "easeOut" }}
+                className="pointer-events-none absolute left-[55%] top-1/2 z-20 hidden h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-300/30 md:block"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* GLOW DE IMPACTO */}
+          <AnimatePresence>
+            {impactNow && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.5, 0.18] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="pointer-events-none absolute left-[42%] top-1/2 z-10 hidden h-[260px] w-[500px] -translate-y-1/2 rounded-full bg-red-500/25 blur-[100px] md:block"
+              />
+            )}
+          </AnimatePresence>
 
           {/* LOGO PRINCIPAL */}
           <motion.div
@@ -88,51 +176,79 @@ export default function Login() {
             <motion.img
               src={logo}
               alt="AutoCore logo"
-              className="h-[255px] w-[255px] object-contain drop-shadow-[0_0_55px_rgba(255,40,40,0.36)]"
+              className="h-[255px] w-[255px] object-contain drop-shadow-[0_0_60px_rgba(255,40,40,0.42)]"
               animate={getLogoSpin(phase)}
               transition={getLogoSpinTransition(phase)}
             />
           </motion.div>
 
-          {/* TRAIL / IMPACT LIGHT */}
-          <AnimatePresence>
-            {phase >= 5 && phase <= 8 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.45 }}
-                exit={{ opacity: 0 }}
-                className="pointer-events-none absolute left-[42%] top-1/2 z-10 hidden h-[240px] w-[420px] -translate-y-1/2 rounded-full bg-red-500/20 blur-[90px] md:block"
-              />
-            )}
-          </AnimatePresence>
-
           {/* BRAND FINAL */}
           <AnimatePresence>
             {brandVisible && (
               <motion.div
-                initial={{ opacity: 0, x: -28, scale: 0.96 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
+                initial={{ opacity: 0, x: -30, y: 14, scale: 0.96 }}
+                animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.55, ease: "easeOut" }}
-                className="absolute left-[6%] top-1/2 z-20 hidden -translate-y-1/2 md:flex md:items-center md:gap-6"
+                transition={{ duration: 0.65, ease: "easeOut" }}
+                className="absolute left-[6%] top-[32%] z-20 hidden md:block"
               >
-                <motion.img
-                  src={logo}
-                  alt="AutoCore brand logo"
-                  className="h-[98px] w-[98px] object-contain drop-shadow-[0_0_35px_rgba(255,40,40,0.30)]"
-                  initial={{ rotate: -10, scale: 0.9 }}
-                  animate={{ rotate: 0, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                />
-                <div>
-                  <p className="mb-2 text-xs uppercase tracking-[0.45em] text-white/35">
-                    AutoCore Identity
-                  </p>
-                  <h1 className="text-5xl font-bold leading-[0.95]">
-                    AutoCore
-                    <span className="mt-2 block text-white/72">System</span>
-                  </h1>
+                <div className="flex items-center gap-5">
+                  <motion.img
+                    src={logo}
+                    alt="AutoCore brand logo"
+                    className="h-[100px] w-[100px] object-contain drop-shadow-[0_0_35px_rgba(255,40,40,0.32)]"
+                    initial={{ rotate: -10, scale: 0.9 }}
+                    animate={{ rotate: 0, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                  />
+                  <div>
+                    <p className="mb-2 text-xs uppercase tracking-[0.45em] text-white/35">
+                      AutoCore Identity
+                    </p>
+                    <h1 className="text-5xl font-bold leading-[0.95]">
+                      AutoCore
+                      <span className="mt-2 block text-white/72">System</span>
+                    </h1>
+                  </div>
                 </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18, duration: 0.55 }}
+                  className="mt-8 max-w-[520px]"
+                >
+                  <p className="text-sm uppercase tracking-[0.38em] text-red-300/70">
+                    Bienvenida
+                  </p>
+                  <h3 className="mt-3 text-2xl font-semibold text-white/95">
+                    Una entrada pensada para sentirse poderosa desde el primer segundo
+                  </h3>
+                  <p className="mt-4 text-base leading-8 text-white/58">
+                    AutoCore combina presencia visual, movimiento e identidad de
+                    marca para ofrecer una experiencia más moderna, más fuerte y
+                    mucho más memorable que un login tradicional.
+                  </p>
+
+                  <div className="mt-7 grid grid-cols-2 gap-4">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
+                      <p className="text-xs uppercase tracking-[0.25em] text-white/35">
+                        Motion
+                      </p>
+                      <p className="mt-2 text-lg font-semibold text-white/90">
+                        Entrada cinemática
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
+                      <p className="text-xs uppercase tracking-[0.25em] text-white/35">
+                        Branding
+                      </p>
+                      <p className="mt-2 text-lg font-semibold text-white/90">
+                        Identidad premium
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -175,8 +291,8 @@ export default function Login() {
                           Bienvenido
                         </h2>
                         <p className="mt-4 max-w-lg text-base leading-7 text-white/55">
-                          Inicia sesión en tu sistema con una entrada visual
-                          cinematográfica y con identidad real de AutoCore.
+                          Inicia sesión en tu sistema con una experiencia de acceso
+                          dinámica, moderna y alineada con la energía de AutoCore.
                         </p>
                       </div>
 
@@ -261,7 +377,7 @@ export default function Login() {
               </motion.div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
@@ -273,7 +389,7 @@ function getLogoAnimation(phase) {
       return {
         x: 0,
         y: 0,
-        scale: 0.14,
+        scale: 0.12,
         opacity: 0,
         transition: { duration: 0.2, ease: "easeOut" },
       };
@@ -281,7 +397,7 @@ function getLogoAnimation(phase) {
       return {
         x: 0,
         y: 0,
-        scale: 0.14,
+        scale: 0.12,
         opacity: 1,
         transition: { duration: 0.25, ease: "easeOut" },
       };
@@ -289,55 +405,56 @@ function getLogoAnimation(phase) {
       return {
         x: 0,
         y: 0,
-        scale: 1,
+        scale: 1.08,
         opacity: 1,
         transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
       };
     case 3:
     case 4:
+    case 5:
       return {
         x: 0,
         y: 0,
-        scale: 1,
+        scale: 1.08,
         opacity: 1,
         transition: { duration: 0.35, ease: "easeOut" },
       };
-    case 5:
+    case 6:
       return {
         x: 185,
         y: 0,
-        scale: 1,
+        scale: 1.03,
         opacity: 1,
         transition: { duration: 0.34, ease: [0.22, 1, 0.36, 1] },
       };
-    case 6:
+    case 7:
       return {
-        x: 285,
+        x: 290,
         y: 0,
-        scale: 0.96,
+        scale: 0.98,
         opacity: 1,
         transition: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
       };
-    case 7:
+    case 8:
       return {
-        x: 390,
+        x: 395,
         y: 0,
-        scale: 0.9,
+        scale: 0.92,
         opacity: 1,
         transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
       };
-    case 8:
-      return {
-        x: 455,
-        y: 0,
-        scale: 0.78,
-        opacity: 1,
-        transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
-      };
     case 9:
       return {
-        x: 455,
-        y: 0,
+        x: 470,
+        y: -65,
+        scale: 0.78,
+        opacity: 1,
+        transition: { duration: 0.74, ease: [0.22, 1, 0.36, 1] },
+      };
+    case 10:
+      return {
+        x: 470,
+        y: -65,
         scale: 0.78,
         opacity: 0,
         transition: { duration: 0.3, ease: "easeOut" },
@@ -348,14 +465,14 @@ function getLogoAnimation(phase) {
 }
 
 function getLogoSpin(phase) {
-  if (phase === 5) return { rotate: [0, 10, -6, 0] };
-  if (phase === 6) return { rotate: [0, -10, 5, 0] };
-  if (phase === 7) return { rotate: [0, 8, -4, 0] };
+  if (phase === 6) return { rotate: [0, 10, -6, 0] };
+  if (phase === 7) return { rotate: [0, -10, 5, 0] };
+  if (phase === 8) return { rotate: [0, 8, -4, 0] };
   return { rotate: 0 };
 }
 
 function getLogoSpinTransition(phase) {
-  if (phase >= 5 && phase <= 7) {
+  if (phase >= 6 && phase <= 8) {
     return { duration: 0.32, ease: "easeInOut" };
   }
   return { duration: 0.2 };
@@ -367,41 +484,42 @@ function getPanelAnimation(phase) {
     case 1:
     case 2:
     case 3:
+    case 4:
       return {
-        x: 1020,
+        x: 1040,
         opacity: 0,
         transition: { duration: 0.2, ease: "easeOut" },
       };
-    case 4:
-      return {
-        x: 690,
-        opacity: 1,
-        transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-      };
     case 5:
       return {
-        x: 545,
+        x: 680,
         opacity: 1,
-        transition: { duration: 0.34, ease: [0.34, 1.56, 0.64, 1] },
+        transition: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
       };
     case 6:
       return {
-        x: 390,
+        x: 535,
         opacity: 1,
-        transition: { duration: 0.36, ease: [0.34, 1.56, 0.64, 1] },
+        transition: { duration: 0.34, ease: [0.34, 1.56, 0.64, 1] },
       };
     case 7:
       return {
-        x: 185,
+        x: 385,
+        opacity: 1,
+        transition: { duration: 0.36, ease: [0.34, 1.56, 0.64, 1] },
+      };
+    case 8:
+      return {
+        x: 180,
         opacity: 1,
         transition: { duration: 0.42, ease: [0.34, 1.56, 0.64, 1] },
       };
-    case 8:
     case 9:
+    case 10:
       return {
         x: 0,
         opacity: 1,
-        transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
       };
     default:
       return {};
@@ -409,15 +527,29 @@ function getPanelAnimation(phase) {
 }
 
 function getPanelShake(phase) {
-  if (phase === 5) return { x: [0, 8, -6, 4, 0] };
-  if (phase === 6) return { x: [0, 12, -8, 5, 0] };
-  if (phase === 7) return { x: [0, 16, -10, 6, 0] };
-  return { x: 0 };
+  if (phase === 6) return { x: [0, 10, -8, 5, 0], y: [0, -2, 1, 0] };
+  if (phase === 7) return { x: [0, 14, -9, 6, 0], y: [0, -3, 1, 0] };
+  if (phase === 8) return { x: [0, 18, -11, 7, 0], y: [0, -4, 2, 0] };
+  return { x: 0, y: 0 };
 }
 
 function getPanelShakeTransition(phase) {
-  if (phase >= 5 && phase <= 7) {
-    return { duration: 0.34, ease: "easeInOut" };
+  if (phase >= 6 && phase <= 8) {
+    return { duration: 0.36, ease: "easeInOut" };
+  }
+  return { duration: 0.2 };
+}
+
+function getStageShake(phase) {
+  if (phase === 6) return { x: [0, -3, 2, 0] };
+  if (phase === 7) return { x: [0, -4, 3, 0] };
+  if (phase === 8) return { x: [0, -5, 3, 0] };
+  return { x: 0 };
+}
+
+function getStageShakeTransition(phase) {
+  if (phase >= 6 && phase <= 8) {
+    return { duration: 0.3, ease: "easeInOut" };
   }
   return { duration: 0.2 };
 }
@@ -434,12 +566,18 @@ function InputShell({ icon, children }) {
   );
 }
 
-function AnimatedBackground({ particles }) {
+function AnimatedBackground({ particles, phase }) {
   return (
     <>
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,#000000_0%,#070707_12%,#1d0101_28%,#430909_46%,#1b0202_66%,#000000_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_20%,rgba(255,0,0,0.22),transparent_16%),radial-gradient(circle_at_76%_18%,rgba(255,70,70,0.14),transparent_15%),radial-gradient(circle_at_55%_72%,rgba(255,0,0,0.14),transparent_22%),radial-gradient(circle_at_86%_80%,rgba(255,255,255,0.06),transparent_12%)]" />
-      <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.10)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.10)_1px,transparent_1px)] [background-size:44px_44px]" />
+      <motion.div
+        animate={getBackgroundZoom(phase)}
+        transition={getBackgroundZoomTransition(phase)}
+        className="absolute inset-0"
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#000000_0%,#070707_12%,#1d0101_28%,#430909_46%,#1b0202_66%,#000000_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_20%,rgba(255,0,0,0.22),transparent_16%),radial-gradient(circle_at_76%_18%,rgba(255,70,70,0.14),transparent_15%),radial-gradient(circle_at_55%_72%,rgba(255,0,0,0.14),transparent_22%),radial-gradient(circle_at_86%_80%,rgba(255,255,255,0.06),transparent_12%)]" />
+        <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.10)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.10)_1px,transparent_1px)] [background-size:44px_44px]" />
+      </motion.div>
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {particles.map((p) => (
@@ -471,4 +609,18 @@ function AnimatedBackground({ particles }) {
       </div>
     </>
   );
+}
+
+function getBackgroundZoom(phase) {
+  if (phase === 6) return { scale: [1, 1.015, 1] };
+  if (phase === 7) return { scale: [1, 1.02, 1] };
+  if (phase === 8) return { scale: [1, 1.03, 1] };
+  return { scale: 1 };
+}
+
+function getBackgroundZoomTransition(phase) {
+  if (phase >= 6 && phase <= 8) {
+    return { duration: 0.42, ease: "easeInOut" };
+  }
+  return { duration: 0.2 };
 }
