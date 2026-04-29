@@ -17,7 +17,7 @@ const pool = new Pool({
 });
 
 app.get("/", (req, res) => {
-  res.send("AutoCore Backend Running 🚀");
+  res.send("AutoCore Backend NUEVO 123 🚀");
 });
 
 app.get("/test-db", async (req, res) => {
