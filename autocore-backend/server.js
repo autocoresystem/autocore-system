@@ -20,6 +20,23 @@ app.get("/", (req, res) => {
   res.send("AutoCore Backend Running 🚀");
 });
 
+app.get("/test-db", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({
+      success: true,
+      message: "Database connected successfully",
+      time: result.rows[0].now,
+    });
+  } catch (error) {
+    console.error("DB Error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Database connection failed",
+    });
+  }
+});
+
 // CLIENTES
 app.get("/clientes", async (req, res) => {
   const data = await pool.query("SELECT * FROM clientes ORDER BY id DESC");
