@@ -1,15 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import {
   CarFront,
-  LayoutDashboard,
   Plus,
   RefreshCw,
   DollarSign,
   TrendingUp,
   BadgeCheck,
+  X,
+  Trash2,
+  ArrowLeft,
+  Wallet,
+  Receipt,
 } from "lucide-react";
 
 const API_URL = "http://localhost:3000";
+
+function money(value) {
+  return `$${Number(value || 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
 
 function HeroParticleText() {
   const canvasRef = useRef(null);
@@ -26,6 +37,7 @@ function HeroParticleText() {
     const build = () => {
       const w = canvas.offsetWidth;
       const h = canvas.offsetHeight;
+
       canvas.width = w;
       canvas.height = h;
 
@@ -54,10 +66,10 @@ function HeroParticleText() {
             particles.push({
               tx: x,
               ty: y,
-              x: x + (Math.random() - 0.5) * 140,
-              y: y + (Math.random() - 0.5) * 80,
-              s: Math.random() * 1.4 + 0.7,
-              a: Math.random() * 0.4 + 0.45,
+              x: x + (Math.random() - 0.5) * 170,
+              y: y + (Math.random() - 0.5) * 90,
+              s: Math.random() * 1.35 + 0.65,
+              a: Math.random() * 0.42 + 0.42,
             });
           }
         }
@@ -69,10 +81,10 @@ function HeroParticleText() {
       time += 0.016;
 
       particles.forEach((p) => {
-        p.x += (p.tx - p.x) * 0.055;
-        p.y += (p.ty - p.y) * 0.055;
+        p.x += (p.tx - p.x) * 0.05;
+        p.y += (p.ty - p.y) * 0.05;
 
-        const breath = Math.sin(time + p.tx * 0.01) * 0.6;
+        const breath = Math.sin(time + p.tx * 0.01) * 0.7;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y + breath, p.s, 0, Math.PI * 2);
@@ -101,6 +113,9 @@ function HeroParticleText() {
 
 export default function App() {
   const [vehiculos, setVehiculos] = useState([]);
+  const [resumen, setResumen] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [detalle, setDetalle] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -112,21 +127,48 @@ export default function App() {
     millas: "",
     precio_compra: "",
     precio_venta: "",
+    imagen: "",
+    estado: "Disponible",
   });
 
-  const fetchVehiculos = async () => {
+  const [gastoForm, setGastoForm] = useState({
+    categoria: "General",
+    descripcion: "",
+    monto: "",
+    fecha: "",
+  });
+
+  const [pagoForm, setPagoForm] = useState({
+    monto: "",
+    metodo_pago: "Efectivo",
+    fecha: "",
+    nota: "",
+  });
+
+  const fetchAll = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await fetch(`${API_URL}/vehiculos`);
-      const data = await res.json();
-      setVehiculos(data);
+      const [vehRes, dashRes] = await Promise.all([
+        fetch(`${API_URL}/vehiculos`),
+        fetch(`${API_URL}/dashboard-resumen`),
+      ]);
+
+      setVehiculos(await vehRes.json());
+      setResumen(await dashRes.json());
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchDetalle = async (id) => {
+    const res = await fetch(`${API_URL}/vehiculos/${id}/detalle`);
+    const data = await res.json();
+    setDetalle(data);
+    setSelected(id);
+  };
+
   useEffect(() => {
-    fetchVehiculos();
+    fetchAll();
   }, []);
 
   const crearVehiculo = async (e) => {
@@ -134,9 +176,7 @@ export default function App() {
 
     await fetch(`${API_URL}/vehiculos`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...form,
         ano: Number(form.ano) || null,
@@ -155,22 +195,282 @@ export default function App() {
       millas: "",
       precio_compra: "",
       precio_venta: "",
+      imagen: "",
+      estado: "Disponible",
     });
 
-    fetchVehiculos();
+    await fetchAll();
   };
 
-  const totalInventario = vehiculos.reduce(
-    (sum, v) => sum + Number(v.precio_venta || 0),
-    0
-  );
+  const agregarGasto = async (e) => {
+    e.preventDefault();
+    if (!selected) return;
 
-  const totalCosto = vehiculos.reduce(
-    (sum, v) => sum + Number(v.precio_compra || 0),
-    0
-  );
+    await fetch(`${API_URL}/vehiculos/${selected}/gastos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...gastoForm,
+        monto: Number(gastoForm.monto) || 0,
+      }),
+    });
 
-  const gananciaPotencial = totalInventario - totalCosto;
+    setGastoForm({ categoria: "General", descripcion: "", monto: "", fecha: "" });
+    await fetchDetalle(selected);
+    await fetchAll();
+  };
+
+  const agregarPago = async (e) => {
+    e.preventDefault();
+    if (!selected) return;
+
+    await fetch(`${API_URL}/vehiculos/${selected}/pagos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...pagoForm,
+        monto: Number(pagoForm.monto) || 0,
+      }),
+    });
+
+    setPagoForm({ monto: "", metodo_pago: "Efectivo", fecha: "", nota: "" });
+    await fetchDetalle(selected);
+    await fetchAll();
+  };
+
+  const eliminarGasto = async (id) => {
+    await fetch(`${API_URL}/gastos/${id}`, { method: "DELETE" });
+    await fetchDetalle(selected);
+    await fetchAll();
+  };
+
+  const eliminarPago = async (id) => {
+    await fetch(`${API_URL}/pagos/${id}`, { method: "DELETE" });
+    await fetchDetalle(selected);
+    await fetchAll();
+  };
+
+  if (detalle) {
+    const v = detalle.vehiculo;
+    const precioVenta = Number(v.precio_venta || v.precio_esperado || 0);
+    const precioCompra = Number(v.precio_compra || 0);
+    const totalGastos = Number(v.total_gastos || 0);
+    const totalPagos = Number(v.total_pagos || 0);
+    const ganancia = Number(v.ganancia_limpia || 0);
+    const balance = precioVenta - totalPagos;
+
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.2),transparent_30%)]" />
+
+        <header className="border-b border-white/10 bg-black/90 backdrop-blur-2xl">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-3">
+              <img src="/autocore-logo.png" alt="AutoCore" className="h-12 w-auto" />
+              <div>
+                <h1 className="text-2xl font-black">
+                  Auto<span className="text-red-500">Core</span>
+                </h1>
+                <p className="-mt-1 text-xs uppercase tracking-[0.35em] text-zinc-400">
+                  System
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setDetalle(null);
+                setSelected(null);
+              }}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 font-semibold hover:bg-white/10"
+            >
+              <ArrowLeft size={18} />
+              Volver
+            </button>
+          </div>
+        </header>
+
+        <main className="mx-auto max-w-7xl px-6 py-8">
+          <section className="overflow-hidden rounded-[2rem] border border-red-500/20 bg-[linear-gradient(135deg,rgba(220,38,38,0.18),rgba(10,10,10,0.96))] p-8 shadow-[0_40px_120px_rgba(0,0,0,0.5)]">
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+              <div>
+                <div className="mb-6 inline-flex rounded-full bg-red-600 px-4 py-2 text-xs font-black uppercase tracking-[0.2em]">
+                  Venta-{String(v.id).padStart(3, "0")}
+                </div>
+
+                <h2 className="text-5xl font-black italic tracking-tight text-red-500">
+                  AutoCore
+                </h2>
+
+                <div className="mt-6 h-1 w-72 bg-red-600" />
+
+                <p className="mt-7 text-sm font-black uppercase tracking-[0.3em] text-zinc-300">
+                  Venta de vehículo
+                </p>
+
+                <h1 className="mt-4 text-4xl font-black uppercase leading-tight">
+                  {v.marca} {v.modelo}
+                  <br />
+                  <span className="text-zinc-400">
+                    ({v.ano}) {v.color || ""}
+                  </span>
+                </h1>
+
+                <p className="mt-3 text-sm font-bold text-red-400">
+                  Vehículo {v.estado || "Disponible"}
+                </p>
+
+                <p className="mt-6 text-xs uppercase tracking-[0.25em] text-zinc-400">
+                  Precio total vendido
+                </p>
+
+                <p className="mt-2 text-5xl font-black text-red-500">
+                  {money(precioVenta)}
+                </p>
+              </div>
+
+              <div>
+                <div className="mb-4 text-right text-sm font-bold text-zinc-300">
+                  {new Date(v.created_at || Date.now()).toISOString().slice(0, 10)}
+                </div>
+
+                <div className="rounded-[1.5rem] border-2 border-red-600 bg-black p-2 shadow-[0_0_35px_rgba(220,38,38,0.25)]">
+                  {v.imagen ? (
+                    <img
+                      src={v.imagen}
+                      alt={`${v.marca} ${v.modelo}`}
+                      className="h-72 w-full rounded-[1.2rem] object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-72 items-center justify-center rounded-[1.2rem] bg-zinc-900">
+                      <CarFront size={90} className="text-red-500" />
+                    </div>
+                  )}
+
+                  <p className="mt-2 px-2 text-xs uppercase tracking-[0.18em] text-zinc-500">
+                    Chasis: {v.vin || "No registrado"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <h3 className="text-3xl font-black uppercase">Gastos</h3>
+              <div className="mt-3 h-1 w-full bg-red-600" />
+
+              <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10">
+                <table className="w-full min-w-[760px] text-sm">
+                  <thead className="bg-black/50 text-zinc-300">
+                    <tr>
+                      <th className="px-4 py-3 text-left">Num</th>
+                      <th className="px-4 py-3 text-left">Descripción</th>
+                      <th className="px-4 py-3 text-left">Fecha</th>
+                      <th className="px-4 py-3 text-right">Precio</th>
+                      <th className="px-4 py-3 text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {detalle.gastos.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" className="px-4 py-5 text-zinc-500">
+                          No hay gastos registrados.
+                        </td>
+                      </tr>
+                    ) : (
+                      detalle.gastos.map((g, i) => (
+                        <tr key={g.id} className="border-t border-white/10">
+                          <td className="px-4 py-3">{i + 1}</td>
+                          <td className="px-4 py-3">{g.descripcion || g.categoria}</td>
+                          <td className="px-4 py-3">
+                            {String(g.fecha || "").slice(0, 10)}
+                          </td>
+                          <td className="px-4 py-3 text-right">{money(g.monto)}</td>
+                          <td className="px-4 py-3 text-right">
+                            <button
+                              onClick={() => eliminarGasto(g.id)}
+                              className="rounded-full bg-white/10 p-2 hover:bg-red-600"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+
+                    <tr className="border-t border-red-500/40 bg-black/50 font-black">
+                      <td className="px-4 py-3" colSpan="3">
+                        TOTAL
+                      </td>
+                      <td className="px-4 py-3 text-right text-red-400">
+                        {money(totalGastos)}
+                      </td>
+                      <td />
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="ml-auto mt-6 max-w-md space-y-3">
+                <SummaryRow label="Precio compra" value={money(precioCompra)} />
+                <SummaryRow label="Total gastos" value={money(totalGastos)} />
+                <SummaryRow label="Pagos recibidos" value={money(totalPagos)} />
+                <SummaryRow label="Balance pendiente" value={money(balance)} />
+                <SummaryRow
+                  label="Ganancia limpia"
+                  value={money(ganancia)}
+                  highlight
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-6 grid gap-6 lg:grid-cols-2">
+            <Panel title="Agregar gasto" icon={Receipt}>
+              <form onSubmit={agregarGasto} className="space-y-3">
+                <Input label="Categoría" value={gastoForm.categoria} onChange={(e) => setGastoForm({ ...gastoForm, categoria: e.target.value })} />
+                <Input label="Descripción" value={gastoForm.descripcion} onChange={(e) => setGastoForm({ ...gastoForm, descripcion: e.target.value })} />
+                <Input label="Monto" value={gastoForm.monto} onChange={(e) => setGastoForm({ ...gastoForm, monto: e.target.value })} />
+                <Input type="date" label="Fecha" value={gastoForm.fecha} onChange={(e) => setGastoForm({ ...gastoForm, fecha: e.target.value })} />
+                <button className="w-full rounded-2xl bg-red-600 px-5 py-3 font-black hover:bg-red-700">
+                  Agregar gasto
+                </button>
+              </form>
+            </Panel>
+
+            <Panel title="Agregar pago / abono" icon={Wallet}>
+              <form onSubmit={agregarPago} className="space-y-3">
+                <Input label="Monto" value={pagoForm.monto} onChange={(e) => setPagoForm({ ...pagoForm, monto: e.target.value })} />
+                <Input label="Método de pago" value={pagoForm.metodo_pago} onChange={(e) => setPagoForm({ ...pagoForm, metodo_pago: e.target.value })} />
+                <Input type="date" label="Fecha" value={pagoForm.fecha} onChange={(e) => setPagoForm({ ...pagoForm, fecha: e.target.value })} />
+                <Input label="Nota" value={pagoForm.nota} onChange={(e) => setPagoForm({ ...pagoForm, nota: e.target.value })} />
+                <button className="w-full rounded-2xl bg-red-600 px-5 py-3 font-black hover:bg-red-700">
+                  Agregar pago
+                </button>
+              </form>
+
+              <div className="mt-5 space-y-2">
+                {detalle.pagos.length === 0 ? (
+                  <p className="text-sm text-zinc-500">No hay pagos registrados.</p>
+                ) : (
+                  detalle.pagos.map((p) => (
+                    <div key={p.id} className="flex items-center justify-between rounded-xl bg-black/40 p-3 text-sm">
+                      <span>{p.metodo_pago} · {String(p.fecha || "").slice(0, 10)}</span>
+                      <div className="flex items-center gap-3">
+                        <strong>{money(p.monto)}</strong>
+                        <button onClick={() => eliminarPago(p.id)} className="rounded-full bg-white/10 p-2 hover:bg-red-600">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </Panel>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -190,9 +490,9 @@ export default function App() {
             </div>
           </div>
 
-          <div className="hidden rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 sm:block">
-            Dealer Sales System
-          </div>
+          <button onClick={fetchAll} className="rounded-2xl border border-white/10 bg-white/5 p-3 hover:bg-white/10">
+            <RefreshCw size={18} />
+          </button>
         </div>
       </header>
 
@@ -210,70 +510,47 @@ export default function App() {
           </p>
         </section>
 
-        <section className="mt-8 grid gap-5 md:grid-cols-3">
-          <StatCard icon={CarFront} title="Vehículos" value={vehiculos.length} />
-          <StatCard
-            icon={DollarSign}
-            title="Valor inventario"
-            value={`$${totalInventario.toLocaleString()}`}
-          />
-          <StatCard
-            icon={TrendingUp}
-            title="Ganancia potencial"
-            value={`$${gananciaPotencial.toLocaleString()}`}
-          />
+        <section className="mt-8 grid gap-5 md:grid-cols-4">
+          <StatCard icon={CarFront} title="Vehículos" value={resumen?.total_vehiculos || vehiculos.length} />
+          <StatCard icon={DollarSign} title="Total invertido" value={money(resumen?.total_invertido)} />
+          <StatCard icon={Receipt} title="Total gastos" value={money(resumen?.total_gastos)} />
+          <StatCard icon={TrendingUp} title="Ganancia potencial" value={money(resumen?.ganancia_potencial)} />
         </section>
 
         <section className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-600/15 text-red-400">
-                <Plus size={24} />
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.22em] text-red-300">
-                  Inventario
-                </p>
-                <h2 className="text-2xl font-black">Agregar vehículo</h2>
-              </div>
-            </div>
+            <h2 className="text-2xl font-black">Agregar vehículo</h2>
 
-            <form onSubmit={crearVehiculo} className="grid gap-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Input label="Marca" name="marca" value={form.marca} setForm={setForm} form={form} />
-                <Input label="Modelo" name="modelo" value={form.modelo} setForm={setForm} form={form} />
-                <Input label="Año" name="ano" value={form.ano} setForm={setForm} form={form} />
-                <Input label="Color" name="color" value={form.color} setForm={setForm} form={form} />
-                <Input label="VIN / Chasis" name="vin" value={form.vin} setForm={setForm} form={form} />
-                <Input label="Millas" name="millas" value={form.millas} setForm={setForm} form={form} />
-                <Input label="Precio compra" name="precio_compra" value={form.precio_compra} setForm={setForm} form={form} />
-                <Input label="Precio venta" name="precio_venta" value={form.precio_venta} setForm={setForm} form={form} />
-              </div>
+            <form onSubmit={crearVehiculo} className="mt-5 grid gap-4 sm:grid-cols-2">
+              {[
+                ["Marca", "marca"],
+                ["Modelo", "modelo"],
+                ["Año", "ano"],
+                ["Color", "color"],
+                ["VIN / Chasis", "vin"],
+                ["Millas", "millas"],
+                ["Precio compra", "precio_compra"],
+                ["Precio venta", "precio_venta"],
+                ["URL imagen", "imagen"],
+              ].map(([label, key]) => (
+                <Input
+                  key={key}
+                  label={label}
+                  value={form[key]}
+                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                />
+              ))}
 
-              <button className="mt-2 rounded-2xl bg-red-600 px-6 py-3.5 font-bold text-white shadow-[0_18px_50px_rgba(220,38,38,0.25)] transition hover:scale-[1.01] hover:bg-red-700">
+              <button className="rounded-2xl bg-red-600 px-6 py-3.5 font-black hover:bg-red-700 sm:col-span-2">
                 Guardar vehículo
               </button>
             </form>
           </div>
 
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <p className="text-sm uppercase tracking-[0.22em] text-red-300">
-                  Vehículos
-                </p>
-                <h2 className="text-2xl font-black">Inventario actual</h2>
-              </div>
+            <h2 className="text-2xl font-black">Vehículos registrados</h2>
 
-              <button
-                onClick={fetchVehiculos}
-                className="rounded-2xl border border-white/10 bg-white/5 p-3 transition hover:bg-white/10"
-              >
-                <RefreshCw size={18} />
-              </button>
-            </div>
-
-            <div className="space-y-3">
+            <div className="mt-5 space-y-3">
               {loading ? (
                 <p className="text-zinc-400">Cargando...</p>
               ) : vehiculos.length === 0 ? (
@@ -282,9 +559,10 @@ export default function App() {
                 </div>
               ) : (
                 vehiculos.map((v) => (
-                  <div
+                  <button
                     key={v.id}
-                    className="rounded-2xl border border-white/10 bg-black/40 p-4"
+                    onClick={() => fetchDetalle(v.id)}
+                    className="w-full rounded-2xl border border-white/10 bg-black/40 p-4 text-left transition hover:border-red-500/40 hover:bg-red-500/5"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
@@ -293,30 +571,21 @@ export default function App() {
                           <span className="text-zinc-500">{v.ano}</span>
                         </h3>
                         <p className="mt-1 text-sm text-zinc-400">
-                          {v.color || "Sin color"} · VIN: {v.vin || "-"}
+                          Compra {money(v.precio_compra)} · Venta {money(v.precio_venta)}
                         </p>
                       </div>
 
                       <span className="rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs font-bold text-red-300">
-                        {v.estado || "Disponible"}
+                        Ver detalle
                       </span>
                     </div>
 
-                    <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                      <div className="rounded-xl bg-white/[0.04] p-3">
-                        <p className="text-zinc-500">Compra</p>
-                        <p className="font-bold">
-                          ${Number(v.precio_compra || 0).toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="rounded-xl bg-white/[0.04] p-3">
-                        <p className="text-zinc-500">Venta</p>
-                        <p className="font-bold">
-                          ${Number(v.precio_venta || 0).toLocaleString()}
-                        </p>
-                      </div>
+                    <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
+                      <MiniStat label="Gastos" value={money(v.total_gastos)} />
+                      <MiniStat label="Pagos" value={money(v.total_pagos)} />
+                      <MiniStat label="Ganancia" value={money(v.ganancia_limpia)} />
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>
@@ -339,16 +608,44 @@ function StatCard({ icon: Icon, title, value }) {
   );
 }
 
-function Input({ label, name, value, form, setForm }) {
+function MiniStat({ label, value }) {
+  return (
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      <p className="text-xs text-zinc-500">{label}</p>
+      <p className="font-bold">{value}</p>
+    </div>
+  );
+}
+
+function SummaryRow({ label, value, highlight }) {
+  return (
+    <div className={`flex items-center justify-between rounded-xl px-5 py-3 ${highlight ? "bg-red-600 font-black" : "bg-white/10"}`}>
+      <span>{label}</span>
+      <span>{value}</span>
+    </div>
+  );
+}
+
+function Panel({ title, icon: Icon, children }) {
+  return (
+    <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+      <div className="mb-5 flex items-center gap-3">
+        <Icon className="text-red-500" />
+        <h3 className="text-xl font-black">{title}</h3>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Input({ label, value, onChange, type = "text" }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium text-zinc-300">
-        {label}
-      </label>
+      <label className="mb-2 block text-sm font-medium text-zinc-300">{label}</label>
       <input
-        name={name}
-        value={value}
-        onChange={(e) => setForm({ ...form, [name]: e.target.value })}
+        type={type}
+        value={value || ""}
+        onChange={onChange}
         placeholder={label}
         className="w-full rounded-2xl border border-white/10 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-zinc-600 focus:border-red-500/50"
       />
