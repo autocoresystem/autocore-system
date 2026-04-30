@@ -257,6 +257,19 @@ app.get("/dashboard-resumen", async (req, res) => {
   }
 });
 
+app.delete("/vehiculos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await pool.query("DELETE FROM vehiculos WHERE id = $1", [id]);
+
+    res.json({ success: true, message: "Vehículo eliminado correctamente" });
+  } catch (error) {
+    console.error("Error eliminando vehículo:", error);
+    res.status(500).json({ error: "Error eliminando vehículo" });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {

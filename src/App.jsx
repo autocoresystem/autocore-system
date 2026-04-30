@@ -66,8 +66,10 @@ function HeroParticleText() {
             particles.push({
               tx: x,
               ty: y,
-              x: x + (Math.random() - 0.5) * 170,
-              y: y + (Math.random() - 0.5) * 90,
+             sx: x + (Math.random() - 0.5) * 260,
+sy: y + (Math.random() - 0.5) * 130,
+x: x + (Math.random() - 0.5) * 260,
+y: y + (Math.random() - 0.5) * 130,
               s: Math.random() * 1.35 + 0.65,
               a: Math.random() * 0.42 + 0.42,
             });
@@ -81,8 +83,17 @@ function HeroParticleText() {
       time += 0.016;
 
       particles.forEach((p) => {
-        p.x += (p.tx - p.x) * 0.05;
-        p.y += (p.ty - p.y) * 0.05;
+       const cycle = (time % 5) / 5;
+const dissolve = cycle > 0.72 ? (cycle - 0.72) / 0.28 : 0;
+const reform = cycle < 0.35 ? cycle / 0.35 : 1;
+
+const spread = dissolve > 0 ? dissolve : 1 - reform;
+
+const targetX = p.tx + (p.sx - p.tx) * spread;
+const targetY = p.ty + (p.sy - p.ty) * spread;
+
+p.x += (targetX - p.x) * 0.06;
+p.y += (targetY - p.y) * 0.06;
 
         const breath = Math.sin(time + p.tx * 0.01) * 0.7;
 
@@ -117,6 +128,22 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const [detalle, setDetalle] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const eliminarVehiculo = async (id) => {
+  const confirmar = confirm("¿Seguro que quieres eliminar este vehículo?");
+  if (!confirmar) return;
+
+  await fetch(`${API_URL}/vehiculos/${id}`, {
+    method: "DELETE",
+  });
+
+  if (selected === id) {
+    setSelected(null);
+    setDetalle(null);
+  }
+
+  await fetchAll();
+};
 
   const [form, setForm] = useState({
     marca: "",
@@ -579,6 +606,15 @@ export default function App() {
                         Ver detalle
                       </span>
                     </div>
+                    <button
+  onClick={(e) => {
+    e.stopPropagation();
+    eliminarVehiculo(v.id);
+  }}
+  className="rounded-full border border-red-500/30 bg-red-500/10 p-2 text-red-300 transition hover:bg-red-600 hover:text-white"
+>
+  <Trash2 size={16} />
+</button>
 
                     <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
                       <MiniStat label="Gastos" value={money(v.total_gastos)} />
