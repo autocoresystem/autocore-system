@@ -129,13 +129,18 @@ export default function App() {
   const [detalle, setDetalle] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const eliminarVehiculo = async (id) => {
+const eliminarVehiculo = async (id) => {
   const confirmar = confirm("¿Seguro que quieres eliminar este vehículo?");
   if (!confirmar) return;
 
-  await fetch(`${API_URL}/vehiculos/${id}`, {
+  const res = await fetch(`${API_URL}/vehiculos/${id}`, {
     method: "DELETE",
   });
+
+  if (!res.ok) {
+    alert("No se pudo eliminar el vehículo. Revisa si el backend tiene la ruta DELETE.");
+    return;
+  }
 
   if (selected === id) {
     setSelected(null);
