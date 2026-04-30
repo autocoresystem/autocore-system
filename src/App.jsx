@@ -13,7 +13,7 @@ import {
   Receipt,
 } from "lucide-react";
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://autocore-backend-3gkq.onrender.com";
 
 function money(value) {
   return `$${Number(value || 0).toLocaleString("en-US", {
