@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import pkg from "pg";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -34,6 +35,78 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (!adminEmail || !adminPassword || !jwtSecret) {
+      return res.status(500).json({
+        success: false,
+        error: "Login no configurado en el servidor",
+      });
+    }
+
+    if (email !== adminEmail || password !== adminPassword) {
+      return res.status(401).json({
+        success: false,
+        error: "Correo o contraseña incorrectos",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        email,
+        role: "admin",
+      },
+      jwtSecret,
+      {
+        expiresIn: "8h",
+      }
+    );
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        email,
+        role: "admin",
+      },
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error iniciando sesión",
+    });
+  }
+});
+function requireAuth(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({ error: "Token requerido" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ error: "Token inválido" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: "Sesión expirada o inválida" });
+  }
+}
+
 /* ================= VEHÍCULOS ================= */
 
 app.get("/vehiculos", async (req, res) => {
@@ -57,7 +130,7 @@ app.get("/vehiculos", async (req, res) => {
   }
 });
 
-app.post("/vehiculos", async (req, res) => {
+app.post("/vehiculos", requireAuth, async (req, res) => {
   try {
     const {
       marca,
@@ -150,7 +223,7 @@ app.get("/vehiculos/:id/detalle", async (req, res) => {
 
 /* ================= GASTOS POR VEHÍCULO ================= */
 
-app.post("/vehiculos/:id/gastos", async (req, res) => {
+app.post("/vehiculos/:id/gastos", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { categoria, descripcion, monto, fecha } = req.body;
@@ -177,7 +250,7 @@ app.post("/vehiculos/:id/gastos", async (req, res) => {
   }
 });
 
-app.delete("/gastos/:id", async (req, res) => {
+app.delete("/gastos/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM gastos WHERE id = $1", [id]);
@@ -190,7 +263,7 @@ app.delete("/gastos/:id", async (req, res) => {
 
 /* ================= PAGOS POR VEHÍCULO ================= */
 
-app.post("/vehiculos/:id/pagos", async (req, res) => {
+app.post("/vehiculos/:id/pagos", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { monto, metodo_pago, fecha, nota } = req.body;
@@ -217,7 +290,7 @@ app.post("/vehiculos/:id/pagos", async (req, res) => {
   }
 });
 
-app.delete("/pagos/:id", async (req, res) => {
+app.delete("/pagos/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM pagos WHERE id = $1", [id]);
@@ -257,7 +330,7 @@ app.get("/dashboard-resumen", async (req, res) => {
   }
 });
 
-app.delete("/vehiculos/:id", async (req, res) => {
+app.delete("/vehiculos/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
 
