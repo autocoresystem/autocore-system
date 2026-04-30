@@ -11,6 +11,11 @@ import {
   ArrowLeft,
   Wallet,
   Receipt,
+Lock,
+LogOut,
+Eye,
+EyeOff,
+ShieldCheck,
 } from "lucide-react";
 
 const API_URL = "https://autocore-backend-3gkq.onrender.com";
@@ -123,6 +128,22 @@ p.y += (targetY - p.y) * 0.06;
 }
 
 export default function App() {
+  const [authToken, setAuthToken] = useState(
+  () => localStorage.getItem("autocore_token") || ""
+);
+
+const [loginForm, setLoginForm] = useState({
+  email: "",
+  password: "",
+});
+
+const [loginError, setLoginError] = useState("");
+const [loginLoading, setLoginLoading] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
+
+const authHeaders = () => ({
+  Authorization: `Bearer ${authToken}`,
+});
   const [vehiculos, setVehiculos] = useState([]);
   const [resumen, setResumen] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -134,8 +155,11 @@ const eliminarVehiculo = async (id) => {
   if (!confirmar) return;
 
   const res = await fetch(`${API_URL}/vehiculos/${id}`, {
-    method: "DELETE",
-  });
+  method: "DELETE",
+  headers: {
+    ...authHeaders(),
+  },
+});
 
   if (!res.ok) {
     alert("No se pudo eliminar el vehículo. Revisa si el backend tiene la ruta DELETE.");
@@ -176,6 +200,43 @@ const eliminarVehiculo = async (id) => {
     fecha: "",
     nota: "",
   });
+  const iniciarSesion = async (e) => {
+  e.preventDefault();
+  setLoginError("");
+  setLoginLoading(true);
+
+  try {
+    const res = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginForm),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setLoginError(data.error || "Correo o contraseña incorrectos");
+      return;
+    }
+
+    localStorage.setItem("autocore_token", data.token);
+    setAuthToken(data.token);
+    setLoginForm({ email: "", password: "" });
+  } catch (error) {
+    setLoginError("No se pudo conectar con el servidor.");
+  } finally {
+    setLoginLoading(false);
+  }
+};
+
+const cerrarSesion = () => {
+  localStorage.removeItem("autocore_token");
+  setAuthToken("");
+  setDetalle(null);
+  setSelected(null);
+};
 
   const fetchAll = async () => {
     setLoading(true);
@@ -200,15 +261,20 @@ const eliminarVehiculo = async (id) => {
   };
 
   useEffect(() => {
+  if (authToken) {
     fetchAll();
-  }, []);
+  }
+}, [authToken]);
 
   const crearVehiculo = async (e) => {
     e.preventDefault();
 
     await fetch(`${API_URL}/vehiculos`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+     headers: {
+  "Content-Type": "application/json",
+  ...authHeaders(),
+},
       body: JSON.stringify({
         ...form,
         ano: Number(form.ano) || null,
@@ -240,7 +306,10 @@ const eliminarVehiculo = async (id) => {
 
     await fetch(`${API_URL}/vehiculos/${selected}/gastos`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+  "Content-Type": "application/json",
+  ...authHeaders(),
+},
       body: JSON.stringify({
         ...gastoForm,
         monto: Number(gastoForm.monto) || 0,
@@ -258,7 +327,10 @@ const eliminarVehiculo = async (id) => {
 
     await fetch(`${API_URL}/vehiculos/${selected}/pagos`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+  "Content-Type": "application/json",
+  ...authHeaders(),
+},
       body: JSON.stringify({
         ...pagoForm,
         monto: Number(pagoForm.monto) || 0,
@@ -271,16 +343,172 @@ const eliminarVehiculo = async (id) => {
   };
 
   const eliminarGasto = async (id) => {
-    await fetch(`${API_URL}/gastos/${id}`, { method: "DELETE" });
+    const res = await fetch(`${API_URL}/gastos/${id}`, {
+  method: "DELETE",
+  headers: {
+    ...authHeaders(),
+  },
+});
+
+if (!res.ok) {
+  alert("No se pudo eliminar el gasto. Inicia sesión otra vez.");
+  if (res.status === 401) cerrarSesion();
+  return;
+}
     await fetchDetalle(selected);
     await fetchAll();
   };
 
   const eliminarPago = async (id) => {
-    await fetch(`${API_URL}/pagos/${id}`, { method: "DELETE" });
+    const res = await fetch(`${API_URL}/pagos/${id}`, {
+  method: "DELETE",
+  headers: {
+    ...authHeaders(),
+  },
+});
+
+if (!res.ok) {
+  alert("No se pudo eliminar el pago. Inicia sesión otra vez.");
+  if (res.status === 401) cerrarSesion();
+  return;
+}
     await fetchDetalle(selected);
     await fetchAll();
   };
+  if (!authToken) {
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(220,38,38,0.22),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.06),transparent_25%)]" />
+
+      <main className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-6 py-10">
+        <div className="grid w-full gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <div className="mb-8 flex items-center gap-3">
+              <img
+                src="/autocore-logo.png"
+                alt="AutoCore"
+                className="h-16 w-auto drop-shadow-[0_0_25px_rgba(220,38,38,0.45)]"
+              />
+              <div>
+                <h1 className="text-3xl font-black">
+                  Auto<span className="text-red-500">Core</span>
+                </h1>
+                <p className="-mt-1 text-xs uppercase tracking-[0.42em] text-zinc-400">
+                  System
+                </p>
+              </div>
+            </div>
+
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-red-200">
+              <ShieldCheck size={14} />
+              Secure Dealer Access
+            </p>
+
+            <h2 className="max-w-3xl text-5xl font-black leading-tight tracking-tight sm:text-7xl">
+              Control premium para ventas, gastos y ganancia real.
+            </h2>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
+              Accede al panel privado de AutoCore System para administrar vehículos,
+              registrar gastos, controlar pagos y calcular ganancias limpias.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              {["Inventario", "Gastos", "Ganancia real"].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+                >
+                  <p className="font-bold text-white">{item}</p>
+                  <p className="mt-1 text-sm text-zinc-500">Protegido</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.05] p-6 shadow-[0_40px_120px_rgba(0,0,0,0.55)] backdrop-blur-2xl lg:p-8">
+            <div className="mb-6">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-600/15 text-red-400">
+                <Lock size={26} />
+              </div>
+
+              <p className="text-sm font-bold uppercase tracking-[0.24em] text-red-300">
+                Login
+              </p>
+
+              <h3 className="mt-2 text-3xl font-black">Entrar al sistema</h3>
+
+              <p className="mt-2 text-sm text-zinc-400">
+                Usa tus credenciales privadas de AutoCore.
+              </p>
+            </div>
+
+            <form onSubmit={iniciarSesion} className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-zinc-300">
+                  Correo
+                </label>
+
+                <input
+                  type="email"
+                  value={loginForm.email}
+                  onChange={(e) =>
+                    setLoginForm({ ...loginForm, email: e.target.value })
+                  }
+                  placeholder="admin@autocore.com"
+                  className="w-full rounded-2xl border border-white/10 bg-black/50 px-4 py-3.5 text-white outline-none transition placeholder:text-zinc-600 focus:border-red-500/50"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-zinc-300">
+                  Contraseña
+                </label>
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={loginForm.password}
+                    onChange={(e) =>
+                      setLoginForm({ ...loginForm, password: e.target.value })
+                    }
+                    placeholder="••••••••"
+                    className="w-full rounded-2xl border border-white/10 bg-black/50 px-4 py-3.5 pr-12 text-white outline-none transition placeholder:text-zinc-600 focus:border-red-500/50"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {loginError && (
+                <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-200">
+                  {loginError}
+                </div>
+              )}
+
+              <button
+                disabled={loginLoading}
+                className="w-full rounded-2xl bg-red-600 px-6 py-3.5 font-black text-white shadow-[0_18px_60px_rgba(220,38,38,0.28)] transition hover:scale-[1.01] hover:bg-red-700 disabled:opacity-60"
+              >
+                {loginLoading ? "Entrando..." : "Entrar al panel"}
+              </button>
+            </form>
+
+            <div className="mt-6 rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-zinc-400">
+              Sesión protegida por token. El acceso expira automáticamente.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
 
   if (detalle) {
     const v = detalle.vehiculo;
@@ -521,6 +749,13 @@ const eliminarVehiculo = async (id) => {
               </p>
             </div>
           </div>
+          <button
+  onClick={cerrarSesion}
+  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-zinc-300 hover:bg-white/10 hover:text-white"
+>
+  <LogOut size={16} />
+  Salir
+</button>
 
           <button onClick={fetchAll} className="rounded-2xl border border-white/10 bg-white/5 p-3 hover:bg-white/10">
             <RefreshCw size={18} />
